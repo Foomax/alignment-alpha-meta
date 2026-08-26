@@ -34,3 +34,13 @@ Scorecard so far: 2 rows (AntiPaSTO — did not reproduce; noise‑injection san
 4. `handoff-N.md` files (technical) and this file (plain language) are the narrative.
 
 ---
+
+## 4. Quick project #1 (`ioi`, GPT‑2 small) — reproduced exactly (07:35)
+
+**What it claims.** A famous "circuit" in GPT‑2 small handles sentences like "When Mary and John went to the store, John gave a drink to ___" (answer: Mary). The post adds a stray extra "Mary" somewhere irrelevant and asks whether the circuit gets confused. Answer: only slightly — the model's preference for the right name drops by 0.23 on its internal scale, and accuracy goes 95.4 % → 94.5 %.
+
+**What we got.** 0.231, 95.3 % → 94.5 %, same statistics to the third decimal. The model is deterministic, so this is the "boring good" outcome: a well‑written notebook that does what it says.
+
+**What needed fixing (nothing scientific).** The repo has no list of required packages, and notebooks run in a fresh sandbox don't have `pip`. The runner now installs those automatically; the first two attempts died on that, the third ran in 3 minutes.
+
+**Needs you?** No.

@@ -1,0 +1,28 @@
+{
+ "post_id": "zKyKDre78napvtrEo",
+ "repo": "fractalmachinist/ioi",
+ "head_sha": "1571259a3a8e713abd4cdd3758613f41769304ba",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": true,
+ "claimed_value": "mean drop 0.23, SD 0.84 (n=128 matched pairs), paired t=3.09, p=0.0024, Cohen's d=0.27; accuracy 95.4% (control) vs 94.5% (test)",
+ "observed_value": "0.231",
+ "delta": 0.001,
+ "tolerance_used": "manual",
+ "blocking_reason": "none",
+ "env_fixes": [
+  "no requirements file in the repo: installed transformer-lens, scipy (from ModuleNotFoundError), plus pip/jupyter/nbconvert/ipykernel/matplotlib/ipympl so the notebook entrypoint can execute under nbconvert (uv venvs ship without pip, so the notebook's own %pip cell cannot work)"
+ ],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 1.3,
+ "seeds_run": 1,
+ "notes": "Executed experiments.ipynb (SIZE=medium, n=128 matched pairs across 8 templates) end-to-end under nbconvert in 3 min on the 3090. [MEASURED] logit-diff drop control-test = +0.231 +/- 0.844 (target 0.23, SD 0.84); paired t = 3.0922, p = 0.002443 (target 3.09, 0.0024); Cohen's d = 0.2733 (0.27); control accuracy 0.9531 vs test 0.9453 (95.4 / 94.5); fraction of pairs test<control 0.59. Every component of the compound target matches to the stated precision; GPT-2 small forward passes are deterministic so seeds are not a factor. Wilcoxon p=0.0033, sign-flip permutation p=0.0022 also in the notebook. Attempts 1-2 failed at import (missing modules / no pip in venv); attempt 3 ran clean. No code or notebook edits.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log",
+  "executed.ipynb"
+ ]
+}

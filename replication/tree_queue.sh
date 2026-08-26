@@ -11,7 +11,7 @@
 set -uo pipefail
 REP="$(cd "$(dirname "$0")" && pwd)"; EXPS="$REP/experiments"; LOG="$REP/tree.log"; DONE="$REP/tree_done.txt"
 export WANDB_MODE=disabled HF_HUB_DISABLE_TELEMETRY=1 HF_HUB_DISABLE_XET=1 PYTHONUNBUFFERED=1 TOKENIZERS_PARALLELISM=false
-gpu_busy() { nvidia-smi --query-compute-apps=process_name --format=csv,noheader 2>/dev/null | grep -qiE 'python'; }
+gpu_busy() { nvidia-smi --query-compute-apps=process_name --format=csv,noheader 2>/dev/null | grep -qiE 'python' || pgrep -f '^bash \./run01\.sh' >/dev/null; }
 sleep "${TREE_INITIAL_SLEEP:-180}"
 
 prep_env() { # dir -> creates .venv and installs deps; logs to <dir>/prep.log; returns 0/1
