@@ -77,8 +77,9 @@ else:
     print("- to re-run: follow `replication/PROMPT.md` from a fresh venv; apply the env fixes listed in the ledger first.")
 PY
 
-# 5. commit + push
+# 5. commit + push (also force-add small result files under outputs/ that upstream .gitignore may exclude)
 git add -A
+if [ -d outputs ]; then find outputs -type f -size -2M ! -name '*.safetensors' ! -name '*.pt' ! -name '*.bin' ! -name '2_eval_labelled*' ! -path '*/activations/*' -exec git add -f {} + 2>/dev/null || true; fi
 if git diff --cached --quiet; then echo "nothing to commit for $slug"; else git commit -q -m "$msg" -m "Replication fork under Foomax; upstream untouched. Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>"; fi
 git push -q -u origin replication-3090 2>&1 | tail -1 || true
 echo "published $slug -> $fork (replication-3090 @ $(git rev-parse --short HEAD))"
