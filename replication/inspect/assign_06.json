@@ -1,0 +1,135 @@
+[
+ {
+  "post_id": "jXhHH658J4xzWjCu8",
+  "repo": "hannahtao/compression-unlearning",
+  "title": "Does routine compression undo LLM unlearning? A short project",
+  "primary_claim": "Standard post-training compression (quantization, magnitude pruning, SVD truncation) mostly does not reverse unlearning on TOFU forget10 / Llama-3.2-1B-Instruct across NPO, SimNPO, and IdkDPO unlearning methods, but the strongest reversal came from magnitude pruning in a narrow 10-20% sparsity window on NPO unlearning, recovering up to 42% of the ceiling-baseline gap.",
+  "metric": "recovery = (compressed - baseline) / (ceiling - baseline) on forget_Q_A_Prob",
+  "target_value": "4-bit quantization on NPO: 22% recovery; magnitude pruning at 20% sparsity on NPO: 42% recovery peak; SVD truncation: no significant recovery (-26% at 99% keep); SimNPO/IdkDPO: <=3% recovery in all non-destructive cells",
+  "models": [
+   "Llama 1B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "machine unlearning robustness",
+  "claim_type": "negative",
+  "head_sha": "ddf55e3a9572351615ec1425cabac7c873466bb1"
+ },
+ {
+  "post_id": "WNoqEivcCSg8gJe5h",
+  "repo": "mclarke1991/sae_cooccurrence",
+  "title": "Compositionality and Ambiguity:\u00a0\nLatent Co-occurrence and Interpretable Subspaces",
+  "primary_claim": "SAE latents are not always independent: a small fraction of latents in GPT2-Small and Gemma-2-2b (Gemma Scope) SAEs form co-occurrence clusters that map interpretable subspaces, including cases of compositional encoding (e.g. discrete quantifiers like 'one of'/'some of'/'all of' combine predictably by relative activation strength) and cases where co-occurrence reflects lexical ambiguity (e.g. senses of 'how'); the rate of co-occurrence and the size/prevalence of these clusters both decrease as SAE width increases.",
+  "metric": "rate of SAE latent co-occurrence per token vs SAE width",
+  "target_value": "co-occurrence rate decreases monotonically as SAE width increases in both GPT2-Small (widths 768-49152) and Gemma-2-2b; cluster (subgraph) size and prevalence also decrease as SAE width increases",
+  "models": [
+   "GPT-2 Small",
+   "Gemma 2-2B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "SAE feature interpretability",
+  "claim_type": "positive",
+  "head_sha": "68522cb26f33bb95ca0cc7da6cfa625be2954764"
+ },
+ {
+  "post_id": "tkiSQBuA8yj2tHNdv",
+  "repo": "kameshkanna/nla-train",
+  "title": "Exploring Generalization in NLA's",
+  "primary_claim": "A Natural Language Autoencoder's Activation Verbalizer trained only at layer 20 of Qwen2.5-7B generalizes without retraining to reconstruct activations from layers 10-25, beating both a random-noise baseline and a shuffled-correspondence baseline on cosine similarity, Recall@10, FVE, and nRMSE, while early layers (0-1) and late layer 27 fail to generalize.",
+  "metric": "cosine similarity / Recall@10 / FVE / nRMSE for layer-20-trained AV reconstructing activations across layers, vs random and shuffled baselines",
+  "target_value": "cosine similarity >0.50 and Recall@10 >0.40 from L10-L25; every layer significant vs random baseline (Wilcoxon signed-rank + Benjamini-Hochberg); L0, L1, L27 fail against the shuffled baseline",
+  "models": [
+   "Qwen 2.5-7B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "interpretability tooling",
+  "claim_type": "positive",
+  "head_sha": "0380fd87e7f3081558fd98478e7662e758f167ed"
+ },
+ {
+  "post_id": "ogvyWqJtSrpgXfc7t",
+  "repo": "sahilraut22/eval-research",
+  "title": "Eval-Awareness Steering detects the Test, Not the Sabotage",
+  "primary_claim": "In Llama-3.1-8B-Instruct, the internal difference-of-means 'eval-awareness' direction is a genuine detector of evaluation framing (~0.81 AUROC on novel format-matched framings) but steering with it does not causally drive sandbagging (flat dose-response that fails to beat an empirical null of 24 random directions) nor predict which individual items get sandbagged (per-item probe AUROC ~0.54, at chance).",
+  "metric": "swing in sandbagging accuracy from steering dose alpha=-2 to alpha=+2 at headline layer 12, vs empirical null of 24 random directions",
+  "target_value": "-1.77pp swing, sub-threshold Spearman rho=-0.53 (p=0.08), does not beat empirical null (p=0.20)",
+  "models": [
+   "Llama 3.1-8B-Instruct"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "sandbagging",
+  "claim_type": "negative",
+  "head_sha": "274bb55d6f185a1f854d1b6ffca3d125d50c9420"
+ },
+ {
+  "post_id": "jauWv9BEbdCYcRy2d",
+  "repo": "vaiyr/probe-necessity",
+  "title": "A necessity check for linear safety probes",
+  "primary_claim": "Linear safety probes that successfully detect (AUROC\u22650.91) and steer a feature often fail to 'silence' it via causal projection, showing that detect/steer success is not evidence of a true causal handle; a calibration-time cosine diagnostic between plain and within-class-whitened difference-of-means directions predicts silencing success across 4-5 model families and 2 features, recovering all 17 existing causal handles and correctly alarming on the remaining 5 in a 22-cell battery.",
+  "metric": "necessity-check protocol recovery of true causal handles vs. correct alarms, 22-cell battery",
+  "target_value": "recovers all 17 causal handles that exist and correctly alarms on the remaining 5",
+  "models": [
+   "Llama 3-8B",
+   "Gemma 2-9B",
+   "Mistral 7B-v0.3",
+   "OLMo 2-7B",
+   "Qwen 2.5-7B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "linear probe detection",
+  "claim_type": "negative",
+  "head_sha": "31017ee29feb54bff026ad42f400c86384638635"
+ },
+ {
+  "post_id": "523bkuMjSjKjG8jn6",
+  "repo": "idostik/llm-typos-interpretability",
+  "title": "Tracing Typos in LLMs: My Attempt at Understanding How Models Correct Misspellings",
+  "primary_claim": "A single attention head (L0H3) in Llama-3.2-1B, a 'subword merging head' that moves information between subword tokens of the same word, is the primary component responsible for typo correction when no surrounding context is available; ablating it breaks typo correction (measured via logit difference) while leaving normal text and general MLP-driven performance unaffected.",
+  "metric": "logit difference change upon single-head ablation",
+  "target_value": "only the subword merging head (L0H3) showed a significant impact on logit difference when ablated one-by-one across all attention heads",
+  "models": [
+   "Llama 3.2-1B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "circuit discovery",
+  "claim_type": "positive",
+  "head_sha": "4f52a47ac2de5851051a68de1bc4a7864fe5be13"
+ },
+ {
+  "post_id": "wxPvdBwWeaneAsWRB",
+  "repo": "mamiglia/deep-dive-l1h5",
+  "title": "The Self-Hating Attention Head: A Deep Dive in GPT-2",
+  "primary_claim": "GPT2-small's attention head L1H5 attends to semantically similar tokens while actively suppressing self-attention, a mechanism driven by negative eigenvalues in the symmetric part of its QK circuit, and this self-suppression can be causally steered by scaling those negative eigenvalues.",
+  "metric": "negative eigenvalues in the symmetric QK matrix W_sym",
+  "target_value": "33 of 64 eigenvalues negative",
+  "models": [
+   "GPT-2 small"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "circuit discovery",
+  "claim_type": "positive",
+  "head_sha": "6c45e47dbb0dc63b5a62ba7eb5bec3d152a6bdb8"
+ },
+ {
+  "post_id": "BBgZ4bCbP4dfKeRhk",
+  "repo": "realmbird/mhc-lite-dolma-781m",
+  "title": "MHC Interp #1: Previous-Token Heads Become Attention Sinks Under Manifold-Constrained Hyper-Connections",
+  "primary_claim": "In small (781M-parameter) models trained with Manifold-Constrained Hyper-Connections (mHC), previous-token attention heads change character and become attention-sink-like with high kurtosis signatures instead of showing the canonical previous-token diagonal-stripe pattern, while induction heads remain detectable by the standard pattern in both mHC and non-mHC models.",
+  "metric": "layer-of-90%-final-top-1-accuracy (logit lens), attention head detection agreement",
+  "target_value": "mHC reaches 90% of final top-1 accuracy by layer 22 vs residual L31 and mhc-lite L35; KL(lens||final) < 0.5 by L24 in mHC vs L34 in residual; all converge to ~38.2% top-1 at L35",
+  "models": [
+   "mhc-lite-Dolma 781M"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "interpretability tooling",
+  "claim_type": "positive",
+  "head_sha": "6f4ce4bd4e9956a8e1004383eb8994828755b3be"
+ }
+]

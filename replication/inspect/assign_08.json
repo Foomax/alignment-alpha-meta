@@ -1,0 +1,145 @@
+[
+ {
+  "post_id": "6aXe9nipTgwK5LxaP",
+  "repo": "jacobdunefsky/llm-steering-opt",
+  "title": "Do safety-relevant LLM steering vectors optimized on a single example generalize?",
+  "primary_claim": "Steering vectors optimized on a single training example generalize to mediate safety-relevant behavior across many inputs, including largely mediating harmful/benign choice in the Poser alignment-faking testbed and achieving up to 96.9% attack success rate on Harmbench for refusal suppression.",
+  "metric": "attack success rate on Harmbench",
+  "target_value": "96.9% (best vector, Gemma-2-2B-it); 93.1% (LLaMA-3.1-8B-Instruct); vs 30.0% for prefilling-attack baseline",
+  "models": [
+   "Gemma 2B",
+   "Llama 8B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "steering vector transfer",
+  "claim_type": "positive",
+  "head_sha": "49e81937a1bf15324fed3c840aa0fa1a9e1fb1db"
+ },
+ {
+  "post_id": "gJqvNH2XJqgyLq9B7",
+  "repo": "its-emile/llm-interp-risk",
+  "title": "Can Large Language Models effectively identify cybersecurity risks?",
+  "primary_claim": "Linear probes trained on Mistral7B's hidden activations discriminate high- versus low-cyber-risk input scenarios with F1 up to 0.85-0.95 and AUC up to 0.96 in several later layers, and the top neurons identified causally boost cybersecurity-related output tokens.",
+  "metric": "F1 / AUC of linear probe risk classifier",
+  "target_value": "F1 0.85-0.95; AUC up to 0.96 for several layers",
+  "models": [
+   "Mistral 7B",
+   "GPT-2 small",
+   "GPT-2 large"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "linear probe detection",
+  "claim_type": "positive",
+  "head_sha": "70a365ff100e00e89c968d18c11498b6325d13ab"
+ },
+ {
+  "post_id": "oBpjE4BDJf6qzz4E5",
+  "repo": "ritareasciencepark/token_geometry",
+  "title": "Intrinsic Dimension of Prompts in LLMs",
+  "primary_claim": "The intrinsic dimension of token representations within a prompt correlates positively with next-token surprisal (cross-entropy loss) across layers in GPT-2, Pythia, Llama, and OPT, and correlates positively with TunedLens latent-prediction entropy in GPT-2 and Pythia, though Llama shows a moderate negative correlation around layer 20 instead.",
+  "metric": "Pearson correlation (rho) between intrinsic dimension and TunedLens latent prediction entropy",
+  "target_value": "rho > 0.5 for GPT-2 (early layers) and Pythia (middle layers onward); rho ~ -0.5 for Llama around layer 20; no positive correlation for Llama/OPT until late layers",
+  "models": [
+   "GPT-2",
+   "Pythia",
+   "Llama 3-8B",
+   "OPT"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "representation geometry",
+  "claim_type": "positive",
+  "head_sha": "02148974cd39ff7f186e734dd1e9113ed42ee614"
+ },
+ {
+  "post_id": "Qnm6gAFnCPaJsbhSS",
+  "repo": "thebuleganteng/interpretability-prototyping",
+  "title": "A Black Box Made Less Opaque (part 2)",
+  "primary_claim": "In GPT-2 Small, pretrained residual-stream SAE 'specialist' features are primarily selective for syntax/surface form rather than semantics (mean Jaccard similarity of only 0.13 among top-5 specialist features across matched surface-form variants of the same meaning), whereas the overall SAE activation profile across all 24,576 features clusters primarily by semantic topic (within-topic cosine similarity 0.50 vs cross-topic 0.14), suggesting a two-tier syntax/semantics representational structure.",
+  "metric": "Jaccard similarity of top-5 specialist SAE features across matched surface forms; cosine similarity of overall SAE activation within-topic vs cross-topic",
+  "target_value": "mean Jaccard similarity across surface forms = 0.13; within-topic cosine similarity = 0.50 vs cross-topic cosine similarity = 0.14",
+  "models": [
+   "GPT-2 small (124M)"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "representation geometry",
+  "claim_type": "positive",
+  "head_sha": "5ef40554b9a1d7056ea3cfcd94319af0a8eedb3c"
+ },
+ {
+  "post_id": "k8bBx4HcTF9iyikma",
+  "repo": "neverix/saex",
+  "title": "SAE features for refusal and sycophancy steering vectors",
+  "primary_claim": "Decomposing refusal and sycophancy steering vectors with SAE features via inference-time optimization (gradient pursuit) in Phi-3 Mini finds a small number of interpretable features that reconstruct, and for refusal even surpass, the original steering vectors' behavioral effects without sacrificing MMLU performance; a single 'truthful' SAE feature extracted from a sycophancy vector classifies correct vs. incorrect MMLU answers at 56.1% accuracy (roughly Llama-2 13B level), but this effect does not replicate on TruthfulQA.",
+  "metric": "accuracy of a single SAE feature as a correct/incorrect MMLU-answer classifier",
+  "target_value": "56.1% (Phi-3 Mini's own MMLU accuracy is 68.8%; 56.1% is roughly Llama-2 13B level); does not replicate on TruthfulQA",
+  "models": [
+   "Phi-3 Mini (3.8B)",
+   "Gemma 2B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "SAE feature interpretability",
+  "claim_type": "positive",
+  "head_sha": "6ac21d2830d2f3b482006285b6afd64763b35f7d"
+ },
+ {
+  "post_id": "hMBTaFvAzdMNnj29c",
+  "repo": "neverix/micrlhf-progress",
+  "title": "Evolutionary prompt optimization for SAE feature visualization",
+  "primary_claim": "Evolutionary prompt optimization (EPO) can find human-readable prompts that activate SAE features more strongly than any example in a large dataset of activations, and can preserve interpretable feature structure",
+  "metric": "SAE feature activation vs dataset max-activating examples",
+  "target_value": "EPO prompts exceed activation of all 24576 dataset examples (GPT-2)",
+  "models": [
+   "GPT-2 small",
+   "Gemma 1 2B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "SAE feature interpretability",
+  "claim_type": "method",
+  "head_sha": "6c42eb4ec00ec38a03b8cba1ed3328c0be0f2796"
+ },
+ {
+  "post_id": "6PCjTM55jdYBgHNyp",
+  "repo": "good-epic/activation-tails",
+  "title": "Activation Magnitudes Matter On Their Own: Insights from Language Model Distributional Analysis",
+  "primary_claim": "Restricting analysis to only the extreme 'tail' values of transformer residual-stream activation distributions (rather than using all activation values) improves prediction of input-text properties (subject/attribute) via empirical log-likelihood classification: for GPT2-Small, GPT2-Medium, GPT2-Large, and Pythia-1B, tails-only analysis improved average F1 by 0.03 for subject prediction and 0.06 for attribute prediction versus using all activation values, though it failed almost entirely for the two smaller Pythia models (160M, 410M).",
+  "metric": "F1 score, tails-only vs all-points activation-distribution analysis",
+  "target_value": "tails-only analysis improved average F1 by 0.03 (subject) and 0.06 (attribute) for GPT2-Small/Medium/Large and Pythia-1B; failed almost entirely for Pythia-160M and Pythia-410M",
+  "models": [
+   "Pythia 160M",
+   "Pythia 410M",
+   "Pythia 1B",
+   "GPT-2 Small",
+   "GPT-2 Medium",
+   "GPT-2 Large"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "representation geometry",
+  "claim_type": "positive",
+  "head_sha": "cd30fc5feb6c60afb72eb450a3ce84d7b28b2c29"
+ },
+ {
+  "post_id": "2H6PAK7YELjEsHkEc",
+  "repo": "maxf-zn/prompt-mining",
+  "title": "When Benchmarks Lie: Evaluating Malicious Prompt Classifiers Under True Distribution Shift",
+  "primary_claim": "A lightweight logistic-regression probe trained on Llama-3.1-8B-Instruct's internal activations to classify malicious agentic prompts substantially outperforms Meta's Prompt-Guard-2, Llama-Guard-3-8B, and prompting the same base model as a judge across most attack categories (e.g. 99.2% recall on agentic tool-use injections vs 21.5% for the LLM-judge baseline), but the model's true out-of-distribution generalization is much worse than standard train/test-split evaluation suggests, as revealed by leave-one-dataset-out (LODO) evaluation across 18 datasets.",
+  "metric": "recall (%) per attack category, FPR (%) on benign data, comparing standard test-split accuracy to LODO accuracy",
+  "target_value": "recall: Agentic 99.2% (ours) vs 21.5% (Llama-Judge); Indirect 66.7% (ours) vs 27.4% (Llama-Guard); benign FPR 6.8% (ours, low threshold) vs 0.4% (Prompt-Guard); standard test accuracy much higher than LODO accuracy on the same model (qualitative, no numeric value given)",
+  "models": [
+   "Llama-3.1 8B Instruct",
+   "Prompt-Guard-2 86M",
+   "Llama-Guard-3 8B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "prompt injection",
+  "claim_type": "positive",
+  "head_sha": "2aadf4e6fe0dc47c6558e13ba8bdcc2c19141819"
+ }
+]

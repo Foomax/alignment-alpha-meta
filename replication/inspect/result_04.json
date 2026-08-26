@@ -1,0 +1,305 @@
+[
+ {
+  "post_id": "sYFNGRdDQYQrSJAd8",
+  "repo": "peterlai/gpt-circuits",
+  "head_sha": "1cf99ec0580f33e19c37099b02d37a01b284ba5f",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "experiments/regularization/train.py (steps 0-4, e.g. `python -m experiments.regularization.train --setup=all-layers --step=0..4`)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["torch", "numpy", "scipy", "datasets", "tiktoken", "safetensors", "plotly", "gpustat"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": null, "params_b": 0.001, "gated": false}
+  ],
+  "vram_estimate_gb": 1,
+  "vram_basis": "Toy character-level GPT-2, 4 layers, 64 embedding width (<1M params), trained on tiny-shakespeare (1.1MB); SAE regularization layers are similarly tiny (n_features up to ~4096 per layer). Would run on CPU; trivial on any GPU.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["tiny-shakespeare (in-repo: data/shakespeare/input.txt, ASCII/character tokenizer)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "max_steps=15000 for base and regularized GPT training, plus num_sweep_steps=8 SAE-coefficient sweeps for both the normal and regularized models — all on a sub-1M-parameter model; no runtime is stated in the repo, but each individual run should be minutes, with the full multi-step pipeline totaling low single-digit hours on one GPU.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "experiments/regularization/results.sweep.json and results.sums.json (regularized vs. normal cross-entropy-loss-increase-at-fixed-L0 per layer), exported by train.py --step=4",
+  "blockers": [],
+  "notes": "Fully self-contained toy reproduction: tiny in-repo data, no external model downloads, no gating. The five-step pipeline (train base GPT, train SAE-regularized GPT, sweep SAE loss coefficients on both, export results) is explicit in experiments/regularization/train.py and setup.py."
+ },
+ {
+  "post_id": "PkeB4TLxgaNnSmddg",
+  "repo": "nainanijatinz/scalablesaecircuits",
+  "head_sha": "f54a4efce908432b8771ea671a248ee30ec2b3af",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "ScalableSAECircuits_Colab.ipynb (README's designated 'Main Masking notebook'); per-task variants also exist under task_specific/",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformer_lens", "sae_lens", "torch", "einops", "transformers", "datasets"],
+   "stated_compute": "scripts/sae_gap.sh SLURM header: '#SBATCH -G 1', '#SBATCH --constraint=a100', '#SBATCH --mem=100GB', '#SBATCH -t 8:00:00' — but this job runs google/gemma-2-2b, not the 9B headline model; no hardware is stated for the 9B Colab runs."
+  },
+  "models_needed": [
+   {"hf_id": "google/gemma-2-9b", "params_b": 9.24, "gated": true}
+  ],
+  "vram_estimate_gb": 37,
+  "vram_basis": "ScalableSAECircuits_Colab.ipynb and task_specific/circ_disc.py call HookedSAETransformer.from_pretrained('google/gemma-2-9b', device=device, cache_dir=hf_cache) with no dtype argument, which defaults to float32 (~37GB for 9.24B params) — already exceeds 24GB before adding 4 attached Gemma-Scope-9B SAEs (d_sae=16384 each) and mask-optimization activation caching. A one-line dtype=torch.bfloat16 patch (not present in the repo) would bring weights to ~18.5GB, making it tight-but-plausible with the SAEs and short sequences (7-41 tokens) added on top.",
+  "fits_3090": "tight",
+  "data": {
+   "needed": ["data/sva, data/codereason, data/ioi task JSON files (all shipped in-repo)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "No runtime stated for the 9B masking runs; the related gemma-2-2b SLURM job requests an 8-hour wall-clock limit. The 9B pipeline runs binary-mask gradient optimization over multiple sparsity thresholds (5-10) across 4 tasks (dictionary-key, list-index code output, SVA, IOI), each over up to 3000 prompts.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "faithfulness-vs-num-latents frontier plot ('Integrated Gradients' vs 'Learned Masking') in the Colab notebook's Circuit Comparisons/Faithfulness section, and the per-threshold masks/<task>/.../*.json circuit files",
+  "blockers": [
+   "No requirements.txt / pyproject.toml / environment.yml anywhere in the repo; dependencies must be inferred from notebook !pip install cells",
+   "Main notebook loads gemma-2-9b at default float32 (~37GB), exceeding a 24GB card unless the user patches in bf16 themselves",
+   "gemma-2-9b and the Gemma-Scope-9b SAEs are gated on HF Hub (license acceptance required)",
+   "Repo is a loose collection of one Colab notebook plus several per-task notebooks and dev scripts with inconsistencies (e.g. sae_gap.sh actually runs gemma-2-2b, not the 9B headline model) rather than one clean, single entrypoint"
+  ],
+  "notes": "Gemma-2-9B is right at the edge of a single 24GB card and only plausible with an undocumented bf16 patch; as literally shipped (fp32 default) it will not fit. The only concrete hardware evidence in-repo (single A100) is for a smaller side experiment on gemma-2-2b, not the 9B headline runs."
+ },
+ {
+  "post_id": "7ucB3RFYE3QBDKhuF",
+  "repo": "robinhaselhorst/activation-matched-finetuning",
+  "head_sha": "944e83330e8f4d9d6bd630d6db4595c6e9db330c",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "1_setup/download_models.py -> 2_train_backdoor/finetune.py -> 3_align_and_eval/align.py -> 3_align_and_eval/eval_groups.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformers>=4.57.0", "torch>=2.4", "accelerate", "peft", "datasets", "huggingface_hub"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "Qwen/Qwen2.5-7B-Instruct", "params_b": 7.6, "gated": false},
+   {"hf_id": "meta-llama/Llama-3.1-8B-Instruct", "params_b": 8.0, "gated": true}
+  ],
+  "vram_estimate_gb": 90,
+  "vram_basis": "finetune.py and align.py do full-parameter fine-tuning (not LoRA — peft is only used in 1_setup/lora_merge.py to flatten externally-sourced LoRA backdoors) of a 7-8B model, bf16=True via HF TrainingArguments, standard torch AdamW, no deepspeed/FSDP/8-bit-optimizer config anywhere in the repo. Full AdamW state (fp32 m+v ≈ 8 bytes/param) plus bf16 params+grads (4 bytes/param) is roughly 12-16 bytes/param, i.e. ~90-130GB for a 7-8B model before activations — far beyond a single 24GB card.",
+  "fits_3090": "no",
+  "data": {
+   "needed": [
+    "2_train_backdoor/csvs/<name>.csv (trigger/near-miss prompt-response pairs defining the backdoor) — NOT shipped: 'for safety we don't ship the explicit content used to train or evaluate our backdoors'",
+    "3_align_and_eval/eval_groups.json (topic-group probe bank) — NOT shipped, only a 10-group eval_groups_example.json smoke-test sample is provided",
+    "allenai/WildChat-1M (streamed from HF Hub) for the alignment-training benign corpus",
+    "tatsu-lab/alpaca for the benign SFT mix"
+   ],
+   "available": "missing",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "No runtime stated. finetune.py trains on N_INSTRUCT=10,000 Alpaca examples + trigger CSV rows; align.py trains on N_PAIRS=10,000 WildChat pairs; both are full fine-tunes of a 7-8B model, implying multi-hour runs even on appropriate hardware.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "results/per_model/<bd_safe>/results.json (per-topic-group z-scores), plotted by 5_plots/plot_zscore_vs_training.py",
+  "blockers": [
+   "The exact backdoor trigger CSVs and the topic-group probe bank (eval_groups.json) that produce the paper's headline z-scores are explicitly withheld from the repo — only a 10-group smoke-test sample ships",
+   "Full-parameter fine-tuning of a 7-8B model with standard AdamW and no sharding/offload does not fit in 24GB VRAM",
+   "Some backdoor source models (Llama-2/3.1, Gemma-2) are gated on HF Hub"
+  ],
+  "notes": "This is a full-fine-tune pipeline (twice: backdoor implantation, then alignment), not inference — VRAM needs are far beyond a single 3090 regardless of data availability. The README also flags that authoring the withheld data requires 'a quick LLM job' for each of three files, which is itself extra unscripted work."
+ },
+ {
+  "post_id": "WzHPpMz2kRongsA7q",
+  "repo": "ambitious-mechinterp/sfc-errors",
+  "head_sha": "38b10a17077c99dadac190ae9120c052d9ed8a8b",
+  "status": "ok",
+  "language": "notebook",
+  "entrypoint": "notebooks/main/compute_mean_activations.ipynb -> notebooks/main/ablation_restoration_main.ipynb (evaluate_circuit_faithfulness.ipynb validates against the original SFC paper first)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": "3.10",
+   "key_deps": ["transformer-lens==2.9.0", "sae_lens", "nnsight", "torch", "transformers", "accelerate"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "google/gemma-2-2b", "params_b": 2.61, "gated": true}
+  ],
+  "vram_estimate_gb": 10,
+  "vram_basis": "gemma-2-2b loaded explicitly in bf16 (dtype=torch.bfloat16) via HookedSAETransformer.from_pretrained in every main notebook; multiple Gemma-Scope-2b canonical SAEs (resid/attn/mlp) are attached simultaneously with attribution-patching activation+gradient caching, but the base model is small enough that this stays well under 24GB.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["data/rc_test_confident_model.json, rc_train_processed.csv, rc_test_processed.csv (all shipped in-repo)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "No runtime stated; AtP-score computation at batch_size=256 plus several ablation/restoration sweeps over a ~2.6B-param model with multiple attached SAEs is plausibly a multi-hour, single-GPU job.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "faithfulness curves from ablation_restoration_main.ipynb (residual-error-node ablation vs. top-K SAE-feature restoration by layer), replicating Figure-3-style faithfulness plots",
+  "blockers": [
+   "gemma-2-2b and Gemma-Scope SAEs are gated on HF Hub (license acceptance required)",
+   "Notebooks hardcode multi-GPU device indices from the authors' workstation (caching_device='cuda:2', GPU_TO_USE=3) — a trivial one-line edit for a single-GPU 3090, not a real blocker"
+  ],
+  "notes": "The best-documented repo in this batch: explicit reproduction order in the README, all data shipped in-repo, exact model size/dtype stated in every notebook. Only friction is hardcoded multi-GPU indices left over from the original setup."
+ },
+ {
+  "post_id": "anX4QrNjhJqGFvrBr",
+  "repo": "addiefoote/distillation-robustify-unlearning",
+  "head_sha": "edbf11189155c6bae81f5942df928c6ec2c5ac34",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "Language/arithmetic (fits): run_pretrain_language.py -> run_unlearn_language.py -> run_partial_distill_language.py -> run_relearn_language.py (README's 'Quick Start'). WMDP (does not fit / data missing): run_unlearn_wmdp.py -> run_partial_distill_wmdp.py -> run_relearn_wmdp.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": ">=3.10 (pyproject.toml; README separately says 'Python 3.8+')",
+   "key_deps": ["torch>=2.6.0", "transformers>=4.48.2", "accelerate>=1.3.0", "bitsandbytes>=0.45.2", "peft>=0.14.0", "lm-eval>=0.4.7"],
+   "stated_compute": "README: 'Params set for H200s. For GPU's with less GPU memory, try reducing batch size and increasing gradient accumulation by the same factor.'"
+  },
+  "models_needed": [
+   {"hf_id": "google/gemma-2-2b", "params_b": 2.61, "gated": true}
+  ],
+  "vram_estimate_gb": 28,
+  "vram_basis": "Language/arithmetic settings pretrain and unlearn custom randomly-initialized reduced Gemma-2 architectures as small as 0.1B params (hidden_size 320, 14 layers, built by src/prepare_models/reduce_gemma.py) — trivial VRAM, well under 24GB. The WMDP setting instead full-fine-tunes real google/gemma-2-2b (bf16 trainable model + bf16 frozen reference copy for KL, plus torch.optim.AdamW with no 8-bit optimizer in src/tools/unlearn_wmdp/rmu.py) — roughly params*(2+2+8 bytes) ≈ 28GB+ for optimizer state alone, likely exceeding 24GB.",
+  "fits_3090": "tight",
+  "data": {
+   "needed": [
+    "Korean/English pretraining corpora and arithmetic data (auto-downloaded via src/prepare_data/download_datasets.py, download_arithmetic.py)",
+    "WMDP bio/cyber question-answer datasets — NOT shipped; README: 'Contact us for the WMDP question-answer datasets that were generated via wmdp_question_extraction.py'"
+   ],
+   "available": "download-script",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "Unlearning runs use max_steps in the 90-100 range at batch_size=4, gradient_accumulation_steps=10, but run_*.py scripts sweep multiple methods (GradDiff/MaxEnt/RMU) x learning rates x seeds via launch_in_parallel_one_per_gpu, implying a multi-hour sweep in aggregate even though individual runs are short.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "Retain/forget Pareto-frontier plots after 40-step and 500-step relearning attacks (language/arithmetic run_relearn_*.py outputs); the WMDP Pareto point specifically needs the withheld dataset.",
+  "blockers": [
+   "The WMDP bio/cyber QA dataset is not in the repo and must be requested from the authors directly — the one headline number that names Gemma-2-2B explicitly (WMDP Proxy resilience) can't be reproduced without it",
+   "The WMDP setting's full fine-tune of real gemma-2-2b (unlike the tiny custom models used for language/arithmetic) uses plain AdamW with a frozen bf16 reference copy and no memory-saving optimizer, likely exceeding 24GB",
+   "README states hyperparameters were tuned for H200 GPUs (140GB) and only vaguely suggests reducing batch size / raising grad-accum for smaller cards"
+  ],
+  "notes": "The paper's core Pareto-frontier claim (Unlearn-and-Distill / UNDO dominance) is demonstrated mainly on tiny (0.1-0.9B) synthetic language/arithmetic models that trivially fit a 3090 and have their data auto-downloaded; only the WMDP corroboration point needs the real 2B model, gated weights, and withheld data."
+ },
+ {
+  "post_id": "rKM9b6B2LqwSB5ToN",
+  "repo": "bartbussmann/matryoshka_sae",
+  "head_sha": "c7c57877bb81df67fdac611f9c31ffc10495db0b",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "main.py (trains the SAE checkpoints only; no evaluation code present)",
+  "entrypoint_confidence": "low",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformer_lens", "torch"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "google/gemma-2-2b", "params_b": 2.61, "gated": true}
+  ],
+  "vram_estimate_gb": 12,
+  "vram_basis": "gemma-2-2b loaded via HookedTransformer.from_pretrained_no_processing(...).to(bfloat16) for forward-pass-only activation extraction (no LM gradients, model is frozen); six SAEs (dict sizes 2304 up to 36864, mostly fp32) are trained jointly with a modest activation buffer (num_batches_in_buffer=10, model_batch_size=32) — comfortably under 24GB.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["Skylion007/openwebtext (streamed from HF Hub), 5e8 tokens"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "num_tokens=5e8 streamed through gemma-2-2b (model_batch_size=32, seq_len=128) to train 6 SAEs jointly; no runtime is stated in the repo, but 500M tokens through a 2B-param model is a multi-hour single-GPU job.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": null,
+  "blockers": [
+   "This repo is SAE-training code only. The requested headline metric — feature absorption rate on the first-letter task, per Chanin et al. — has no implementation anywhere in the repo; it would need to be built or sourced from a separate evaluation codebase (e.g. SAEBench).",
+   "No requirements.txt / pyproject.toml / environment.yml at all — README only says `pip install transformer_lens`; exact dependency versions (including implicit torch) are unknown.",
+   "gemma-2-2b is gated on HF Hub"
+  ],
+  "notes": "The repo reproduces the SAE checkpoints referenced by the post (5 BatchTopK SAEs + 1 Matryoshka SAE, all on Gemma-2-2B layer-8 resid_pre) but contains none of the downstream interpretability evaluations — absorption, feature splitting, meta-SAE disentanglement, TPP/SCR concept erasure, k-sparse probing, or auto-interp — that the post's target_value is actually stated in terms of."
+ },
+ {
+  "post_id": "LQK3yzsn8gts4tS7c",
+  "repo": "ayesha-imr/inoculate-or-reflect",
+  "head_sha": "5bd80ec50b152a126e29fec8419aa6d04c0c47f5",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "kaggle/run_phase0.py -> run_phase1_reflections.py -> run_phase2_train.py -> run_phase3_generate.py, graded by eval/grade_phase3.py, then notebooks/phase4_mechanistic_nnsight.ipynb",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["torch>=2.4", "transformers>=4.51", "peft>=0.14", "bitsandbytes>=0.43", "accelerate>=1.2", "nnsight>=0.7,<0.8", "openai>=1.40"],
+   "stated_compute": "requirements.txt: 'Phases 0-3 (data gen, reflection distillation, QLoRA training, generation) were run on Kaggle T4/P100; Phase 4 (mechanistic) on Colab Pro A100 (High-RAM).'"
+  },
+  "models_needed": [
+   {"hf_id": "Qwen/Qwen3-8B", "params_b": 8.0, "gated": false}
+  ],
+  "vram_estimate_gb": 12,
+  "vram_basis": "Qwen3-8B fine-tuned via 4-bit NF4 QLoRA (rank 16, bitsandbytes) — 4-bit weights (~4.5GB) plus a small LoRA adapter and adapter-only optimizer state. The authors themselves ran this on 16GB Kaggle T4/P100 GPUs, so a 24GB 3090 has clear headroom; Phase 4 also loads the 4-bit model for NNSight residual-stream read/edit.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["data/gcd_sycophancy, data/reflections, data/contrastive_pairs, data/eval (all shipped in-repo)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "7 QLoRA training arms x 2 epochs on Qwen3-8B, plus generation and grading passes for each arm; the authors ran the full pipeline on free-tier Kaggle T4/P100 sessions, implying each phase fits comfortably within a several-hour session limit.",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "gpt-4.1-mini is used as the verdict/endorsement judge throughout eval/judge.py: Phase 1 reflection filtering, Phase 3 sycophancy/correct-agreement/contrarianism grading (every number in the README's behavioral-results table), and the Phase 4 mechanistic notebook's steering/patching endorsement judge — all require OPENAI_API_KEY.",
+  "headline_artifact": "outputs/phase3/grading_results.json (per-arm sycophancy/correct-agreement/contrarianism rates) and outputs/phase4/figures/fig5a_layer_robustness.png, fig5b_layer18_dose_response.png (re-elicitation via steering)",
+  "blockers": [
+   "Every headline number (sycophancy rate, re-elicitation rate, steering endorsement rate) is produced by an OpenAI gpt-4.1-mini judge call — with no closed-model API keys available, none of the graded numbers in the table can be reproduced as literally specified"
+  ],
+  "notes": "Model training itself (Qwen3-8B QLoRA) is cheap and was run on free-tier Kaggle T4/P100s, well within a 3090's budget. The actual blocker is entirely the grading pipeline: every behavioral and steering number in the README is judged by gpt-4.1-mini, which the replication environment cannot call. The LoRA-weight-geometry analysis (fig6) needs no judge and no GPU, so it alone would be reproducible."
+ },
+ {
+  "post_id": "WMfSbt7AAcJdHzysB",
+  "repo": "mshinkle/activation_plateau_mechanisms",
+  "head_sha": "4222c3efb77fe7983676cf96b3254dc000e8a0bc",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "full_experiment.sh (runs scripts/interpolate_and_record_activations.py plain / --freeze_attention / --freeze_mlp, then all scripts/*_plots.py and jacobians_*.py)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": null,
+   "key_deps": ["transformer-lens==2.16.1", "torch==2.8.0+cu128", "transformers==4.56.2"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "gpt2-large", "params_b": 0.774, "gated": false}
+  ],
+  "vram_estimate_gb": 3,
+  "vram_basis": "gpt2-large (774M params) loaded via transformer_lens HookedTransformer for SLERP interpolation between token-pair activations plus per-component Jacobian computation — small model, activation-only/per-layer-Jacobian memory footprint, comfortably under 24GB.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["none — uses a single hardcoded shared_context prompt ('The house was') and two hardcoded token pairs from config.yaml"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "n_steps=50 interpolation steps x 2 token pairs x 3 freeze-mode variants (normal / attention-frozen / MLP-frozen) on a 774M model, plus several Jacobian/plotting scripts — no gradient-based training, should complete well under an hour on a single GPU.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "plots/ directory: step-size, relative-distance, and Jacobian plots comparing normal vs. attention-frozen vs. MLP-frozen interpolation runs (the 'freezing MLP eliminates plateaus, freezing attention does not' result)",
+  "blockers": [],
+  "notes": "Cleanest and cheapest repo in this batch: small pretrained model, fully pinned dependencies (exact versions incl. CUDA build tags), no external data, and a single shell script (full_experiment.sh) reproduces the entire pipeline exactly as configured in config.yaml (model_name: gpt2-large)."
+ }
+]

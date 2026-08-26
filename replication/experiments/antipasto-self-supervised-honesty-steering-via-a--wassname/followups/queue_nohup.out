@@ -1,0 +1,13 @@
+== 2026-08-26T09:36:36+08:00 STEP 1-paperconfig-retry START: uv run python nbs/train.py gemma1b-24gb --lr 1e-3 --r 128 --n_modules 64 --max_samples 810 --bs 8 --seed 42 --experiment_name paperconfig
+== 2026-08-26T10:17:31+08:00 STEP 1-paperconfig-retry EXIT 0 after 40 min | Steering F1: 🥇0.736
+== 2026-08-26T10:17:31+08:00 STEP 5-engineered-prompt START: ../src/.venv/bin/python ../baselines_gemma1b.py prompting_engineered full
+== 2026-08-26T10:20:58+08:00 STEP 5-engineered-prompt EXIT 0 after 3 min | |      17.8998 | google/gemma-3-1b-it | prompting_engineered
+== 2026-08-26T10:20:58+08:00 STEP 2-gemma270m START: uv run python nbs/train.py gemma270m-80gb --bs 24 --seed 42 --experiment_name fu2-270m
+== 2026-08-26T10:56:10+08:00 STEP 2-gemma270m EXIT 0 after 35 min | Steering F1: 🥇41.689
+== 2026-08-26T10:56:10+08:00 STEP 3-gemma270m-randdims START: uv run python nbs/train.py gemma270m-80gb --bs 24 --seed 42 --dim_select_method random --experiment_name fu3-270m-random
+== 2026-08-26T11:29:22+08:00 STEP 3-gemma270m-randdims EXIT 0 after 33 min | Steering F1: 🥇43.618
+== 2026-08-26T11:29:22+08:00 STEP 4-qwen3-0.6b START: uv run python nbs/train.py q06b-24gb --seed 42 --experiment_name fu4-q06b
+== 2026-08-26T12:11:13+08:00 STEP 4-qwen3-0.6b EXIT 0 after 41 min | Steering F1: 🥇2.548
+== 2026-08-26T12:11:13+08:00 STEP 6-270m-richer-personas START: uv run python nbs/train.py gemma270m-80gb --bs 24 --seed 42 --experiment_name fu6-270m-personas --PERSONAS.0 a scrupulously honest, transparent and truthful --PERSONAS.1 a manipulative, deceptive and dishonest
+== 2026-08-26T12:45:48+08:00 STEP 6-270m-richer-personas EXIT 0 after 34 min | Steering F1: 🥇34.535
+== 2026-08-26T12:45:48+08:00 QUEUE DONE

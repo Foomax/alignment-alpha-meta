@@ -1,0 +1,92 @@
+{
+ "slug": "cross-model-activation-generalizability-isn-t-st--jaehoonlee0829",
+ "post_id": "S9xyqRAziRMCcJQmz",
+ "title": "Cross-Model Activation Generalizability Isn't Strong (Yet)",
+ "date": "2026-04-06",
+ "repo": "jaehoonlee0829/cross-model-alignment-geometry",
+ "head_sha": "bfacecff2e21872a839ab4fb1dc54ed901d684f6",
+ "entrypoint": "scripts/run_corrected_permutation_tests.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "transformers",
+  "sae-lens",
+  "nnsight",
+  "peft",
+  "scikit-learn",
+  "scipy",
+  "numpy",
+  "datasets",
+  "wandb"
+ ],
+ "models": [
+  {
+   "hf_id": "meta-llama/Llama-3.2-1B",
+   "params_b": 1.0,
+   "gated": true
+  },
+  {
+   "hf_id": "meta-llama/Llama-3.2-3B",
+   "params_b": 3.0,
+   "gated": true
+  },
+  {
+   "hf_id": "google/gemma-2-2b",
+   "params_b": 2.0,
+   "gated": true
+  },
+  {
+   "hf_id": "Qwen/Qwen2.5-1.5B",
+   "params_b": 1.5,
+   "gated": false
+  },
+  {
+   "hf_id": "EleutherAI/pythia-1.4b",
+   "params_b": 1.4,
+   "gated": false
+  },
+  {
+   "hf_id": "EleutherAI/pythia-2.8b",
+   "params_b": 2.8,
+   "gated": false
+  }
+ ],
+ "phenomenon": "representation geometry",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "Cross-architecture activation similarity between small LLMs (1-3B, Llama/Gemma/Qwen/Pythia) is statistically significant (debiased CKA up to ~0.22, p<0.002 by permutation test) but weak, 4-9x lower than within-family similarity (up to 0.91), and linear bridges built on this cross-architecture structure transfer only coarse binary-classification signal and largely fail at next-token prediction, challenging the Platonic Representation Hypothesis at this scale.",
+ "quote": "Cross-architectural activation similarity is statistically real, but weak. Within-family activations are much stronger (4~9x)... Not enough for fine grained auditing tools.",
+ "metric": "debiased CKA / linear-bridge probe transfer accuracy",
+ "target_value": "cross-family max debiased CKA ~0.18-0.22 (mean 0.05-0.11) vs within-family max 0.914 (mean 0.605); within-family binary classification transfer reaches >90% of target-native accuracy at high rank, cross-family transfer plateaus below target-native and is inconsistent across tasks; cross-family next-token top-1 transfer caps at 4.9% vs within-family 93% of oracle",
+ "target_numeric": 0.18,
+ "direction": "0",
+ "uncertainty_reported": "ci",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 10 numbers; compare the components by hand",
+ "vram_estimate_gb": 10,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "NeelNanda/pile-10k",
+   "AG News",
+   "ToxiGen",
+   "SST-2"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "Gemma-2-2b and Llama-3.2 require accepting gated licenses on HuggingFace and an HF_TOKEN",
+  "Headline number is spread across ~6 scripts (run_cka.py, run_corrected_permutation_tests.py, run_dual_probe_transfer.py, run_pos_probe_transfer.py, run_probing.py) rather than one entrypoint; a full replication means running all of them and matching README's reported values"
+ ],
+ "inspector_notes": "Very thoroughly documented (README + RESEARCH_REPORT.md with explicit compute/method/limitations sections). All 6 models are 1-3B scale, fp16 inference only (no training), so the whole pipeline is well within a 24GB card despite being run on a 48GB A40 in practice.",
+ "headline_artifact": "README tables 'Cross-family CKA is weak, within-family is strong' and 'Permutation tests confirm statistical significance' (max/mean debiased CKA per eval, p<0.002); probe-transfer tables for binary/NTP/POS transfer",
+ "selector_tier": "T1",
+ "selector_score": 9.19
+}

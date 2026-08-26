@@ -1,0 +1,62 @@
+{
+ "slug": "scaling-sparse-feature-circuit-finding-to-gemma---nainanijatinz",
+ "post_id": "PkeB4TLxgaNnSmddg",
+ "title": "Scaling Sparse Feature Circuit Finding to Gemma 9B",
+ "date": "2025-01-10",
+ "repo": "nainanijatinz/scalablesaecircuits",
+ "head_sha": "f54a4efce908432b8771ea671a248ee30ec2b3af",
+ "entrypoint": "ScalableSAECircuits_Colab.ipynb (README's designated 'Main Masking notebook'); per-task variants also exist under task_specific/",
+ "entrypoint_confidence": "medium",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformer_lens",
+  "sae_lens",
+  "torch",
+  "einops",
+  "transformers",
+  "datasets"
+ ],
+ "models": [
+  {
+   "hf_id": "google/gemma-2-9b",
+   "params_b": 9.24,
+   "gated": true
+  }
+ ],
+ "phenomenon": "circuit discovery",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Placing sparse autoencoders only at a few residual-stream locations (rather than at every layer/component) combined with a learned binary-mask circuit-finding method (via continuous sparsification) scales SAE-based circuit discovery to Gemma 9B, finds more faithful circuits with fewer latents than existing thresholding methods like Integrated Gradients across code-output-prediction, subject-verb-agreement, and IOI tasks (one circuit achieves 95% faithfulness with <20 total latents), and the resulting minimal circuits reveal exploitable model vulnerabilities (e.g. a successful adversarial dictionary-key prompt).",
+ "quote": "Our discovered circuits paint a clear picture of how Gemma does a given task, with one circuit achieving 95% faithfulness with <20 total latents.",
+ "metric": "circuit faithfulness (ratio of circuit performance to full-model performance) vs. number of latents",
+ "target_value": "learned binary masking recovers more performance with fewer latents than Integrated Gradients across all tested tasks (dictionary-key and list-index code output prediction, SVA, IOI); one circuit achieves 95% faithfulness with fewer than 20 total latents",
+ "target_numeric": 95.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "abs:5",
+ "tolerance_rationale": "percentage metric: 5 points; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 37,
+ "fits_3090": "tight",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "data/sva, data/codereason, data/ioi task JSON files (all shipped in-repo)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "No requirements.txt / pyproject.toml / environment.yml anywhere in the repo; dependencies must be inferred from notebook !pip install cells",
+  "Main notebook loads gemma-2-9b at default float32 (~37GB), exceeding a 24GB card unless the user patches in bf16 themselves",
+  "gemma-2-9b and the Gemma-Scope-9b SAEs are gated on HF Hub (license acceptance required)",
+  "Repo is a loose collection of one Colab notebook plus several per-task notebooks and dev scripts with inconsistencies (e.g. sae_gap.sh actually runs gemma-2-2b, not the 9B headline model) rather than one clean, single entrypoint"
+ ],
+ "inspector_notes": "Gemma-2-9B is right at the edge of a single 24GB card and only plausible with an undocumented bf16 patch; as literally shipped (fp32 default) it will not fit. The only concrete hardware evidence in-repo (single A100) is for a smaller side experiment on gemma-2-2b, not the 9B headline runs.",
+ "headline_artifact": "faithfulness-vs-num-latents frontier plot ('Integrated Gradients' vs 'Learned Masking') in the Colab notebook's Circuit Comparisons/Faithfulness section, and the per-threshold masks/<task>/.../*.json circuit files",
+ "selector_tier": "T1",
+ "selector_score": 7.0
+}

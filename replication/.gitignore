@@ -1,0 +1,11 @@
+env/
+__pycache__/
+experiments/*/src/
+experiments/*/.venv/
+experiments/*/node.out
+experiments/*/.vram.pid
+experiments/*/.gpu_started
+experiments/*/executed.ipynb
+experiments/*/downloads.log
+tree_nohup.out
+*.pyc

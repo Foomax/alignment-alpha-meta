@@ -1,0 +1,57 @@
+{
+ "slug": "learning-multi-level-features-with-matryoshka-sa--bartbussmann",
+ "post_id": "rKM9b6B2LqwSB5ToN",
+ "title": "Learning Multi-Level Features with Matryoshka SAEs",
+ "date": "2024-12-19",
+ "repo": "bartbussmann/matryoshka_sae",
+ "head_sha": "c7c57877bb81df67fdac611f9c31ffc10495db0b",
+ "entrypoint": "main.py (trains the SAE checkpoints only; no evaluation code present)",
+ "entrypoint_confidence": "low",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformer_lens",
+  "torch"
+ ],
+ "models": [
+  {
+   "hf_id": "google/gemma-2-2b",
+   "params_b": 2.61,
+   "gated": true
+  }
+ ],
+ "phenomenon": "dictionary learning method",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Matryoshka SAEs trained on Gemma-2-2B achieve worse reconstruction (MSE / variance explained) than standard BatchTopK SAEs but similar downstream cross-entropy loss, show dramatically lower feature-absorption rates (~0.03 vs up to ~0.29 for large BatchTopK SAEs) and feature-splitting, more disentangled latents (less shared information via meta-SAEs), and better targeted concept-erasure (TPP/SCR) performance, but show mixed results on k-sparse probing and only small differences in automated interpretability scores.",
+ "quote": "Matryoshka SAEs show dramatically lower rates of feature absorption, feature splits and shared information between latents.",
+ "metric": "feature absorption rate (first-letter task, per Chanin et al. methodology)",
+ "target_value": "Matryoshka SAEs maintain absorption rates around 0.03 even as dictionary size increases, vs BatchTopK SAEs reaching approximately 0.29 at larger dictionary sizes",
+ "target_numeric": 0.03,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "abs:0.05",
+ "tolerance_rationale": "unit-interval metric: 0.05 absolute; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 12,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "Skylion007/openwebtext (streamed from HF Hub), 5e8 tokens"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "This repo is SAE-training code only. The requested headline metric \u2014 feature absorption rate on the first-letter task, per Chanin et al. \u2014 has no implementation anywhere in the repo; it would need to be built or sourced from a separate evaluation codebase (e.g. SAEBench).",
+  "No requirements.txt / pyproject.toml / environment.yml at all \u2014 README only says `pip install transformer_lens`; exact dependency versions (including implicit torch) are unknown.",
+  "gemma-2-2b is gated on HF Hub"
+ ],
+ "inspector_notes": "The repo reproduces the SAE checkpoints referenced by the post (5 BatchTopK SAEs + 1 Matryoshka SAE, all on Gemma-2-2B layer-8 resid_pre) but contains none of the downstream interpretability evaluations \u2014 absorption, feature splitting, meta-SAE disentanglement, TPP/SCR concept erasure, k-sparse probing, or auto-interp \u2014 that the post's target_value is actually stated in terms of.",
+ "headline_artifact": null,
+ "selector_tier": "T1",
+ "selector_score": 6.78
+}

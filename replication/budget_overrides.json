@@ -1,0 +1,7 @@
+{
+ "_note": "Per-experiment budget overrides applied by build_specs.py; the inspector's runtime class is a heuristic and these are corrections with a stated reason.",
+ "antipasto-self-supervised-honesty-steering-via-a--wassname": {
+  "budget_minutes": 240,
+  "reason": "README states ~1 h to train one adapter on Gemma-3-1B; the plan runs 3 seeds plus baselines. The inspector's 'minutes' referred to eval only."
+ }
+}

@@ -1,0 +1,61 @@
+{
+ "slug": "minimal-prompt-induction-of-self-talk-in-base-ll--mduffster",
+ "post_id": "tb7e2xARb6cfkJrAK",
+ "title": "Minimal Prompt Induction of Self-Talk in Base LLMs",
+ "date": "2025-10-15",
+ "repo": "mduffster/null-loop-agent",
+ "head_sha": "d4d5154c22a02fe6e807c8dd95d93cf7b28f71fe",
+ "entrypoint": "run-system-progression.py",
+ "entrypoint_confidence": "medium",
+ "python_version": "3.11+ (badge only, not enforced)",
+ "key_deps": [
+  "llama.cpp (external binary, not in requirements.txt)",
+  "pandas",
+  "numpy",
+  "jupyter"
+ ],
+ "models": [
+  {
+   "hf_id": "QuantFactory/Meta-Llama-3-8B-GGUF (Q4_K_M)",
+   "params_b": 8.0,
+   "gated": false
+  },
+  {
+   "hf_id": "QuantFactory/Meta-Llama-3-8B-Instruct-GGUF (Q4_K_M)",
+   "params_b": 8.0,
+   "gated": false
+  }
+ ],
+ "phenomenon": "base model role/goal-language induction",
+ "contested": false,
+ "claim_type": "positive",
+ "primary_claim": "A base Llama-3-8B model produces no structured role- or goal-oriented language under empty or single-token prompts, but minimal instruction priming (e.g. 'You are a helpful assistant.') reliably induces structured role-based self-talk language, unlike the instruction-tuned version which shows such language immediately.",
+ "quote": "Across ~20 iterations per condition, the base model produced no structured output under empty or single-token prompts, with structured role-based language appearing consistently only after minimal instruction priming.",
+ "metric": "regex-detected role/goal-language hit rate across prompt conditions",
+ "target_value": "base model: 0 regex hits for role/goal patterns across 20 iterations under empty/single-token prompts; role-based language appeared consistently after minimal instruction priming",
+ "target_numeric": 0.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "abs:0.05",
+ "tolerance_rationale": "unit-interval metric: 0.05 absolute; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 6,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "Requires building llama.cpp locally (not pip-installable, not pinned to a commit) with CUDA support since the repo's own build was for Apple Metal",
+  "download-models.sh points at third-party GGUF re-uploads (QuantFactory) rather than the gated meta-llama HF repos directly"
+ ],
+ "inspector_notes": "Very lightweight repo: quantized 8B GGUF models via llama.cpp completion mode, all metrics are local regex hit-rate over generated text, no external judge or API. Primary claim spans three scripts (run-loop-llama-cpp.py for base 0-hit, run-loop-instruct.py for instruct, run-system-progression.py for the minimal-priming tipping point) rather than one; I picked the system-progression script as entrypoint since it most directly tests the 'minimal instruction priming induces role language' claim.",
+ "headline_artifact": "README tables (SSR/TIAR/SRV for results_base/ and results_instruct/; RAR/IOI/PFI/CTA table for results_system_progression/) and null_loop_analysis.ipynb / system_progression_analysis.ipynb",
+ "selector_tier": "T1",
+ "selector_score": 0.37
+}

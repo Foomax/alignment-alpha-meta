@@ -1,0 +1,70 @@
+{
+ "slug": "avoiding-jailbreaks-by-discouraging-their-repres--guidobergman",
+ "post_id": "5XjzmxcZFm3BJrNmn",
+ "title": "Avoiding jailbreaks by discouraging their representation in activation space",
+ "date": "2024-09-27",
+ "repo": "guidobergman/jailbreak_direction",
+ "head_sha": "ef6fe41788fa3a35da420d0df3b6d70d76364128",
+ "entrypoint": "pipeline/run_pipeline.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.10",
+ "key_deps": [
+  "torch==2.4.0",
+  "transformers==4.44.2",
+  "vllm==0.6.1",
+  "accelerate==0.31.0",
+  "litellm==1.40.9"
+ ],
+ "models": [
+  {
+   "hf_id": "google/gemma-2-2b-it",
+   "params_b": 2.0,
+   "gated": true
+  },
+  {
+   "hf_id": "cais/HarmBench-Mistral-7b-val-cls",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "meta-llama/Meta-Llama-Guard-2-8B",
+   "params_b": 8.0,
+   "gated": true
+  }
+ ],
+ "phenomenon": "jailbreaking / adversarial prompting",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "In Gemma 2 2B IT, subtracting a difference-in-means 'jailbreak direction' from residual-stream activations (activation addition) drops the jailbreak attack success rate from about 60% to 0% on a held-out test set including unseen jailbreak communities, while directional ablation of the same direction instead makes the model much more vulnerable (ASR rising to 85-97%); both interventions increase refusal on harmless prompts from 3.15% to about 18.88%.",
+ "quote": "the attack success rate dropped from 60% to 0%. Additionally, that indicates that a direction representing jailbreaks might exist and disabling it could make all jailbreaks unsuccessful.",
+ "metric": "jailbreak attack success rate (ASR, via Llama Guard 2 / HarmBench)",
+ "target_value": "baseline 60.55%/59.38% -> activation addition 0.00%/0.00%; directional ablation 96.88%/84.77%",
+ "target_numeric": 60.55,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 6 numbers; compare the components by hand",
+ "vram_estimate_gb": 16,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "jailbreak_prompts (verazuo/jailbreak_llms)",
+   "alpaca (harmless baseline)",
+   "JailbreakBench-derived harmful/harmless splits"
+  ],
+  "available": "download-script",
+  "gated": false
+ },
+ "blockers": [
+  "the 'llamaguard2' eval methodology (one of the two named judges in the target_value) calls Together AI's hosted Meta-Llama-Guard-2-8B via litellm and needs a TOGETHER_API_KEY plus paid credits \u2014 not a closed frontier-model API, but still an external paid service outside a no-cloud-credits budget; the 'harmbench' methodology (local vLLM, no key) can stand in as it's the other named judge"
+ ],
+ "inspector_notes": "Small target model (Gemma-2-2B-IT) makes the core steering pipeline cheap; results for this exact commit are already checked into pipeline/runs/gemma-2-2b-it/. Gemma and Llama Guard 2 weights are gated (free HF licence click-through).",
+ "headline_artifact": "pipeline/runs/gemma-2-2b-it/completions/*_evaluations.json \u2014 per-intervention, per-methodology ASR values matching the post's headline percentages; results for this exact model+sha are already committed",
+ "selector_tier": "T1",
+ "selector_score": 6.73
+}

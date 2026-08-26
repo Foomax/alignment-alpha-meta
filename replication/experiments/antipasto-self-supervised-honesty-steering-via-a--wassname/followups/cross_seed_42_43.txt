@@ -1,0 +1,9 @@
+
+=== 20260826_061947_g1b-antisym-r64  vs  20260826_070756_g1b-antisym-r64-seed43 ===
+same adapter modules: True | same loss layers: True
+SVD bases identical: True (126 tensors)
+theta_v cos-sim:   mean +0.781  median +0.772  min +0.591  max +0.925
+delta_s cos-sim:   mean +0.777  median +0.801  min +0.393  max +0.961
+(R-I) cos-sim:     mean +0.784  median +0.775  min +0.593  max +0.926
+theta_v norms A/B: 1.295 / 1.290
+reference: unrelated random 64x64 matrices give |cos| ~ 0.016

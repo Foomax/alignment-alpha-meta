@@ -1,0 +1,68 @@
+{
+ "slug": "exploring-generalization-in-nla-s--kameshkanna",
+ "post_id": "tkiSQBuA8yj2tHNdv",
+ "title": "Exploring Generalization in NLA's",
+ "date": "2026-06-25",
+ "repo": "kameshkanna/nla-train",
+ "head_sha": "0380fd87e7f3081558fd98478e7662e758f167ed",
+ "entrypoint": "experiments/run_generalization.sh (extract_all_layers.py -> run_av_sweep.py -> run_ar_sweep.py -> compute_metrics.py -> plot_results.py)",
+ "entrypoint_confidence": "high",
+ "python_version": "3.10",
+ "key_deps": [
+  "torch==2.5.1",
+  "transformers==4.47.0",
+  "peft==0.14.0",
+  "accelerate==1.2.1"
+ ],
+ "models": [
+  {
+   "hf_id": "Qwen/Qwen2.5-7B-Instruct",
+   "params_b": 7.6,
+   "gated": false
+  },
+  {
+   "hf_id": "Kameshr/nla-qwen2.5-7b-L20-av (LoRA adapter, public)",
+   "params_b": 7.6,
+   "gated": false
+  }
+ ],
+ "phenomenon": "interpretability tooling",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "A Natural Language Autoencoder's Activation Verbalizer trained only at layer 20 of Qwen2.5-7B generalizes without retraining to reconstruct activations from layers 10-25, beating both a random-noise baseline and a shuffled-correspondence baseline on cosine similarity, Recall@10, FVE, and nRMSE, while early layers (0-1) and late layer 27 fail to generalize.",
+ "quote": "From L10 to L25 cosine similarity stays above 0.50, Recall@10 above 0.40, FVE positive, and nRMSE well below the baselines.",
+ "metric": "cosine similarity / Recall@10 / FVE / nRMSE for layer-20-trained AV reconstructing activations across layers, vs random and shuffled baselines",
+ "target_value": "cosine similarity >0.50 and Recall@10 >0.40 from L10-L25; every layer significant vs random baseline (Wilcoxon signed-rank + Benjamini-Hochberg); L0, L1, L27 fail against the shuffled baseline",
+ "target_numeric": 0.5,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 8 numbers; compare the components by hand",
+ "vram_estimate_gb": 18,
+ "fits_3090": "probably",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "HuggingFaceFW/fineweb (sample-10BT)",
+   "wikimedia/wikipedia",
+   "ccdv/pubmed-summarization",
+   "iamtarun/python_code_instructions_18k_alpaca",
+   "Reddit domain (source not confirmed in repo)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "The AV checkpoint (Kameshr/nla-qwen2.5-7b-L20-av) is published on HF and directly downloadable, but the AR checkpoint the pipeline expects at checkpoints/ar_sft/final is NOT published under this project's namespace -- it must be retrained via scripts/run_ar_sft.sh, which first needs the multi-stage datagen pipeline (FineWeb extraction + a 'kitft' reference model as an oracle labeler).",
+  "AR SFT's H100-tuned settings (per_device_train_batch_size=64, gradient_checkpointing=false) assume ~64GB+ VRAM; would need a smaller batch size and gradient checkpointing enabled to fit a 24GB 3090.",
+  "Two separate, mutually-incompatible Python environments are required (nla-rl-env for training, nla-val-env for inference) due to a vLLM/transformers version conflict."
+ ],
+ "inspector_notes": "The config references a 'kitft/nla-qwen2.5-7b-L20-ar' reference checkpoint (upstream paper release) as a validation baseline; if that happens to be public, a replicator could sidestep AR retraining, but that would substitute a different AR model rather than reproducing this project's own trained one. No closed-API calls found anywhere in the repo.",
+ "headline_artifact": "experiments/results/metrics.json + wilcoxon_results.json (per-layer cosine similarity / Recall@10 / FVE / nRMSE, Wilcoxon+BH significance) -> MODEL_CARD.md: 'layers 10-25 all achieve CS > 0.50 and Recall@10 > 0.40'",
+ "selector_tier": "T1",
+ "selector_score": 6.4
+}

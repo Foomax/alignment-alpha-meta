@@ -1,0 +1,301 @@
+[
+ {
+  "post_id": "nKfmimhTKCsDM2Hwh",
+  "repo": "harmfulness-exploration/harmfulness_direction_entanglement",
+  "head_sha": "9bb700e7a9df67ca94cd8bfa8732aafe5b874ed1",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "scripts/run_random_labels_20.sh (loops scripts/main_extraction_random_labels.py -> src/main_extraction_random_labels.run_extraction_random_labels, config config/main_extraction/1/drug_abuse.json) + scripts/aggregate_random_labels.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": ">=3.10",
+   "key_deps": ["torch", "transformers", "huggingface_hub", "datasets", "pandas", "numpy", "scikit-learn", "tqdm"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "allenai/OLMo-3-1025-7B", "params_b": 7.0, "gated": false},
+   {"hf_id": "allenai/Olmo-3-7B-Instruct-SFT", "params_b": 7.0, "gated": false},
+   {"hf_id": "allenai/Olmo-3-7B-Instruct-DPO", "params_b": 7.0, "gated": false},
+   {"hf_id": "allenai/Olmo-3-7B-Instruct", "params_b": 7.0, "gated": false}
+  ],
+  "vram_estimate_gb": 18,
+  "vram_basis": "7B model, dtype='auto' (bf16) full load to CUDA, single-layer (layer 15) last-token residual hook only, batch_size 16 -- weights ~14GB + small activation buffer; comfortably under 24GB",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["datasets/safe/1/drug_abuse_weapons_banned_substance (train/test csv)", "datasets/drug_abuse_weapons_banned_substance/1 (train/test csv)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "days",
+  "est_runtime_basis": "Not compute-bound but bandwidth-bound: hf_utils.load_model() shutil.rmtree()s and force-redownloads the full checkpoint on every single load, and the random-labels script deletes the local copy again after every checkpoint. The drug_abuse config lists 39 checkpoints x 20 repeated runs = 780 fresh 7B-model downloads (~14GB each, ~11TB total transfer) with no caching across runs -- this dominates wall-clock far more than the GPU forward passes do.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "results/random_labels_runs/drug_abuse/run_*/results.json -> train_auroc_random_labels, aggregated by scripts/aggregate_random_labels.py into the reported mean AUROC 0.5120 under 20 label-randomizations",
+  "blockers": [
+   "Model cache is deliberately wiped and redownloaded per checkpoint per run (no caching), turning a 39-checkpoint x 20-run sweep into ~11TB of redundant HF downloads -- the practical blocker is network time/bandwidth, not VRAM or disk (disk footprint stays ~15GB at a time since old copies are deleted).",
+   "Only the drug_abuse category has the automated 20-run random-labels script; other subcategories seen in centroids/ would need the same driver adapted (straightforward, not a hard blocker)."
+  ],
+  "notes": "Very clean, well-organized repo with in-repo config for exactly the 39-checkpoint OLMo-3-7B sweep matching the post's claim, plus a committed centroids/ tree of prior outputs across all checkpoints/categories showing the pipeline was actually run end-to-end. The single surprising design choice is the aggressive delete-and-redownload-every-checkpoint behavior in hf_utils.load_model, which makes literal replication of the full 20x39 sweep a bandwidth marathon rather than a compute one."
+ },
+ {
+  "post_id": "jkEnRkokmzvvKNzzB",
+  "repo": "fodenthal/residual-geometry-experiment",
+  "head_sha": "2529e3257e0453c806fb65764c0225b7ca4f75e3",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "bash scripts/run_residual_geometry.sh pilot (drives 00_validate_env.py .. 07_make_residual_report.py, esp. 02_compute_residual_probes.py and 03_compute_residual_autocorr.py, config configs/persistent_state/residual_geometry/pilot.yaml)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": ">=3.11",
+   "key_deps": ["torch==2.4.1", "transformers==4.45.2", "transformer-lens==2.6.0", "numpy==1.26.4", "einops==0.8.0", "scikit-learn==1.5.2"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "google/gemma-2-2b", "params_b": 2.6, "gated": true}
+  ],
+  "vram_estimate_gb": 10,
+  "vram_basis": "HookedTransformer.from_pretrained(..., dtype=bf16) on CUDA for gemma-2-2b (residuals/provider.py); batch_size 32, chunk_documents 128, 1024-token contexts, residual caching stored as float16 to disk rather than kept resident -- weights ~5GB bf16 + modest activation/cache overhead per batch",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["allenai/c4, English validation split"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "Stage B1 pilot config: 5,000 docs x 1024 tokens through a 2.6B model, batch 32 -- the GPU forward-pass stage is likely well under an hour on a 3090; downstream bootstrap CIs / probe-fitting / subspace analysis stages add additional CPU time but docs/method.md's own guidance ('forward pass and storage cost are ~2x the 512-token equivalent, budget accordingly') implies single-digit hours total for the full pilot+report pipeline.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "docs/pilot_run_summary.md, Stage B1 table: time-lagged Q90 tau = 17.0 vs random Q90 = 1.0 and PCA Q90 = 1.0 (exact match to the post's target values)",
+  "blockers": [],
+  "notes": "Unusually well-documented research artifact: pinned dependency versions, numbered pipeline stages, a config-hash-tracked pilot_run_summary.md whose Stage B1 table reproduces the post's exact headline numbers (Q90 17.0 vs 1.0), and an explicit 17-stage 'Compute Plan' in docs/method.md specifying doc counts and probe counts per stage. Gemma-2-2b requires accepting the HF license (gated) but that is a one-click formality, not a technical blocker."
+ },
+ {
+  "post_id": "uDrsffSLzWD6cDnTt",
+  "repo": "franciscohs/fsec-paper",
+  "head_sha": "32f4f12b4ce95b424fa475234c9db8566556c20f",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "python scripts/sweep_2d.py --target <model> --layer <L> (per-model/layer 2D iso-response sweep) -> python scripts/refit_thrfixed_all.py --exact (fit superellipse exponents) -> render_figures.sh (plots); figure-only reproduction from the bundled results/ cache needs no GPU at all",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["torch", "transformers", "accelerate", "numpy", "scipy", "matplotlib", "datasets", "huggingface_hub"],
+   "stated_compute": "\"Wallclock guidance (single 80 GB H100, ~40 s/pair): Single 528-pair canonical run (one model, one layer): ~6 h. All 6 cross-model + 3 cross-layer Gemma + 7 ablation variants: ~36 h total.\""
+  },
+  "models_needed": [
+   {"hf_id": "google/gemma-2-9b", "params_b": 9.2, "gated": true},
+   {"hf_id": "Qwen/Qwen3-1.7B", "params_b": 1.7, "gated": false},
+   {"hf_id": "meta-llama/Llama-3.1-8B", "params_b": 8.0, "gated": true},
+   {"hf_id": "mistralai/Mistral-7B-v0.3", "params_b": 7.0, "gated": false},
+   {"hf_id": "CohereForAI/aya-expanse-8b", "params_b": 8.0, "gated": false},
+   {"hf_id": "01-ai/Yi-1.5-9B", "params_b": 9.0, "gated": false}
+  ],
+  "vram_estimate_gb": 20,
+  "vram_basis": "Inference-only forward passes (no training) on the largest model in the sweep (gemma-2-9b / yi-1.5-9b, ~9B params); bf16 weights ~18GB plus per-pair 2D grid activation buffers from src/model.py's forward_from_layer utilities -- tight but should fit a 24GB 3090, comfortably fits for the smaller models (Qwen3-1.7B) in the set",
+  "fits_3090": "probably",
+  "data": {
+   "needed": ["data/*.py contrastive prompt sets (14 semantic concepts, 10 languages, 9 programming languages)", "FineWeb (anchor activations)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "days",
+  "est_runtime_basis": "README states ~36h total on a single 80GB H100 for the full 6-cross-model + 3-cross-layer + 7-ablation sweep; a 3090 is slower and has less headroom for the 9B models, so the full ablation grid plausibly runs multiple days rather than the ~1.5 days on H100. Note: refitting exponents from the bundled sweeps_2d/ cache (no GPU) takes only minutes, and re-plotting every paper figure from bundled results/ takes about a minute end-to-end.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "results/fits/fits_<target>_L<layer>*.pkl (per-condition fitted superellipse exponents p), aggregated into the paper's Fig 4/6 direction-family beeswarm plots via scripts/plotting/",
+  "blockers": [
+   "Full ablation-grid reproduction (36h on an H100) is a multi-day undertaking on a single 3090; the repo itself flags this as the slow path.",
+   "Gemma and Llama checkpoints are gated -- need a HUGGINGFACE_HUB_TOKEN with license acceptance (not a hard blocker, just friction)."
+  ],
+  "notes": "Exceptionally reproducibility-conscious repo: ships ~1.6GB of cached intermediate results (results/sweeps_2d/, ~13k files) so every paper figure regenerates in about a minute with no GPU at all, and separately documents exact wallclock cost to regenerate from raw model weights. The three-tier reproduction path (figures-only / refit-from-cache / full re-sweep) is the clearest compute-tiering seen across this batch."
+ },
+ {
+  "post_id": "xmpauEXEerzYcJKNm",
+  "repo": "science-of-finetuning/diffing-toolkit",
+  "head_sha": "e0b84a591f5184d69a65082e4366ccfe36f47661",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "uv run python main.py diffing/method=kl (and diffing/method=crosscoder, diffing/method=sae_difference) organism=chat model=<gemma-2-2b config> -- no ready-made gemma-2-2b model/organism config exists at this SHA, would need to be authored from an existing configs/model/*.yaml template",
+  "entrypoint_confidence": "low",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": ">=3.11",
+   "key_deps": ["torch>=2.7.0", "transformers>=4.53.0", "accelerate", "peft", "vllm>=0.11.1", "dictionary-learning", "nnsight", "hydra-core"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "google/gemma-2-2b", "params_b": 2.6, "gated": true},
+   {"hf_id": "google/gemma-2-2b-it", "params_b": 2.6, "gated": true}
+  ],
+  "vram_estimate_gb": 14,
+  "vram_basis": "Base + chat-tuned gemma-2-2b loaded simultaneously for activation-difference extraction (~10GB bf16 combined) plus a small dictionary-learning model (crosscoder / diff-SAE) trained on cached activations; preprocessing pipeline caches activations to disk for large corpora rather than holding them all in VRAM",
+  "fits_3090": "probably",
+  "data": {
+   "needed": ["large text corpus for preprocessing activation caching (dataset unspecified for this exact experiment at current SHA)"],
+   "available": "unknown",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "README describes the preprocessing pipeline as 'compute-intensive' (extracting/caching activations over millions of samples) but gives no concrete wallclock; crosscoder/SAE training on cached 2B-model activations is typically a few-hour job on a single consumer GPU",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "KL-divergence-recovery outputs of diffing/method=kl run against crosscoder vs. sae_difference reconstructions (the post's 60% vs 88% KL-gap-recovered numbers); no committed artifact at this SHA reproduces those exact numbers",
+  "blockers": [
+   "The toolkit has moved on since the June 2025 post: configs/model/ at this SHA only has gemma2_9B_it, gemma3_1B(_pt), gemma3_4B_it, gemma3_27B_it -- no gemma2_2B config remains, so a competent engineer would need to reconstruct the original base-vs-chat gemma-2-2b experiment config themselves (feasible, since the framework is generic, but not turnkey).",
+   "The separate agentic-evaluation feature (LLM agent + LLM grader, e.g. GPT-4/Claude) does need a closed API key, but it is not required for the specific KL-gap-recovery headline metric."
+  ],
+  "notes": "This is a general, actively-developed toolkit (the linked publication is one of several) rather than a frozen paper-specific repo, so entrypoint confidence is low: the code paths (kl, crosscoder, sae_difference methods) clearly exist and match the post's method names, but the exact gemma-2-2b base/chat config used for the original blog post is not preserved at the given head_sha. A separate, unrelated 'Narrow Finetuning' paper reproduction in the same repo explicitly assumes a SLURM cluster."
+ },
+ {
+  "post_id": "jZfNX4GJPdptxSxt4",
+  "repo": "lovkush-a/arena-sandbagging-mi",
+  "head_sha": "d801cd70a6945d42e14370465da13b86815c376f",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "experiments/exp07_add_noise_with_batches.py (uses src/eval_model_on_dataset_batches.evaluate_model_on_dataset)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformers", "torch", "datasets", "transformer-lens", "huggingface-hub"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "Qwen/Qwen2.5-1.5B-Instruct", "params_b": 1.5, "gated": false}
+  ],
+  "vram_estimate_gb": 8,
+  "vram_basis": "1.5B model in bf16 (~3GB weights) with batch_size=350 (whole 350-question GSM8K eval in one batch), max_new_tokens=400, GQA with only 2 KV heads (Qwen2.5-1.5B config) keeps the KV cache to roughly 6-7GB even at this batch size",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["gsm8k (main config), first 350 rows of the train split"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "10 seeds x 5 noise scales x 2 prompt conditions = 100 generation runs of 350 examples each (batch_size=350, max_new_tokens=400) on a 1.5B model -- each run is a couple of minutes, so the full seed/noise-scale sweep plausibly finishes in a few hours on a 3090",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "logs/20250529_qwen_prompts1/*.csv (per noise_scale/seed accuracy on GSM8K, sandbag vs original prompt) -- committed logs already show the qualitative effect (some seeds: sandbag accuracy rises with noise while original accuracy falls)",
+  "blockers": [],
+  "notes": "Small, simple ARENA-capstone-style repo with no pinned versions but a very direct, single-file entrypoint; requirements.txt lists transformer-lens but the actual final experiment (exp07) uses plain HF transformers, per the README's own note about switching backends mid-project. Committed logs/ CSVs from the original run are included, so the qualitative claim can be checked without even re-running anything."
+ },
+ {
+  "post_id": "frvmrrND28SxZnkEy",
+  "repo": "model-organisms-for-real/model-organism-lottery",
+  "head_sha": "9384b9231580f43c77a5f9bf7a7339750b15ab5c",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "cake_baking/run_six.sh + military_submarines-synth/run_six.sh + italian-food/ + military_mo/ (train 54 organisms) -> scripts/qer/run_eval.sh (QER) -> scripts/ao-analyzer/run_ao.sh + src/mobfr/ao_analyzer/run.py (Activation Oracle) -> diffing-toolkit/scripts/cumprobs/ (ADL) -> steering/ (steering) -- multi-stage pipeline, no single script",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": ">=3.11,<3.14",
+   "key_deps": ["torch>=2.6.0", "transformers>=4.48.0", "trl", "accelerate", "peft", "bitsandbytes", "lm-eval", "diffing-toolkit", "jlens", "openai", "google-genai"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "allenai/OLMo-2-0425-1B-DPO", "params_b": 1.0, "gated": false},
+   {"hf_id": "google/gemma-3-1b", "params_b": 1.0, "gated": true}
+  ],
+  "vram_estimate_gb": 16,
+  "vram_basis": "Individual full-finetune/DPO training of a single 1B-parameter organism (params + Adam optimizer states + gradients + activations) fits comfortably on a single 24GB 3090; the README's own example QER eval invocation defaults to a 2-4 GPU pool (NUM_GPUS), and per-organism Activation Oracle diffing needs 'one GPU; ~20-30 min per organism' x 54 organisms",
+  "fits_3090": "no",
+  "data": {
+   "needed": ["cake-baking / italian-food / military-submarine synthesized and probe-and-rewrite preference datasets (generated/pushed to HF by the repo's own scripts)"],
+   "available": "download-script",
+   "gated": false
+  },
+  "est_runtime": "days",
+  "est_runtime_basis": "54 organisms x 7 training methodologies, each followed by QER evaluation, Activation Oracle diffing (~20-30 GPU-min/organism => 18-27 GPU-hours for that stage alone), ADL token-relevance, steering sweeps, and SAE analysis; even though any single training/diffing job would fit one 3090, the aggregate pipeline is many GPU-days of sequential work on one card",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "QER scoring (LLM judge over trigger/control responses) and the Activation Oracle analyzer's LLM investigator + grader all route through OPENROUTER_API_KEY (and optionally GOOGLE_AI_STUDIO_API_KEY) per .env.example -- this is core to the interpretability-score metric in the primary claim, not an optional extra.",
+  "headline_artifact": "scripts/ao-analyzer/results/ (AO accuracy) + diffing-toolkit/scripts/cumprobs output (ADL MCP) + SAE quirk-feature-fraction outputs, cross-tabulated by training route x quirk family per docs/ao-analyzer/*.md -- no single committed table matches the post's cross-family comparison at this SHA",
+  "blockers": [
+   "Interpretability scoring (QER judge, AO investigator/grader) requires a paid third-party LLM API (OpenRouter, optionally Google AI Studio) -- explicitly excluded by the replication budget.",
+   "Reproducing the full primary claim requires training all 54 organisms across 7 methodologies plus running 4 interpretability methods on each -- individually 3090-sized jobs, but collectively many GPU-days even before the API dependency.",
+   "diffing-toolkit and jacobian-lens are required git submodules pointing at specific forks (science-of-finetuning/diffing-toolkit via GabrielKS fork, model-organisms-for-real/jacobian-lens) not fetched by a plain --depth 1 clone."
+  ],
+  "notes": "By far the largest and most infrastructure-heavy repo in this batch: 6 git submodules, a SLURM/multi-GPU-pool-oriented eval harness, and a hard dependency on paid LLM-judge APIs for the core interpretability metric. Each individual training run (OLMo-2-1B or Gemma-3-1B) would fit a 3090 fine, but the primary claim is inherently a comparison across 54 organisms x multiple interpretability methods, which is a different scale of undertaking than any single piece of it."
+ },
+ {
+  "post_id": "4EvWpvFvHzmPvuiF5",
+  "repo": "ankitsanjyal/cot_faithfulness",
+  "head_sha": "24202170dc7c6ceb323c5c5cb5e5e2b97da9d898",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "cot_faithfulness/scripts/run_stage2.py (necessity spectrum) + cot_faithfulness/scripts/run_stage3.py (cue injection: capture + judge-based disclosure)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": "3.11",
+   "key_deps": ["torch==2.6.0", "vllm==0.8.5", "transformers>=4.51,<5.0", "accelerate", "anthropic>=0.40"],
+   "stated_compute": "\"Tested across three open-weight models ... on a single V100.\" / \"one V100 is plenty for a 4B model (~30-40 min)\""
+  },
+  "models_needed": [
+   {"hf_id": "Qwen/Qwen3-4B", "params_b": 4.0, "gated": false},
+   {"hf_id": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B", "params_b": 8.0, "gated": false},
+   {"hf_id": "google/gemma-3-4b-it", "params_b": 4.0, "gated": true}
+  ],
+  "vram_estimate_gb": 18,
+  "vram_basis": "vLLM inference of up to an 8B model (DeepSeek-R1-Distill-Llama-8B) in bf16/fp16 with modest context (gemma run explicitly capped at --max-model-len 5120); repo was developed and validated on a V100-32GB, and a 24GB Ampere 3090 has comparable-or-better effective headroom for this size/context combination",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["GSM8K", "CommonsenseQA", "MMLU"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "README states a full run is '~30-40 min' per 4B model on one V100 for Stage 2; Stage 3 full run is ~500 problems/arm x 3 arms x 3 models, generation-only comparable order of magnitude -- low single-digit hours total on a 3090",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "Stage 3 verbalization/disclosure scoring uses Claude Haiku (default) or Claude Opus via ANTHROPIC_API_KEY as the independent judge; the repo explicitly warns 'never report self-judge numbers as results' for the free no-API-key smoke-test path, so the disclosure-rate half of the headline claim (e.g. Gemma discloses 1/489) cannot be honestly reproduced without an Anthropic key.",
+  "headline_artifact": "cot_faithfulness/outputs/stage3_<model>/stage3_summary.csv (capture rate per arm) and judge_verbalization_rate (disclosure rate); cot_faithfulness/outputs/stage3_final_summary.csv is the consolidated cross-model table matching the post's headline table",
+  "blockers": [
+   "Disclosure-rate numbers require the real Anthropic judge (Claude Haiku/Opus) -- explicitly excluded by the replication budget. Capture-rate numbers (the necessity-vs-propensity flip rates) can be reproduced without any API key."
+  ],
+  "notes": "Extremely well-documented for hardware/dependency gotchas (pinned exact torch/vllm/cu118 combination with an explanation of a specific failure mode each pin avoids). Capture rates -- most of the primary claim -- are fully reproducible on local GPU alone; only the disclosure-rate figures (the 'CoT almost never discloses the cue' finding) are gated behind a closed API key, and the repo is unusually explicit that the free self-judge fallback must never be reported as a real result."
+ },
+ {
+  "post_id": "aFyir2PaoCHK5prAu",
+  "repo": "star2vec/tarcle",
+  "head_sha": "37831a330ec5d4339d6946c1a2e51732ce8fce00",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "tarcle/extract.py (Stage 1, GPU: causal-head identification + FV extraction) then python -m tarcle.stage2 / floors / measure_corr / margin_split / offset_audit / support_gate (Stage 2, numpy-only, reads results/ artifacts)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": ">=3.10",
+   "key_deps": ["torch>=2.2", "transformers>=4.45,<5", "numpy>=1.26", "matplotlib>=3.8"],
+   "stated_compute": "\"Two conventions hold everywhere in here, and both are load-bearing on an 8GB card (docs/decisions.md D6)\" -- extract.py docstring; README: \"Original runs on CUDA bf16; later runs on MPS bf16 after passing a registered cross-device validation (D50-D53).\""
+  },
+  "models_needed": [
+   {"hf_id": "meta-llama/Llama-3.2-3B", "params_b": 3.2, "gated": true}
+  ],
+  "vram_estimate_gb": 8,
+  "vram_basis": "Explicitly engineered and documented to run on an 8GB consumer GPU: left-padding + explicit position_ids to keep logits_to_keep=1, and single-position (not full-sequence) activation hooks, specifically to avoid OOM on an 8GB card. Comfortably fits a 24GB 3090.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["synthetic month/day few-shot prompts generated in-code (tarcle/prompts.py) -- no external dataset"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "Extraction batches all 24 attention heads of a layer in one forward pass by replicating the prompt; the injection sweep covers 672 (layer x strength) settings, each a lightweight forward/generation on a 3B model -- plausibly under a few hours on a 3090. Stage 2 (fitting margins/thresholds from saved artifacts) is numpy-only and near-instant.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "results/fv/*.npz (extracted function vectors) + committed stage-2 artifacts consumed by tarcle/margin_split.py and tarcle/support_gate.py, which reproduce the reported margins (+0.35 down to -1.000) and the 0.38->0.83 behavioral-gate accuracy shift",
+  "blockers": [],
+  "notes": "The most reproducibility-forward repo in the batch: 'every number in the post regenerates from results/ without a GPU' via the committed artifacts, so the headline claim can be independently checked with zero compute at all, and full Stage-1 re-extraction is explicitly documented as designed to fit an 8GB card. Preregistration docs (docs/preregistration*.md) and an append-only decision log (docs/decisions.md) are committed alongside the code, which is unusual rigor for a solo LessWrong-style project."
+ }
+]

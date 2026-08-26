@@ -1,0 +1,61 @@
+{
+ "slug": "creating-interpretable-latent-spaces-with-gradie--g-w1",
+ "post_id": "8zDjhJNoFhMuHB5Kc",
+ "title": "Creating Interpretable Latent Spaces with Gradient Routing",
+ "date": "2024-12-14",
+ "repo": "g-w1/gradient-routed-vae",
+ "head_sha": "a644302f8abf5c15541380bff7068bf615f1d319",
+ "entrypoint": "vae.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "torchvision",
+  "einops",
+  "imageio",
+  "matplotlib",
+  "tqdm",
+  "onnxruntime"
+ ],
+ "models": [
+  {
+   "hf_id": null,
+   "params_b": 0.003,
+   "gated": false
+  }
+ ],
+ "phenomenon": "gradient routing for interpretability",
+ "contested": false,
+ "claim_type": "positive",
+ "primary_claim": "Applying gradient routing to an MNIST variational autoencoder (masking all latent dimensions except the one corresponding to the image's label during training) produces a 10-dimensional latent space that specializes one dimension per digit, enabling digit classification via argmax over the encoding at 92.58% accuracy despite no explicit classification loss.",
+ "quote": "we can classify digits to 92.58% accuracy by just taking the argmax over the encoding (which slider is the most positive), which I find pretty amazing.",
+ "metric": "digit classification accuracy via argmax over latent encoding",
+ "target_value": "92.58%",
+ "target_numeric": 92.58,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "abs:5",
+ "tolerance_rationale": "percentage metric: 5 points; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 1,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "MNIST (train+test)"
+  ],
+  "available": "download-script",
+  "gated": false
+ },
+ "blockers": [
+  "vae.py's save/export section is hardcoded SAVE=False, which tries to load a 'vae.pth' checkpoint that is not committed to the repo (only the already-exported vae_encoder.onnx/vae_decoder.onnx are included) -- a re-runner must flip SAVE=True (or otherwise skip the load) to actually train fresh weights before the final eval block will work end-to-end",
+  "no requirements.txt/pyproject.toml; deps must be inferred from the import block"
+ ],
+ "inspector_notes": "Single flat script (train + ONNX export + eval, using # %% cell markers, no CLI) that is otherwise fully self-contained and trivially cheap to run; the gradient-routing mechanism is the `encode_and_mask` method that masks all latent dims except the label-selected one during the backward pass.",
+ "headline_artifact": "final print statement in vae.py: 'Classification accuracy from encoding: {correct/total}', computed via argmax over the ONNX-exported encoder's mean output on the MNIST validation set",
+ "selector_tier": "T?",
+ "selector_score": 2.6
+}

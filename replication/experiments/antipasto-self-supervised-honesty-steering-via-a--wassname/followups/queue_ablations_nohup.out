@@ -1,0 +1,11 @@
+== 2026-08-26T21:49:51+08:00 STEP A1-270m-no_rot_v START: uv run python nbs/train.py gemma270m-80gb --bs 24 --seed 42 --no_rot_v --experiment_name fuA1-270m-norotv
+== 2026-08-26T22:20:38+08:00 STEP A1-270m-no_rot_v EXIT 0 after 30 min | Steering F1: 🥇9.692
+== 2026-08-26T22:20:38+08:00 STEP A2-270m-no_coh START: uv run python nbs/train.py gemma270m-80gb --bs 24 --seed 42 --no_coh --experiment_name fuA2-270m-nocoh
+== 2026-08-26T22:52:49+08:00 STEP A2-270m-no_coh EXIT 0 after 32 min | Steering F1: 🥇47.060
+== 2026-08-26T22:52:49+08:00 STEP A3-270m-no_mono START: uv run python nbs/train.py gemma270m-80gb --bs 24 --seed 42 --no_mono --experiment_name fuA3-270m-nomono
+== 2026-08-26T23:25:03+08:00 STEP A3-270m-no_mono EXIT 0 after 32 min | Steering F1: 🥇41.463
+== 2026-08-26T23:25:03+08:00 STEP A4-270m-default-s43 START: uv run python nbs/train.py gemma270m-80gb --bs 24 --seed 43 --experiment_name fuA4-270m-s43
+== 2026-08-26T23:58:15+08:00 STEP A4-270m-default-s43 EXIT 0 after 33 min | Steering F1: 🥇29.317
+== 2026-08-26T23:58:15+08:00 STEP A5-270m-random-s43 START: uv run python nbs/train.py gemma270m-80gb --bs 24 --seed 43 --dim_select_method random --experiment_name fuA5-270m-random-s43
+== 2026-08-27T00:31:45+08:00 STEP A5-270m-random-s43 EXIT 0 after 33 min | Steering F1: 🥇2.686
+== 2026-08-27T00:31:45+08:00 ABLATION QUEUE DONE

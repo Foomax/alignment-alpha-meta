@@ -1,0 +1,68 @@
+{
+ "slug": "the-termination-circuit-how-reasoning-models-sto--chandram-dutta",
+ "post_id": "ajhzc6ktEKyFeJFBS",
+ "title": "The Termination Circuit (how reasoning models stop thinking).",
+ "date": "2026-07-11",
+ "repo": "chandram-dutta/the-termination-circuit",
+ "head_sha": "4e68ee5a412dc51ad84ff49f256d1c73654f36bf",
+ "entrypoint": "experiments/exp01_predictive_probing/probing.py -> exp02_logit_attribution/logit_attribution.py -> exp03_causal_patching/causal_patching.py -> exp04_targeted_steering/steering.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.12",
+ "key_deps": [
+  "transformers",
+  "nnsight",
+  "mistral-common",
+  "vllm (optional, exp06 only)"
+ ],
+ "models": [
+  {
+   "hf_id": "Qwen/Qwen3-1.7B",
+   "params_b": 1.7,
+   "gated": false
+  },
+  {
+   "hf_id": "Qwen/Qwen3-8B",
+   "params_b": 8,
+   "gated": false
+  },
+  {
+   "hf_id": "mistralai/Magistral-Small (24B)",
+   "params_b": 24,
+   "gated": false
+  }
+ ],
+ "phenomenon": "CoT termination mechanism",
+ "contested": false,
+ "claim_type": "positive",
+ "primary_claim": "In Qwen3-1.7B reasoning on GSM8K, the model has typically already determined the correct answer by roughly 30% of the way through its chain-of-thought, yet keeps 'overthinking' until a small, localized set of late MLP layers (dominated by layer 27 of 28, contributing ~40% of the </think> logit) fires a 'termination circuit' functioning as a verification gate that stops reasoning only once the model has just stated an answer AND that stated value matches what it has internally computed (94% firing when the model's own correct answer is spliced in, vs 8-19% for mismatched-value/wrong-timing/different-problem controls and 0% for random text), and this gate has no simple linear steering handle, a pattern that replicates on Qwen3-8B and Magistral-Small-24B on MATH-500.",
+ "quote": "When the spliced answer is the model's own correct answer, the circuit fires `</think>` as the greedy next token 94% of the traces... A different problem's answer fires it 19% of the time and a random non answer fires it 0% of the time.",
+ "metric": "</think>-emission (greedy) firing rate under causal splicing of the answer sentence into the CoT, and CoT fraction at which the answer is settled",
+ "target_value": "94% firing rate when the model's own correct final-answer sentence is spliced in after the sufficiency point; 8% with a different number in the same sentence; 16% if spliced before the sufficiency point; 19% for a different problem's answer; 0% for random non-answer text; best single steering direction recovers only ~20% of the effect of full-state patching; median sufficiency point is reached at ~30% of CoT length",
+ "target_numeric": 94.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 7 numbers; compare the components by hand",
+ "vram_estimate_gb": 24,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "openai/gsm8k (HF dataset)",
+   "MATH-500 (HF dataset, exp05 generalization)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "Qwen3-8B and Magistral-Small-24B cross-model replication claims explicitly need 40GB+ and a 96GB card per the README -- not reproducible on a single 3090; only the primary Qwen3-1.7B/GSM8K result is."
+ ],
+ "inspector_notes": "Unusually well-documented repo: explicit per-experiment VRAM requirements, a script-to-paper-section table, and staged checkpointing so later stages reload in seconds. The primary headline numbers (Qwen3-1.7B, GSM8K) are fully in-budget on a 3090; only the cross-scale/cross-family generalization claims are out of reach.",
+ "headline_artifact": "94%/8%/16%/19%/0% </think>-emission firing rates under splicing conditions (exp03 causal_patching.py); median ~30% sufficiency point (exp01 probing.py); ~20% steering-direction recovery (exp04 steering.py)",
+ "selector_tier": "T2",
+ "selector_score": 1.85
+}

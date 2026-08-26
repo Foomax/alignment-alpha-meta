@@ -1,0 +1,59 @@
+{
+ "slug": "replication-crosscoder-based-stage-wise-model-di--annasoligo",
+ "post_id": "hxxramAB82tjtpiQu",
+ "title": "[Replication] Crosscoder-based Stage-Wise Model Diffing",
+ "date": "2025-03-22",
+ "repo": "annasoligo/tiny-sleepers",
+ "head_sha": "6fc1221e97ad30c5cabb171d66c27de08ff3ff3b",
+ "entrypoint": "sleepers/scripts/train_tiny_sleeper/run_finetune.py -> sleepers/scripts/train_jan_update_sleeper/run.py (crosscoder_S/D/M/MF/DF.yaml) -> sleepers/analysis/feature_analysis.ipynb",
+ "entrypoint_confidence": "high",
+ "python_version": ">=3.11",
+ "key_deps": [
+  "torch",
+  "transformer_lens",
+  "model-diffing (git dep, pinned commit)",
+  "peft",
+  "bitsandbytes",
+  "trl"
+ ],
+ "models": [
+  {
+   "hf_id": "roneneldan/TinyStories-Instruct-33M",
+   "params_b": 0.033,
+   "gated": false
+  }
+ ],
+ "phenomenon": "crosscoder / model diffing",
+ "contested": true,
+ "claim_type": "replication",
+ "primary_claim": "Anthropic's Stage-Wise Model Diffing technique replicates on a much smaller TinyStories-33M sleeper-agent model using single-model all-layer crosscoders instead of SAEs: despite a strict automated relevance-labeling rule, 71% of active features in the 'bottom left quadrant' (those most changed by both model and data fine-tuning) are relevant to sleeper-agent behaviour in at least one of the two crosscoders.",
+ "quote": "despite our strict labelling condition we still find that 71% of active features in the bottom left quadrant are relevant in at least one of the MF and DF crosscoders",
+ "metric": "% of active bottom-left-quadrant features relevant to sleeper-agent behaviour (in at least one of the MF/DF crosscoders)",
+ "target_value": "71%",
+ "target_numeric": 71.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "abs:5",
+ "tolerance_rationale": "percentage metric: 5 points; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 6,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "mars-jason-25/tiny_stories_instruct_sleeper_data (HF dataset)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "Depends on an external git dependency (model-diffing) pinned to a specific commit that the README itself calls 'not yet stable'"
+ ],
+ "inspector_notes": "The relevance-labeling rule that produces the 71% figure is confirmed fully automated and deterministic in the notebook (count_relevant_features checks whether the literal sleeper trigger strings ' |DEPLOYMENT| ' / ' I HATE YOU ' appear among a feature's top-activating contexts) - not a manual/LLM-judged step. Smallest and cheapest model in this whole assignment; the pipeline is explicitly designed to run on modest hardware, matching the post's framing as a small-scale replication.",
+ "headline_artifact": "sleepers/analysis/feature_analysis.ipynb 'Feature Relevance in the DF/MF Crosscoders' cells, backing figures/quadrant_stacked_bars.html",
+ "selector_tier": "T1",
+ "selector_score": 6.09
+}

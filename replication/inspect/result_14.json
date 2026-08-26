@@ -1,0 +1,273 @@
+[
+ {
+  "post_id": "tb7e2xARb6cfkJrAK",
+  "repo": "mduffster/null-loop-agent",
+  "head_sha": "d4d5154c22a02fe6e807c8dd95d93cf7b28f71fe",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "run-system-progression.py",
+  "entrypoint_confidence": "medium",
+  "env": {
+    "has_requirements": true,
+    "pinned_versions": false,
+    "python_version": "3.11+ (badge only, not enforced)",
+    "key_deps": ["llama.cpp (external binary, not in requirements.txt)", "pandas", "numpy", "jupyter"],
+    "stated_compute": "Apple M4 Pro (Metal acceleration) per EXPERIMENT_SETUP.md; llama.cpp also runs on CUDA so a 3090 is a straightforward substitute"
+  },
+  "models_needed": [
+    {"hf_id": "QuantFactory/Meta-Llama-3-8B-GGUF (Q4_K_M)", "params_b": 8.0, "gated": false},
+    {"hf_id": "QuantFactory/Meta-Llama-3-8B-Instruct-GGUF (Q4_K_M)", "params_b": 8.0, "gated": false}
+  ],
+  "vram_estimate_gb": 6,
+  "vram_basis": "Q4_K_M-quantized 8B GGUF via llama.cpp, n=256 generation, no chat template/no KV cache buildup beyond short feedback loop; ~4.7GB weights + small context",
+  "fits_3090": "yes",
+  "data": {"needed": [], "available": "in-repo", "gated": false},
+  "est_runtime": "hours",
+  "est_runtime_basis": "No wall-clock stated. Scale: Phase1 20 seeds x 20 steps x2 models, tipping-point 14 triggers x5 seeds x20 steps, system-progression 6 messages x20 steps, each generation up to 256 tokens on a quantized 8B via llama.cpp -- plausibly 2-6 hours total on a 3090, well within budget.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "README tables (SSR/TIAR/SRV for results_base/ and results_instruct/; RAR/IOI/PFI/CTA table for results_system_progression/) and null_loop_analysis.ipynb / system_progression_analysis.ipynb",
+  "blockers": [
+    "Requires building llama.cpp locally (not pip-installable, not pinned to a commit) with CUDA support since the repo's own build was for Apple Metal",
+    "download-models.sh points at third-party GGUF re-uploads (QuantFactory) rather than the gated meta-llama HF repos directly"
+  ],
+  "notes": "Very lightweight repo: quantized 8B GGUF models via llama.cpp completion mode, all metrics are local regex hit-rate over generated text, no external judge or API. Primary claim spans three scripts (run-loop-llama-cpp.py for base 0-hit, run-loop-instruct.py for instruct, run-system-progression.py for the minimal-priming tipping point) rather than one; I picked the system-progression script as entrypoint since it most directly tests the 'minimal instruction priming induces role language' claim."
+ },
+ {
+  "post_id": "krzpRvxzx3sGudSv3",
+  "repo": "mihirs-0/task-gaming",
+  "head_sha": "c9b29ca5a328155ec2f41868d3fa97bcf145ade1",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "run_rollouts.py (with analyze.py)",
+  "entrypoint_confidence": "high",
+  "env": {
+    "has_requirements": false,
+    "pinned_versions": null,
+    "python_version": "3.11 (mypy 1.20.2 pinned for the classifier regression suite)",
+    "key_deps": ["vllm", "docker (for the upstream agent-interp-envs env)", "mypy==1.20.2"],
+    "stated_compute": "vLLM 0.26.0, TP=2, 2xRTX 3090 24 GB, driver 580.173.02; context 262,144 max_model_len; measured GPU KV cache 272,960 tokens (results.md lines 449-451)"
+  },
+  "models_needed": [
+    {"hf_id": "cpatonn/Qwen3-Coder-30B-A3B-Instruct-AWQ-4bit", "params_b": 30.0, "gated": false}
+  ],
+  "vram_estimate_gb": 48,
+  "vram_basis": "Author explicitly ran this on 2x24GB RTX 3090s with tensor-parallel-size=2; their own comment says AWQ 4-bit weights are 'the only way to buy real context on 2x24GB' and FP8 weights alone left only 134,944 KV tokens on that setup -- i.e. even 2 GPUs was tight for the context they needed.",
+  "fits_3090": "no",
+  "data": {"needed": ["gkroiz/agent-interp-envs precommit_hook environment (external GitHub repo, cloned + patched)"], "available": "download-script", "gated": false},
+  "est_runtime": "hours",
+  "est_runtime_basis": "300 rollouts total (100 per arm x3 arms), max_steps=100, per-command timeout 900s, concurrency=3; no total wall-clock stated but scale implies several hours minimum.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "README headline table (workaround rate by E) and data/runs/qwen3-coder-30b/progress.md; grading is mechanical (mypy-based), not an LLM judge",
+  "blockers": [
+    "Study repo's own stated compute is 2x24GB GPUs (TP=2) -- a single RTX 3090 cannot hold the same effective KV-cache/context budget they measured (272,960 tokens) even though the AWQ-4bit weights themselves (~17-18GB) would fit alone",
+    "Requires standing up a separate Docker environment from the upstream gkroiz/agent-interp-envs repo, patched, plus a working mypy 1.20.2 toolchain"
+  ],
+  "notes": "Grading is entirely mechanical (git/mypy state inspection), no LLM judge, so no closed-API blocker. The dominant blocker is compute: the repo's own docs are unusually explicit that 2x3090 was required to get workable context length with this MoE model, which a single-3090 budget cannot match without materially reducing max_model_len/context vs. the reported run."
+ },
+ {
+  "post_id": "YwNa9Zmh6ZzK3ajSX",
+  "repo": "juliuskamp/internal-representation-control",
+  "head_sha": "ab93332bc80b7984b117fefa511ff45fb360f1aa",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "scripts/run_pipeline.py",
+  "entrypoint_confidence": "high",
+  "env": {
+    "has_requirements": false,
+    "pinned_versions": true,
+    "python_version": ">=3.12 (nla_server sub-project separately pins 3.12 for sglang; root project pins 3.13)",
+    "key_deps": ["sae_lens>=6.45.3", "torch>=2.12.1", "transformers>=5.13.0", "accelerate", "httpx"],
+    "stated_compute": "README: 'Needs a GPU with ~55 GB of VRAM ... and access to the gated google/gemma-3-27b-it repo.' nla_server/README: 'Needs room for the checkpoint (108 GB, fp32 shards) plus ~54 GB VRAM to serve it.'"
+  },
+  "models_needed": [
+    {"hf_id": "google/gemma-3-27b-it", "params_b": 27.0, "gated": true},
+    {"hf_id": "kitft/nla-gemma3-27b-L41-av", "params_b": 27.0, "gated": true}
+  ],
+  "vram_estimate_gb": 55,
+  "vram_basis": "Explicitly stated in README for the main pipeline (vectors/generate/latents/measure stages on Gemma-3-27B-it); the separate NLA server needs an additional ~54GB VRAM + 108GB disk for a second 27B checkpoint",
+  "fits_3090": "no",
+  "data": {"needed": ["50 concept + 100 control words", "docs/data/agg/sentences.json"], "available": "in-repo", "gated": false},
+  "est_runtime": "unknown",
+  "est_runtime_basis": "No wall-clock times stated anywhere in README or CLAUDE.md.",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "scripts/nla_judge.py scores NLA explanations with GPT-4.1 via OpenRouter (OPENROUTER_API_KEY), the judge step that produces the NLA mean token score in the headline claim",
+  "headline_artifact": "docs/layers.html and docs/forest.html (concept-vector Delta-cosine by layer/word) plus results/*.parquet from the measure stage; NLA scores come from scripts/nla_judge.py output",
+  "blockers": [
+    "Main pipeline explicitly needs ~55GB VRAM for Gemma-3-27B-it generation + all-layer residual capture -- more than double a 3090's 24GB",
+    "A second, separate serving stack (nla_server/, SGLang) needs ~54GB VRAM plus 108GB disk for a different 27B checkpoint (kitft/nla-gemma3-27b-L41-av) just to produce the NLA-decoding half of the result",
+    "NLA judge scoring requires GPT-4.1 via OpenRouter (closed API, no local alternative documented)",
+    "google/gemma-3-27b-it access is gated (not blocking per rules, but stacks with the VRAM problem)"
+  ],
+  "notes": "Every documented requirement in this repo overshoots a single-3090 budget: the README states VRAM needs in absolute terms (~55GB and, for the second serving stack, ~54GB + 108GB disk) rather than leaving room for interpretation. The judge step for the NLA half of the headline number is also a closed API (GPT-4.1/OpenRouter), so this is a 'no' on multiple independent grounds."
+ },
+ {
+  "post_id": "4xemwALszZKqWCBXr",
+  "repo": "xplorer1/ai-safety-study",
+  "head_sha": "d6d2dc8ca6485a07addc56764e2bdf29c8080d16",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "gemma-interp/phase5_emotion.py (with phase2_probe_commit.py and phase3_sweep.py for the decodability/steering-failure halves of the claim)",
+  "entrypoint_confidence": "high",
+  "env": {
+    "has_requirements": false,
+    "pinned_versions": null,
+    "python_version": null,
+    "key_deps": ["transformerlens (implied by 'TransformerLens on Gemma 3 12B' in README)", "torch", "openai"],
+    "stated_compute": "RUNBOOK.md: 'GPU: A100 80 GB @ $1.50/hr is fine (only ~24 GB used).' Model served via vLLM bf16, google/gemma-3-12b-it."
+  },
+  "models_needed": [
+    {"hf_id": "google/gemma-3-12b-it", "params_b": 12.0, "gated": true}
+  ],
+  "vram_estimate_gb": 24,
+  "vram_basis": "12B params in bf16 = ~24GB weights alone (RUNBOOK.md states 'only ~24GB used' of an 80GB A100), leaving essentially no headroom on a 24GB 3090 for KV cache / activation capture during TransformerLens-based probing and steering",
+  "fits_3090": "tight",
+  "data": {"needed": ["contrast_transcripts.json (committed)", "agentic-misalignment blackmail scenario via inspect_evals[agentic_misalignment]"], "available": "in-repo", "gated": false},
+  "est_runtime": "unknown",
+  "est_runtime_basis": "RUNBOOK.md gives ~20-30 min wall-clock only for the Phase -1 smoke test (n=20 epochs); full Phase 1-5 pipeline runtime is not stated.",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "Every phase (3, 4, 5) grades blackmail rate AND coherence with OpenAI gpt-4o (hardcoded model='gpt-4o' in phase3_sweep.py, phase4_ablation.py, phase4_coherence.py, phase5_emotion.py); RUNBOOK.md also uses grader_model=openai/gpt-4o for the initial behavioral eval",
+  "headline_artifact": "gemma-interp/results/ (phase3sweep_rate_vs_layer.png, phase4_ablation.png, probe_auroc_by_layer.png) and README's 'Headline findings' summary table",
+  "blockers": [
+    "Every grading step (blackmail rate + coherence, across phases 3/4/5) calls OpenAI gpt-4o -- a hard closed-API dependency with no documented local alternative",
+    "Gemma-3-12b-it at bf16 consumes essentially the entire 24GB of a 3090 by itself, leaving no headroom for TransformerLens's activation-caching overhead during probing/steering"
+  ],
+  "notes": "This is the closest architectural match to the assignment's Gemma-3-12B blackmail-steering claim (same repo, gemma-interp/ subfolder), and the author was careful about controls (random-direction distributions, coherence grading) -- but grading depends entirely on a live OpenAI gpt-4o call, which the replication budget lacks, independent of the VRAM tightness."
+ },
+ {
+  "post_id": "nWiwv4GN8aYqpnZKE",
+  "repo": "wassname/antipasto",
+  "head_sha": "5e0f8517f360751220bf0348586952ff0e240907",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "nbs/train.py gemma1b-24gb (training) + nbs/eval_baseline_prompting.py / nbs/eval_baseline_repeng.py (baselines) -> antipasto/eval.py + antipasto/metrics.py (Steering F1 table)",
+  "entrypoint_confidence": "high",
+  "env": {
+    "has_requirements": false,
+    "pinned_versions": true,
+    "python_version": ">=3.10",
+    "key_deps": ["torch", "transformers>4.51.0", "peft", "bitsandbytes>=0.47.0", "datasets", "repeng (git, wassname fork)"],
+    "stated_compute": "README: 'Train a single adapter (~1 hour on Gemma-3-1B).' pyproject/config.py has a named preset 'gemma1b-24gb': 'Gemma 3 1B on 24GB GPU'."
+  },
+  "models_needed": [
+    {"hf_id": "google/gemma-3-1b-it", "params_b": 1.0, "gated": true}
+  ],
+  "vram_estimate_gb": 8,
+  "vram_basis": "Repo ships a named config preset explicitly targeting a 24GB GPU for exactly this model ('gemma1b-24gb' in antipasto/config.py); a 1B model in bf16/4bit uses only a few GB, well inside a 3090",
+  "fits_3090": "yes",
+  "data": {"needed": ["800 synthetic honesty contrast pairs (self-generated)", "kellycyy/daily_dilemmas (HF dataset, 1360 dilemmas)"], "available": "hf-hub", "gated": false},
+  "est_runtime": "minutes",
+  "est_runtime_basis": "README states training takes ~1 hour on Gemma-3-1B; evaluation on DailyDilemmas (1360 dilemmas x n=3 seeds) is inference-only on a 1B model, plausibly well under an hour.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "README Results table (Steer F1 by method) reproduced by antipasto/metrics.py::compute_steering_f1, called from antipasto/train/daily_dilemas.py and the nbs/eval_baseline_*.py scripts",
+  "blockers": [],
+  "notes": "Cleanest repo in this batch: the repo literally ships a config preset named for a 24GB GPU running exactly the headline model (Gemma-3-1B). One historical use of GPT-4o-mini (nbs/eval_baseline_prompting_engineered.py) only generated a fixed prompt string once, back in 2024 -- that text is now hardcoded in the repo, so no live API call is needed to reproduce the table."
+ },
+ {
+  "post_id": "kvnHpTJDb692T5yzs",
+  "repo": "naxsos/diffusion-fill-attacks",
+  "head_sha": "3393e7348b2f9c33f799711eed9eb178eda3a615",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "experiments_anchored/run_pipeline.sh full (gen_anchored_spans.py -> run_anchored_sweep.py -> strongreject_grade.py -> analyze_dose_response.py)",
+  "entrypoint_confidence": "high",
+  "env": {
+    "has_requirements": true,
+    "pinned_versions": true,
+    "python_version": null,
+    "key_deps": ["torch==2.8.0", "torchvision==0.23.0", "transformers>=5.12 (for DiffusionGemmaForBlockDiffusion)", "accelerate", "litellm/strong_reject"],
+    "stated_compute": "README: 'full BF16 (~52 GB) -- needs an 80 GB A100/H100' and 'Requires a CUDA GPU with enough memory for the full BF16 model (~52 GB -> an 80 GB A100/H100).'"
+  },
+  "models_needed": [
+    {"hf_id": "google/diffusiongemma-26B-A4B-it", "params_b": 26.0, "gated": false},
+    {"hf_id": "google/gemma-2-27b-it (approx)", "params_b": 27.0, "gated": true},
+    {"hf_id": "google/gemma-4-27b (approx)", "params_b": 27.0, "gated": true}
+  ],
+  "vram_estimate_gb": 52,
+  "vram_basis": "README states directly: DiffusionGemma is a MoE model whose expert tensors bitsandbytes cannot quantize ('4-bit/8-bit stayed ~52 GB and just forced slow CPU offload'), so full BF16 on an 80GB card is the only documented path",
+  "fits_3090": "no",
+  "data": {"needed": ["strongreject_small.jsonl (committed)", "experiments_anchored/anchored_spans.json (committed)"], "available": "in-repo", "gated": false},
+  "est_runtime": "unknown",
+  "est_runtime_basis": "No wall-clock stated; run_pipeline.sh full processes 60 prompts across pre-fill/in-fill/post-fill x hard/soft conditions and multiple models with bootstrap CIs.",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "strongreject_grade.py's primary grader is StrongREJECT's 'strongreject_rubric', which is GPT-4o-mini via OPENAI_API_KEY (described in-repo as 'the paper's primary' grader); experiments_anchored/gen_anchored_spans.py also uses openai/gpt-4o-mini to generate anchored spans",
+  "headline_artifact": "experiments_anchored/results.md (StrongREJECT harm scores by attack type/model with bootstrap CIs) and analyze_dose_response.py output",
+  "blockers": [
+    "DiffusionGemma-26B-A4B-it needs ~52GB BF16 VRAM with no viable quantization path (repo explicitly says bitsandbytes can't shrink the MoE expert tensors) -- categorically exceeds a single 3090",
+    "StrongREJECT rubric grading (the metric itself) requires GPT-4o-mini via OpenAI API for the primary grader"
+  ],
+  "notes": "Double blocker: the model under test cannot be quantized onto a 24GB card by the repo's own account, and the StrongREJECT harm score itself -- the metric named in the assignment -- is computed by an OpenAI-hosted judge. Even the two comparison autoregressive models (Gemma 2/4 27B) would be tight-to-infeasible on one 3090 without quantization, though the repo doesn't rule those out as directly as it does DiffusionGemma."
+ },
+ {
+  "post_id": "fSRg5qs9TPbNy3sm5",
+  "repo": "amack315/melbo-dct-post",
+  "head_sha": "c0b76b746c38de3a4b38b01974c128b3790949c8",
+  "status": "ok",
+  "language": "notebook",
+  "entrypoint": "runs/train_mistral_rr.ipynb + runs/eval_mistral_rr.ipynb (jailbreak ASR); runs/train_deepseek.ipynb + runs/score_deepseek.py (MATH recovery)",
+  "entrypoint_confidence": "medium",
+  "env": {
+    "has_requirements": false,
+    "pinned_versions": true,
+    "python_version": null,
+    "key_deps": ["transformers==4.46.3", "torch>=2.2.1", "scipy (root_scalar in src/dct.py)"],
+    "stated_compute": null
+  },
+  "models_needed": [
+    {"hf_id": "GraySwanAI/Mistral-7B-Instruct-RR", "params_b": 7.0, "gated": false},
+    {"hf_id": "redwoodresearch/math_pwd_lock_deepseek_math7b_on_weak_pythia1b", "params_b": 7.0, "gated": false},
+    {"hf_id": "deepseek-ai/deepseek-math-7b-instruct", "params_b": 7.0, "gated": false},
+    {"hf_id": "cais/HarmBench-Mistral-7b-val-cls", "params_b": 7.0, "gated": false},
+    {"hf_id": "Qwen/Qwen1.5-7B-Chat", "params_b": 7.0, "gated": false}
+  ],
+  "vram_estimate_gb": 16,
+  "vram_basis": "All models involved in the two headline numbers are 7B-class, loaded one at a time in bf16 (~14GB each); no README states this but the notebooks show standard from_pretrained(..., device_map='auto') with no quantization needed at this scale",
+  "fits_3090": "yes",
+  "data": {"needed": ["hendrycks/competition_math (HF dataset, for the MATH recovery eval)"], "available": "hf-hub", "gated": false},
+  "est_runtime": "hours",
+  "est_runtime_basis": "No timing stated. DCT training (NUM_ITERS=10, NUM_FACTORS=512, FACTOR_BATCH_SIZE=128) plus generation for jailbreak ASR (behaviors set) and 32-problem MATH eval x2 conditions (with/without password) on 7B models -- plausibly 1-3 hours on a 3090.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "runs/eval_mistral_rr.ipynb (ASR computed locally via cais/HarmBench-Mistral-7b-val-cls) and runs/score_deepseek.py / deepseek_eval_*.csv (MATH accuracy with vs without password)",
+  "blockers": [
+    "No README/requirements.txt; procedure has to be reconstructed from bare notebooks and scripts (a demo_32b.ipynb exists for a separate Qwen1.5-32B cross-model demo not needed for the two headline numbers, which are both 7B-scale)"
+  ],
+  "notes": "Fully local and reproducible on a single 3090: jailbreak ASR is graded by a local HarmBench classifier model (cais/HarmBench-Mistral-7b-val-cls), not an LLM API, and MATH correctness is checked by string/regex matching against hendrycks/competition_math. Lack of any README/docs is the main friction, not compute."
+ },
+ {
+  "post_id": "cNDJuXNZ8MrkPZNzj",
+  "repo": "ukgovernmentbeis/llm-self-steering",
+  "head_sha": "fb65cbe39083b5e155a71984ada10382aa35e17e",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "scripts/run_experiments.py --tasks guess_kv_cached_<drug> / guess_placebo_<drug> (against a vllm-lens server started by scripts/start_vllm.sh), scored by src/hackday/agent/scorers.py::kv_cleared_score / cached_vs_uncached_judge",
+  "entrypoint_confidence": "high",
+  "env": {
+    "has_requirements": false,
+    "pinned_versions": true,
+    "python_version": ">=3.12",
+    "key_deps": ["vllm-lens (git submodule, pinned to feat/emotion-tracker)", "inspect-ai>=0.3.183", "inspect-evals>=0.8.0", "anthropic>=0.96.0"],
+    "stated_compute": "scripts/start_vllm.sh defaults to Qwen/Qwen3-8B on a single GPU; comment says 'MODEL=Qwen/Qwen3-32B bash scripts/start_vllm.sh # 32B on a single GPU' but gives no VRAM figure and passes no quantization flag to vllm serve"
+  },
+  "models_needed": [
+    {"hf_id": "Qwen/Qwen3-8B", "params_b": 8.0, "gated": false},
+    {"hf_id": "Qwen/Qwen3-32B", "params_b": 32.0, "gated": false}
+  ],
+  "vram_estimate_gb": 64,
+  "vram_basis": "Qwen3-32B served via vllm serve with no quantization flag in start_vllm.sh -- bf16 weights alone are ~64GB, which does not fit a 24GB 3090 even though the script comment claims 'single GPU' (almost certainly meaning a large-VRAM card, e.g. the B200/A100 hosts referenced elsewhere in the README's IMEX/CUDA fabric notes)",
+  "fits_3090": "no",
+  "data": {"needed": ["ryancodrai/emotion-probes (HF dataset, CC-BY-4.0, for the emotion steering vectors)", "40-drug steering vector library (in-repo, src/hackday/drugs/)"], "available": "hf-hub", "gated": false},
+  "est_runtime": "unknown",
+  "est_runtime_basis": "89 tasks total across 5 families; no wall-clock stated. run_experiments.py is resumable via inspect's eval_set, implying it is expected to take a substantial, possibly multi-hour/multi-day run.",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "README states directly: 'The judge scorers (Haiku/Sonnet monitors) and the story-generation script call the Anthropic API directly.' Confirmed in code: kv_cleared_score / cached_vs_uncached_judge (the introspection-accuracy scorers that produce the assignment's headline metric) default scorer_model to anthropic/claude-sonnet-4-5-20250929, and lost_in_drugs_judge defaults to anthropic/claude-haiku-4-5-20251001.",
+  "headline_artifact": "logs/run*/*.eval (inspect_ai eval logs for the guess_kv_cached_<drug> / guess_placebo_<drug> tasks), viewed via 'inspect view'",
+  "blockers": [
+    "The headline introspection-accuracy metric itself is graded by an Anthropic Claude Sonnet judge (kv_cleared_score's default scorer_model) -- a hard closed-API dependency with no local-judge fallback in the code",
+    "Qwen3-32B (needed for the 8B-vs-32B scaling comparison in the headline claim) is served in bf16 with no quantization in the provided launch script, requiring ~64GB VRAM -- does not fit a single 24GB 3090"
+  ],
+  "notes": "Two independent hard blockers stack here: the grading pipeline for the exact metric in the assignment (introspection accuracy) is an Anthropic API call by default, and the 32B half of the model-size comparison needs roughly 2.5x a 3090's VRAM as shipped. The 8B condition alone would likely fit a 3090, but the paper's headline number is specifically the 8B-vs-32B scaling contrast."
+ }
+]

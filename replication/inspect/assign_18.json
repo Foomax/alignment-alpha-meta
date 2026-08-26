@@ -1,0 +1,98 @@
+[
+ {
+  "post_id": "ZwEer94AefjdW4933",
+  "repo": "phusroyal/phu-bluedot_1st_puzzle",
+  "title": "Can we teach a model to encode a semantic feature on a chosen manifold in just three channels?",
+  "primary_claim": "A five-layer MLP can be trained to encode a binary semantic feature (country) on a pre-chosen 3-channel nonlinear manifold (sphere shell or helix tube) such that the manifold is causally used by the classifier (causal delta rising from ~0.02-0.04 to 1.9-3.5, swap-test specificity ratios of 47-92) while becoming much harder to read as an ordinary linear direction (linear probe AUC falling from ~0.9998 to 0.57-0.67), though some leakage through complement channels remains.",
+  "metric": "Linear probe AUC on country feature / causal delta",
+  "target_value": "linear probe AUC falls from 0.9996-0.9998 (ClassOT) to 0.57-0.67 (GFAL); causal delta rises from 0.02-0.04 to 1.9-3.5",
+  "models": [
+   "MiniLM (sentence-transformers/all-MiniLM-L6-v2 encoder + custom 5-layer MLP classifier)"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "representation geometry",
+  "claim_type": "positive",
+  "head_sha": "27a8be7ed55fb4917065f7d84de567ccd3883914"
+ },
+ {
+  "post_id": "wezSznWnsMhpRF2QH",
+  "repo": "jim-maar/interpretability",
+  "title": "Exploring how OthelloGPT computes its world model",
+  "primary_claim": "OthelloGPT's attention heads implement a 'Previous Color Circuit' that copies each tile's color forward from the most recent move at which it was flipped, reconstructing the probed board state with 0.818 accuracy, while a competing hypothesis that monosemantic MLP neurons implement discrete flipping rules failed an ablation test.",
+  "metric": "reconstruction accuracy of previous-color-circuit probe vs real attention output",
+  "target_value": "0.818 overall (up to 0.97 for specific layer/position/tile combinations)",
+  "models": [
+   "OthelloGPT"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "circuit discovery",
+  "claim_type": "positive",
+  "head_sha": "73bc8f299f29823ad2ac1d288861dbb21b0e9f4f"
+ },
+ {
+  "post_id": "8uMA6vwitdwqs5AH4",
+  "repo": "rahulschand/monosemanticity-quantization",
+  "title": "Monosemanticity & Quantization",
+  "primary_claim": "Training a sparse autoencoder on a quantized 1-layer transformer (gelu-2l) shows that 8-bit quantization only slightly degrades SAE reconstruction accuracy and active-feature count relative to full precision, while 4-bit quantization degrades the underlying model so severely that its activations become near-noise, causing the SAE to achieve deceptively low L1/L2 loss by zeroing out over 80% of features rather than learning genuine fine-grained features.",
+  "metric": "percentage of SAE features with average activation below 1e-5, by model precision",
+  "target_value": "full precision and 8-bit show similar, gradual feature-learning trends with 8-bit only slightly behind; 4-bit shows more than 80% of features below 1e-5, indicating the SAE largely zeros out features rather than learning them",
+  "models": [
+   "gelu-2l (Neel Nanda toy 1-layer transformer, full/8-bit/4-bit quantized) 2-layer, 512-width"
+  ],
+  "workload": "aux-train",
+  "tier": "T?",
+  "phenomenon": "sparse autoencoder quality",
+  "claim_type": "positive",
+  "head_sha": "dd00a2557d265e2f55c86a601957c9905d7cb886"
+ },
+ {
+  "post_id": "WvoexzXwnneXrRyea",
+  "repo": "lewington-pitsos/sae_vit",
+  "title": "Food, Prison & Exotic Animals: Sparse Autoencoders Detect 6.5x Performing Youtube Thumbnails",
+  "primary_claim": "A Sparse Autoencoder trained on CLIP/ImageNet activations finds monosemantic features in YouTube thumbnails whose presence is statistically associated with view count (Kolmogorov-Smirnov statistic 0.9875, p=0 on YouTube-8M), with the top feature's thumbnail group having a median view count over 6.5x the dataset median.",
+  "metric": "median view count multiplier for top SAE feature group vs dataset median; KS test",
+  "target_value": "6.5x (YouTube-8M); KS statistic 0.9875, p=0",
+  "models": [
+   "CLIP"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "SAE feature interpretability",
+  "claim_type": "positive",
+  "head_sha": "6c10afcb50892629e2635697afb55b3b7ee6ec5d"
+ },
+ {
+  "post_id": "YbfhaqNo4AWdXSpzQ",
+  "repo": "chessformer-lens/chessformer_lens",
+  "title": "One attention head carries knight forks in a chess transformer, and here's a new toolkit that found it.",
+  "primary_claim": "A single attention head (layer 5, head 5) in the Maia-3 chess transformer causally carries knight-fork move selection: mining hundreds of forks and ablating each head shows ablating head 5 costs 2.78 logits versus at most 0.14 for every other head in the same layer.",
+  "metric": "logit cost of ablating attention head on knight-fork move",
+  "target_value": "ablating head 5 (layer 5) costs 2.78 logits vs <=0.14 for every other head in the layer",
+  "models": [
+   "Maia 3 (Maia-3)"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "circuit discovery",
+  "claim_type": "positive",
+  "head_sha": "85556d390049fa441de5c7ddc1e908f00c83edf7"
+ },
+ {
+  "post_id": "8zDjhJNoFhMuHB5Kc",
+  "repo": "g-w1/gradient-routed-vae",
+  "title": "Creating Interpretable Latent Spaces with Gradient Routing",
+  "primary_claim": "Applying gradient routing to an MNIST variational autoencoder (masking all latent dimensions except the one corresponding to the image's label during training) produces a 10-dimensional latent space that specializes one dimension per digit, enabling digit classification via argmax over the encoding at 92.58% accuracy despite no explicit classification loss.",
+  "metric": "digit classification accuracy via argmax over latent encoding",
+  "target_value": "92.58%",
+  "models": [
+   "MNIST VAE (custom MLP)"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "gradient routing for interpretability",
+  "claim_type": "positive",
+  "head_sha": "a644302f8abf5c15541380bff7068bf615f1d319"
+ }
+]

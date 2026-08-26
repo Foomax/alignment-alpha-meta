@@ -1,0 +1,73 @@
+{
+ "slug": "when-benchmarks-lie-evaluating-malicious-prompt---maxf-zn",
+ "post_id": "2H6PAK7YELjEsHkEc",
+ "title": "When Benchmarks Lie: Evaluating Malicious Prompt Classifiers Under True Distribution Shift",
+ "date": "2026-02-23",
+ "repo": "maxf-zn/prompt-mining",
+ "head_sha": "2aadf4e6fe0dc47c6558e13ba8bdcc2c19141819",
+ "entrypoint": "prompt_mining/ingestion/run_ingestion.py (activation capture) + prompt_mining/classifiers/lodo.py (LODO evaluation) \u2014 a multi-step pipeline, not a single script",
+ "entrypoint_confidence": "medium",
+ "python_version": ">=3.9",
+ "key_deps": [
+  "torch>=2.8.0",
+  "transformers>=4.57.3",
+  "transformer-lens>=2.16.1",
+  "sae-lens>=6.22.3",
+  "xgboost>=3.1.2",
+  "scikit-learn>=1.3.0",
+  "zarr>=2.16.0"
+ ],
+ "models": [
+  {
+   "hf_id": "meta-llama/Llama-3.1-8B-Instruct",
+   "params_b": 8.0,
+   "gated": true
+  },
+  {
+   "hf_id": "meta-llama/Llama-Guard-3-8B",
+   "params_b": 8.0,
+   "gated": true
+  },
+  {
+   "hf_id": "meta-llama/Llama-Prompt-Guard-2-86M",
+   "params_b": 0.086,
+   "gated": true
+  }
+ ],
+ "phenomenon": "prompt injection",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "A lightweight logistic-regression probe trained on Llama-3.1-8B-Instruct's internal activations to classify malicious agentic prompts substantially outperforms Meta's Prompt-Guard-2, Llama-Guard-3-8B, and prompting the same base model as a judge across most attack categories (e.g. 99.2% recall on agentic tool-use injections vs 21.5% for the LLM-judge baseline), but the model's true out-of-distribution generalization is much worse than standard train/test-split evaluation suggests, as revealed by leave-one-dataset-out (LODO) evaluation across 18 datasets.",
+ "quote": "If someone were to show you a system with a test accuracy like the \"Test Acc\" above - you would buy it probably. But the \"LODO Acc\"? No way. Same exact model, different ways to measure.",
+ "metric": "recall (%) per attack category, FPR (%) on benign data, comparing standard test-split accuracy to LODO accuracy",
+ "target_value": "recall: Agentic 99.2% (ours) vs 21.5% (Llama-Judge); Indirect 66.7% (ours) vs 27.4% (Llama-Guard); benign FPR 6.8% (ours, low threshold) vs 0.4% (Prompt-Guard); standard test accuracy much higher than LODO accuracy on the same model (qualitative, no numeric value given)",
+ "target_numeric": 99.2,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 6 numbers; compare the components by hand",
+ "vram_estimate_gb": 16,
+ "fits_3090": "tight",
+ "est_runtime": "unknown",
+ "est_runtime_class": "unknown",
+ "budget_minutes": 90,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "~15 HF-hosted prompt-injection/safety/instruction datasets (AdvBench, HarmBench, WildJailbreak, Dolly15K, OpenOrca, etc.)",
+   "BIPIA and InjecAgent, which must be git-cloned separately (not bundled)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "No single 'run the headline experiment' script: reproducing the paper's exact numbers requires (1) an ingestion_config.yaml covering all ~18 datasets, 2 of which (BIPIA, InjecAgent) must be manually git-cloned first, (2) running the multi-GPU ingestion orchestrator to capture Llama-3.1-8B-Instruct activations plus PromptGuard/LlamaGuard/LlamaJudge labels for every dataset, then (3) training the classifier and running LODO \u2014 none of these steps ship with config values pinned to the paper's exact setup.",
+  "Default model dtype is float32 (~32GB for an 8B model); needs a config change to bf16 to fit a single 24GB 3090.",
+  "All three target/baseline models are gated on Hugging Face and require accepting Meta's Llama license plus an HF_TOKEN."
+ ],
+ "inspector_notes": "This is a mature, well-documented general-purpose activation-mining platform (not a single-experiment script) built specifically to produce this paper's results. LlamaJudgeEvaluator uses a local Llama model as judge (not GPT-4/Claude), so the headline recall/FPR numbers need no closed API; Bedrock/Claude is used only optionally for SAE-feature-name interpretation, unrelated to the headline metric.",
+ "headline_artifact": "LODOResult (per-dataset and weighted-average accuracy/F1/ROC-AUC) from prompt_mining/classifiers/lodo.py, comparing the linear-probe classifier against PromptGuardEvaluator/LlamaGuardEvaluator/LlamaJudgeEvaluator labels captured via run_ingestion.py.",
+ "selector_tier": "T1",
+ "selector_score": 5.73
+}

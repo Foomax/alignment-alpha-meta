@@ -1,0 +1,64 @@
+{
+ "slug": "paper-automated-feature-labeling-with-token-spac--seamus-fallows",
+ "post_id": "Eu96GFW6LKrQHCJbs",
+ "title": "[Paper] Automated Feature Labeling with Token-Space Gradient Descent",
+ "date": "2025-04-30",
+ "repo": "seamus-fallows/automated-feature-labeling",
+ "head_sha": "f6f16747b57f81b9b91b6ebb1c4a9bd128477494",
+ "entrypoint": "experiments/animals.py",
+ "entrypoint_confidence": "medium",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformers",
+  "torch",
+  "einops",
+  "torchtyping",
+  "jaxtyping"
+ ],
+ "models": [
+  {
+   "hf_id": "meta-llama/Meta-Llama-3-8B-Instruct",
+   "params_b": 8,
+   "gated": true
+  }
+ ],
+ "phenomenon": "interpretability tooling",
+ "contested": true,
+ "claim_type": "method",
+ "primary_claim": "Directly optimizing a feature label via token-space gradient descent, using an LLM as a differentiable discriminator rather than a hypothesis generator, converges to correct single-token labels for several synthetic toy features (animal, Chinese text, number, and mammal under balanced sampling), but defaults to broader categories under unbalanced sampling and fails when the base model cannot reliably classify the concept (e.g. palindromes).",
+ "quote": "The method successfully labeled features like \"animal,\" \"mammal,\" \"Chinese,\" and \"number\" in our proof-of-concept experiments",
+ "metric": "label-convergence success across tested synthetic features",
+ "target_value": "converged to the correct single-token label for animal, Chinese, number, and mammal (balanced sampling); failed to find the correct label for mammal under unbalanced natural-text sampling (defaulted to 'animal') and for palindrome detection (defaulted to 'a')",
+ "target_numeric": null,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is not a single scalar; judge by hand",
+ "vram_estimate_gb": 20,
+ "fits_3090": "tight",
+ "est_runtime": "unknown",
+ "est_runtime_class": "unknown",
+ "budget_minutes": 90,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "animals",
+   "mammals",
+   "chinese",
+   "numbers",
+   "palindromes text data"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "As coded, loads an 8B model in fp32 (~32GB) which does not fit a 24GB 3090 without a manual bf16/fp16 edit",
+  "Hardcoded HuggingFace token string ('llama_token') committed in multiple files (likely already revoked, but a code smell)",
+  "No single unified entrypoint -- each concept/claim (animal, Chinese, number, mammal balanced/unbalanced, palindrome) is a separate standalone script"
+ ],
+ "inspector_notes": "Method itself is cheap (only a d_vocab-sized soft token vector is trained via gradient descent; the 8B model is frozen), so the VRAM issue is a trivial dtype fix, not a fundamental blocker. All text data for every claimed sub-experiment is already committed under data/text_data/.",
+ "headline_artifact": "trainings_logs.plot_final_token_accuracy / plot_top_tokens outputs from each experiments/*.py script (one script per concept: animals.py, chinese.py, numbers.py, mammals.py, mammals_words.py, palindromes.py), showing convergence (or failure) to the target single-token label",
+ "selector_tier": "T1",
+ "selector_score": 5.54
+}

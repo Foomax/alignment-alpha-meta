@@ -1,0 +1,317 @@
+[
+  {
+    "post_id": "KbFuuaBKRP7FcAADL",
+    "repo": "submarat/removing-layer-norm",
+    "head_sha": "583a9e63ff639f17ee514c79a857f8d5a16728ff",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "eval_pile.py (invocations listed in eval_all.sh reproduce the README table exactly)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": null,
+      "key_deps": ["transformers", "transformer_lens", "datasets", "torch", "docopt", "scipy"],
+      "stated_compute": "You will need 80GB+ GPU memory for most schedules - typically A100. (for TRAINING new LN-free checkpoints). Separately, for evaluation: 'This task is compute intensive and takes about 4h on an A100.'"
+    },
+    "models_needed": [
+      {"hf_id": "openai-community/gpt2", "params_b": 0.124, "gated": false},
+      {"hf_id": "openai-community/gpt2-medium", "params_b": 0.355, "gated": false},
+      {"hf_id": "openai-community/gpt2-large", "params_b": 0.774, "gated": false},
+      {"hf_id": "openai-community/gpt2-xl", "params_b": 1.5, "gated": false},
+      {"hf_id": "schaeff/gpt2-small_LNFree300", "params_b": 0.124, "gated": false},
+      {"hf_id": "schaeff/gpt2-medium_LNFree500", "params_b": 0.355, "gated": false},
+      {"hf_id": "schaeff/gpt2-large_LNFree600", "params_b": 0.774, "gated": false},
+      {"hf_id": "schaeff/gpt2-xl_LNFree800", "params_b": 1.5, "gated": false}
+    ],
+    "vram_estimate_gb": 8,
+    "vram_basis": "Inference-only fp32 forward pass of GPT-2 XL (1.5B params, ~6GB weights) with batch_size=8, seq_len=1024, computing CE loss on Pile-filtered; no gradients/training needed since the LN-free and vanilla checkpoints used for the headline table are already published on HF",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["Pile-filtered (lucabaroni/apollo-pile-filtered-10k)", "Pile (apollo-research/monology-pile-uncopyrighted-tokenizer-gpt2)", "OpenWebText"],
+      "available": "hf-hub",
+      "gated": false
+    },
+    "est_runtime": "hours",
+    "est_runtime_basis": "README: 'This task is compute intensive and takes about 4h on an A100' for eval_all.sh across ALL models and datasets; a single model/dataset pair is much faster",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "README's cross-entropy loss table (OWT/Pile/Pile-filtered columns) for Small/Medium/Large/XL LN-free vs vanilla — matches target_value exactly",
+    "blockers": [
+      "Training new LN-free checkpoints from scratch needs 80GB+ GPU per README, but this is NOT required to reproduce the reported numbers since the exact checkpoints are already released on HF",
+      "python_version not pinned anywhere in the repo"
+    ],
+    "notes": "The paper's own headline CE-loss table is reproducible purely via inference on released HF checkpoints (eval_pile.py/eval_all.sh); the 80GB+ GPU requirement in the README applies only to re-deriving the LN-free checkpoints via training from scratch."
+  },
+  {
+    "post_id": "HcKpxEHX5b4JcRbPz",
+    "repo": "garetht/absolute_zero_reproduction",
+    "head_sha": "cc596ecaf6eaca07e80d07d3ab7ec2b675623ad0",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "model/train.py",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": "3.11.11",
+      "key_deps": ["transformers", "torch", "accelerate", "datasets", "wandb"],
+      "stated_compute": "We ran the training on a single Nvidia A100 in a cloud-provisioned instance on RunPod."
+    },
+    "models_needed": [
+      {"hf_id": "Qwen/Qwen2.5-3B-Instruct", "params_b": 3.0, "gated": false}
+    ],
+    "vram_estimate_gb": 48,
+    "vram_basis": "model/train.py loads the model via AutoModelForCausalLM.from_pretrained(MODEL_NAME, device_map=DEVICE) with no torch_dtype (defaults to fp32), no LoRA/PEFT import anywhere, and a plain torch.optim.AdamW over all parameters. No autocast/bf16/gradient_checkpointing found in trainer.py or train.py. Full fp32 fine-tune of 3B params: weights(4B)+grad(4B)+AdamW states(8B) = ~16 bytes/param x 3B ≈ 48GB minimum, before rollout-generation activations.",
+    "fits_3090": "no",
+    "data": {
+      "needed": [],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "unknown",
+    "est_runtime_basis": "README states '200 RL training steps' and batch_size=8 but gives no wall-clock time",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "diagrams/accuracy.png (solver accuracy curve over training steps) described in the README Results section",
+    "blockers": [
+      "Full-parameter fp32 AdamW fine-tuning of a 3B-param model with no LoRA/quantization/mixed-precision in the shipped code requires far more than 24GB VRAM"
+    ],
+    "notes": "AZRArgs.dtype is set to bfloat16 in args.py but is never actually passed to from_pretrained() or used in an autocast context in train.py/trainer.py, so the model runs in fp32 as shipped despite the dataclass field suggesting otherwise."
+  },
+  {
+    "post_id": "k7wfo2fk4bipK7mfH",
+    "repo": "daviddemitriafrica/llm-wireheading-experiment",
+    "head_sha": "1508466b4178b4a3ae81ec0dae3ba8bf6f0c46ec",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "src/run_experiment.py",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["transformers", "peft", "bitsandbytes", "accelerate", "datasets"],
+      "stated_compute": "GPU: NVIDIA L4 (23GB) for sequential execution, A100 (80GB) for parallel. Runtime: ~30-50 hours (L4 sequential) or ~15-25 hours (A100 parallel). Storage: ~100GB for model downloads."
+    },
+    "models_needed": [
+      {"hf_id": "meta-llama/Llama-3.1-8B-Instruct", "params_b": 8, "gated": true},
+      {"hf_id": "mistralai/Mistral-7B-Instruct-v0.3", "params_b": 7, "gated": false},
+      {"hf_id": "google/gemma-2-9b-it", "params_b": 9, "gated": true}
+    ],
+    "vram_estimate_gb": 20,
+    "vram_basis": "model_utils.py loads 7-10B models in bf16 with LoRA (r=8, alpha=32) adapters on attention projections; gradient checkpointing is explicitly skipped for models under 12B. This matches the README's own stated 'NVIDIA L4 (23GB)' figure for sequential single-model runs, essentially the same VRAM class as a 3090.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["IMDB", "CNN/DailyMail", "2-digit arithmetic (procedurally generated)"],
+      "available": "hf-hub",
+      "gated": false
+    },
+    "est_runtime": "days",
+    "est_runtime_basis": "README: '~30-50 hours (L4 sequential)' for full paper reproduction across 2 models x 3 tasks x 3 conditions x multiple seeds x 500 rounds",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "paper_figures/figure2_grade_inflation.png and figure4_wireheading_dynamics.png, generated by src/analyze_results.py from run_experiment.py output",
+    "blockers": [
+      "Very long total runtime (30-50h sequential per README) for the full paper reproduction, though feasible over several days on a single 3090",
+      "Llama-3.1-8B-Instruct and Gemma-2-9b-it require accepting HF gated-model licenses"
+    ],
+    "notes": "Unusually well-documented compute requirements that map almost exactly onto a single RTX 3090 (L4 23GB ~= 3090 24GB); self-evaluation grading is computed by the models themselves, no external judge API is used anywhere in src/."
+  },
+  {
+    "post_id": "m5XzhbZjEuF9uRgGR",
+    "repo": "loftusa/owls",
+    "head_sha": "d14954773195585a1e2e4347d4321e89a46bad15",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "animals.py (headline subliminal-prompting results); experiments/Subliminal Learning.py has the fuller entanglement-discovery analysis",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": "3.12",
+      "key_deps": ["transformers", "torch", "nnsight", "accelerate", "scikit-learn"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "meta-llama/Llama-3.2-1B-Instruct", "params_b": 1.0, "gated": true},
+      {"hf_id": "Qwen/Qwen2.5-7B-Instruct", "params_b": 7.0, "gated": false},
+      {"hf_id": "google/gemma-2-9b-it", "params_b": 9.0, "gated": true},
+      {"hf_id": "allenai/OLMo-2-1124-7B-Instruct", "params_b": 7.0, "gated": false}
+    ],
+    "vram_estimate_gb": 20,
+    "vram_basis": "animals.py loads models with torch_dtype='bfloat16'; largest model used is Gemma-2-9b-it (~18GB weights in bf16). Pure inference (forward passes only, no backward/training), small batched prompts.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["animal/number/tree word lists (in-repo: animals.py, utils/animals_utils.py, data/animal_preference_numbers)"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "hours",
+    "est_runtime_basis": "No stated runtime; inferred from being a pure-inference logit/probability sweep over ~18 animals x number tokens per model, consistent with results/ CSVs already present for 4 models (gemma-2-9b-it, Llama-3.1-8B-Instruct, OLMo-2-1124-7B-Instruct, Qwen2.5-7B-Instruct)",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "results/<model>/subliminal_prompting.csv and final.csv, matching the 'P(owl) raised into top-5' / success-rate claims",
+    "blockers": [
+      "The '7/18 for subliminal learning' baseline (actual gradient-based fine-tuning, as opposed to prompting) does not appear to be implemented in this repo — no LoRA/Trainer/SFT code found anywhere in the .py files; it likely comes from the original Cloud et al. paper rather than being reproduced here",
+      "Llama-3.2-1B-Instruct and Gemma-2-9b-it require HF gated-model access"
+    ],
+    "notes": "The subliminal-PROMPTING half of the claim (pure inference, no fine-tuning) is directly and cheaply reproducible, with results already checked into results/ for 4 models. The subliminal-LEARNING (fine-tuning) comparison number used for the 12/18 vs 7/18 headline figure does not appear to have in-repo reproduction code."
+  },
+  {
+    "post_id": "gHheKspmTAYqEagbT",
+    "repo": "crazytieguy/codenames-oversight",
+    "head_sha": "7ce5c1ae904dcb708bb57552a7a03871b6b30a60",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "codenames_oversight/rloo.py (RLOO training) + codenames_oversight/evaluate_model.py, driven by jobs/rloo_*.sh / *.slurm scripts",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["transformers==4.43.3", "trl==0.9.6", "peft", "bitsandbytes", "accelerate==0.33.0", "openai"],
+      "stated_compute": "jobs/*.slurm: '#SBATCH --gres=gpu:a100:1', '#SBATCH --time=24:00:00', '#SBATCH --mem=48G', '#SBATCH --array=0-9' (10 sweep configs per protocol job)"
+    },
+    "models_needed": [
+      {"hf_id": "meta-llama/Llama-2-7b-hf", "params_b": 7, "gated": true}
+    ],
+    "vram_estimate_gb": 16,
+    "vram_basis": "rloo.py loads Llama-2-7b with BitsAndBytesConfig(load_in_4bit=True) and bf16 compute dtype, then attaches multiple PEFT/LoRA adapters (cluer, cluer_ref, critiquer, critiquer_ref) on top of one shared quantized base model for RLOO rollouts and backward passes on the small adapter params only",
+    "fits_3090": "probably",
+    "data": {
+      "needed": ["data/sft-dataset.jsonl (in-repo)", "procedurally generated CodeNames games via generate_games.py", "OpenAI text-embedding-3-large embeddings for every clue/word pair (NOT cached in repo)"],
+      "available": "missing",
+      "gated": false
+    },
+    "est_runtime": "hours to a day per sweep point",
+    "est_runtime_basis": "jobs/rloo_negligent_biased_base.slurm requests --time=24:00:00 per SLURM array task, with --array=0-9 (10 configs) run per protocol",
+    "needs_closed_api": true,
+    "needs_closed_api_for": "codenames_oversight/evaluate_clue.py calls OpenAI's text-embedding-3-large API to compute the ground-truth semantic-similarity 'true score' used throughout both RLOO training and evaluation (get_openai_embedding_with_backoff). No embedding cache is checked into the repo — data/.gitignore excludes everything in data/ except itself.",
+    "headline_artifact": "results-explorer/ dashboard data + plots/base-adversarial-strengths.png, plots/consultancy-adversarial-strengths.png (adversarial strength vs true-score/overseer-score reduction)",
+    "blockers": [
+      "Hard dependency on OpenAI's embeddings API for the core 'true score' oversight metric, with no shipped cache — violates the no-closed-API-keys replication constraint",
+      "meta-llama/Llama-2-7b-hf is gated",
+      "Each of ~10-12 sweep configs x 2-3 protocols (base/consultancy/critiques) needs up to 24h on an A100-class GPU per the SLURM job specs"
+    ],
+    "notes": "VRAM footprint (4-bit Llama-2-7B + multiple small LoRA adapters) would likely fit a 3090, but the entire pipeline is blocked on OpenAI embedding calls used as the ground-truth similarity judge with no shipped cache, making this a hard no under the closed-API-key constraint regardless of VRAM fit."
+  },
+  {
+    "post_id": "k8ZZ5XzYb5wrDp4sE",
+    "repo": "anuragsync78/reflective-dialog-experiment",
+    "head_sha": "088b97405246129c74653622021ca8d06d291554",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "Dialog_Based_Conditioning_Suite/qlora_conditioning_three_variants_resumable.ipynb (training) + evaluation.ipynb + evaluator_model_prompt.txt (GPT-5 scoring)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["transformers", "peft", "accelerate", "bitsandbytes", "datasets"],
+      "stated_compute": "All experiments use small LM backbones for repeatability on Colab hardware (T4/A100)."
+    },
+    "models_needed": [
+      {"hf_id": "microsoft/Phi-3-mini-4k-instruct", "params_b": 3.8, "gated": false},
+      {"hf_id": "TinyLlama/TinyLlama-1.1B-Chat-v1.0", "params_b": 1.1, "gated": false}
+    ],
+    "vram_estimate_gb": 8,
+    "vram_basis": "qlora_conditioning notebook loads Phi-3-mini via BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=bfloat16) with LoRA r=16 adapters — README states this fits Colab T4 (16GB), so it fits comfortably within 24GB",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["DialogicConditioning/dialogue_conditioning_large.jsonl (in-repo)", "reflection_baseline.jsonl / identity_baseline.jsonl (in-repo)", "dialogic_templates/*.json (in-repo)"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "hours",
+    "est_runtime_basis": "Not explicitly stated; inferred from Colab T4/A100 hardware target and dataset sizes (500 examples per behaviour) typical of QLoRA fine-tunes at this scale",
+    "needs_closed_api": true,
+    "needs_closed_api_for": "evaluator_model_prompt.txt is a scoring-engine prompt whose output populates gpt5_evaluation/; per the assignment metric ('GPT-5-assisted scoring'), reproducing the exact reported 0-4 consistency/revision/uncertainty scores requires access to GPT-5 (closed model). No local judge model or API-calling code is included in the repo for this step.",
+    "headline_artifact": "DialogicConditioning/gpt5_evaluation/behavioural_summary.csv and semantic_drift_summary.csv",
+    "blockers": [
+      "GPT-5 is used as the scoring judge for the headline consistency/revision/uncertainty numbers; the replication budget has no closed-model API keys",
+      "No requirements.txt/pyproject.toml; dependencies are only declared inline via !pip install cells in Colab notebooks"
+    ],
+    "notes": "Model conditioning itself (QLoRA on Phi-3-mini / TinyLlama) is cheap and locally reproducible with data already checked into the repo, but the headline 0-4 behavioural scores depend on GPT-5 as judge, which the replication budget excludes."
+  },
+  {
+    "post_id": "2dA7phbYZGPjhTj9q",
+    "repo": "zachdata/metastablestateanalysis",
+    "head_sha": "4e9471d69cec1ea826ded94351cbc38c32ea3e5b",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "p1_mstate_tracking/run_1.py --models blog1 bert-large-uncased --random-baseline (blog1 = albert-base-v2, albert-xlarge-v2, bert-base-uncased, gpt2, gpt2-medium, gpt2-large, gpt2-xl; bert-large-uncased is a separate registry key not in the default blog1 group)",
+    "entrypoint_confidence": "medium",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": ">=3.10",
+      "key_deps": ["torch", "transformers", "scikit-learn", "matplotlib", "numpy", "scipy", "hdbscan (imported but NOT declared in any requirements file)"],
+      "stated_compute": "pyproject.toml comment: install torch from the CPU index because 'nothing in CI needs a GPU'; no GPU sizing is stated anywhere for the actual analysis runs"
+    },
+    "models_needed": [
+      {"hf_id": "gpt2", "params_b": 0.124, "gated": false},
+      {"hf_id": "gpt2-medium", "params_b": 0.355, "gated": false},
+      {"hf_id": "gpt2-large", "params_b": 0.774, "gated": false},
+      {"hf_id": "gpt2-xl", "params_b": 1.5, "gated": false},
+      {"hf_id": "albert-base-v2", "params_b": 0.012, "gated": false},
+      {"hf_id": "albert-xlarge-v2", "params_b": 0.06, "gated": false},
+      {"hf_id": "bert-base-uncased", "params_b": 0.11, "gated": false},
+      {"hf_id": "bert-large-uncased", "params_b": 0.34, "gated": false}
+    ],
+    "vram_estimate_gb": 8,
+    "vram_basis": "core/config.py sets MODEL_DTYPE='float32'; these are inference-only forward passes (activation extraction across layers) with the largest model being GPT-2 XL (1.5B, ~6GB in fp32) plus per-layer activation caching, no training/backward pass",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["text prompts (in-repo, referenced by p1_mstate_tracking/design-1.md)"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "hours",
+    "est_runtime_basis": "No explicit wall-clock stated; inferred from CPU-bound eigenspectrum/HDBSCAN post-processing over 8 small-to-medium models x multiple prompts x layers ('Blog 1' run)",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "p1_mstate_tracking results/<timestamp>/ verdict tables and figures for effective rank / cluster count / energy monotonicity, referenced from status-1.md",
+    "blockers": [
+      "The exact GPT-2/ALBERT/BERT comparison in the post is the project's superseded 'Blog 1' run (dated 2026-04-23 in status-1.md); the repo's current active work/default model selection has moved to Pythia checkpoints, and status-1.md explicitly notes some GPT-2-era findings are 'marked as not reproducing' under the newer Pythia analysis. Re-running blog1 models is still supported in code but is not what current development is validating.",
+      "'hdbscan' python package is imported directly (p1_mstate_tracking/clustering.py, core/functional_distance.py) but is not listed in pyproject.toml or requirements/*.txt — an undeclared dependency that would need to be pip-installed manually",
+      "INDEX.md's own 'Referenced, not present' section documents multiple files (MATH.md, DESIGN_pythia_frames.md) cited by live code that do not exist in the repository, indicating some documentation/reproducibility debt"
+    ],
+    "notes": "Code for the exact post claim (GPT-2 family + ALBERT + BERT, trained vs random-weight) is still present and runnable via the 'blog1' model group despite the project's pivot to Pythia checkpoints as the new default focus; VRAM/compute needs are trivial (largest model 1.5B, inference-only, float32)."
+  },
+  {
+    "post_id": "mJKaMvLMCWAZRyiCz",
+    "repo": "meaningalignment/wise-dataset",
+    "head_sha": "11df8da67f1c58fdfde8096a1c11a9733fcfe696",
+    "status": "ok",
+    "language": "other",
+    "entrypoint": null,
+    "entrypoint_confidence": "low",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["ai (Vercel AI SDK)", "@ai-sdk/anthropic", "@ai-sdk/openai", "openai"],
+      "stated_compute": null
+    },
+    "models_needed": [],
+    "vram_estimate_gb": null,
+    "vram_basis": "Not applicable — this repo (TypeScript/Bun) only generates synthetic training data via closed-model API calls; it contains no local model inference or training code",
+    "fits_3090": "unknown",
+    "data": {
+      "needed": ["inputs/*.txt seed prompts (in-repo)"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "unknown",
+    "est_runtime_basis": null,
+    "needs_closed_api": true,
+    "needs_closed_api_for": "ai/ai.ts calls both OpenAI (openai package) and Anthropic (@ai-sdk/anthropic via the 'ai' SDK) to generate the values-laden synthetic conversation dataset itself (value tags, considerations, responses, deduplication)",
+    "headline_artifact": null,
+    "blockers": [
+      "This repo contains only the synthetic-data-generation pipeline (closed-API-dependent, TypeScript); it contains no SFT/DPO training code for WiseLLaMa-8B and no code for the crowd-worker evaluation study (n=78 participants) that actually produced the headline legibility/likability/predictability percentages",
+      "The headline metric is a human crowd-worker survey result, not a benchmark computable by any script in this repo, and is not reasonably reproducible by a single engineer with a GPU regardless of hardware"
+    ],
+    "notes": "The post's headline numbers come from a human evaluation study, which this repo cannot reproduce even in principle; the repo itself only covers data generation and is fully dependent on closed OpenAI/Anthropic APIs for that step. entrypoint is null because the headline artifact is produced outside any code in this repository."
+  }
+]

@@ -1,0 +1,308 @@
+[
+ {
+  "post_id": "QrPxNDprJwXiE73Py",
+  "repo": "franciscohs/contrastive-vs-sae-perturbation",
+  "head_sha": "4fbe15471fdc5dc3474a8115dad0e721870e04fe",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "generate_figures.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformers", "accelerate", "sae_lens", "torch", "datasets", "huggingface_hub"],
+   "stated_compute": "Requires ~24GB VRAM (for Gemma2-9B in bfloat16). An RTX 4090 or A100 works well."
+  },
+  "models_needed": [
+   {"hf_id": "google/gemma-2-9b", "params_b": 9.0, "gated": true},
+   {"hf_id": "meta-llama/Llama-3.1-8B", "params_b": 8.0, "gated": true},
+   {"hf_id": "Qwen/Qwen3-1.7B", "params_b": 1.7, "gated": false}
+  ],
+  "vram_estimate_gb": 24,
+  "vram_basis": "README states ~24GB VRAM for Gemma2-9B bf16 (main figure); Llama-3.1-8B and Qwen3-1.7B runs need less since they're smaller models",
+  "fits_3090": "tight",
+  "data": {
+   "needed": ["FineWeb (random-direction baseline, streamed via datasets)", "bilingual/gender/programming paired prompts (included as data/*.py)", "Gemma Scope / Llama Scope / Qwen3 SAEs (via SAELens from HF Hub)"],
+   "available": "hf-hub",
+   "gated": true
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "not stated explicitly; full --sweep spans 9 figure configs x 3 models x N_ANGLES=90 x N_ACT=30 x N_CURVES=10 x N_DIRS=10 forward passes; a --plot-only pass using the repo's committed results/*.pkl reproduces every figure in seconds with no GPU",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "results/gemma-9b-en-zh/plot_complete.png and plot_simplified.png (English/Mandarin contrast, L2 metric, layer 2) — the paper's main figure",
+  "blockers": [],
+  "notes": "Unusually reproducible repo: precomputed sweep data (.pkl) and plots for all 9 figures are already committed, so figures regenerate without any GPU via --plot alone; full from-scratch reproduction needs gated HF access to Gemma-2-9B and Llama-3.1-8B."
+ },
+ {
+  "post_id": "5XjzmxcZFm3BJrNmn",
+  "repo": "guidobergman/jailbreak_direction",
+  "head_sha": "ef6fe41788fa3a35da420d0df3b6d70d76364128",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "pipeline/run_pipeline.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": "3.10",
+   "key_deps": ["torch==2.4.0", "transformers==4.44.2", "vllm==0.6.1", "accelerate==0.31.0", "litellm==1.40.9"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "google/gemma-2-2b-it", "params_b": 2.0, "gated": true},
+   {"hf_id": "cais/HarmBench-Mistral-7b-val-cls", "params_b": 7.0, "gated": false},
+   {"hf_id": "meta-llama/Meta-Llama-Guard-2-8B", "params_b": 8.0, "gated": true}
+  ],
+  "vram_estimate_gb": 16,
+  "vram_basis": "Gemma-2-2B-IT generation is trivial (~5GB bf16); the harmbench eval stage separately loads the 7B HarmBench-Mistral classifier via vLLM (~14-16GB with default KV-cache reservation), but the two stages run sequentially, not concurrently",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["jailbreak_prompts (verazuo/jailbreak_llms)", "alpaca (harmless baseline)", "JailbreakBench-derived harmful/harmless splits"],
+   "available": "download-script",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "not stated; inferred from workload (train_size_successful=256, test_size_unsuccessful=100, test_size_harmless=32, max_new_tokens=512) x 3 intervention conditions (baseline/actadd/ablation) x eval methodologies, on a 2B model",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "pipeline/runs/gemma-2-2b-it/completions/*_evaluations.json — per-intervention, per-methodology ASR values matching the post's headline percentages; results for this exact model+sha are already committed",
+  "blockers": [
+   "the 'llamaguard2' eval methodology (one of the two named judges in the target_value) calls Together AI's hosted Meta-Llama-Guard-2-8B via litellm and needs a TOGETHER_API_KEY plus paid credits — not a closed frontier-model API, but still an external paid service outside a no-cloud-credits budget; the 'harmbench' methodology (local vLLM, no key) can stand in as it's the other named judge"
+  ],
+  "notes": "Small target model (Gemma-2-2B-IT) makes the core steering pipeline cheap; results for this exact commit are already checked into pipeline/runs/gemma-2-2b-it/. Gemma and Llama Guard 2 weights are gated (free HF licence click-through)."
+ },
+ {
+  "post_id": "yJ2Ka2EgQY7PnR9jL",
+  "repo": "dmitry-dereshev/positive-jailbreaks-llm-failure-modes",
+  "head_sha": "cadbd53880e9c2f3979710e45757a75a7fd0e583",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "test_llm_judgement.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["gpt4all", "pandas"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "ghost-7b-v0.9.1-Q4_0.gguf (GPT4All catalog)", "params_b": 7.0, "gated": false},
+   {"hf_id": "gpt4all-falcon-newbpe-q4_0.gguf (GPT4All catalog)", "params_b": 7.0, "gated": false},
+   {"hf_id": "Meta-Llama-3-8B-Instruct.Q4_0.gguf (GPT4All catalog)", "params_b": 8.0, "gated": false},
+   {"hf_id": "Meta-Llama-3.1-8B-Instruct-128k-Q4_0.gguf (GPT4All catalog)", "params_b": 8.0, "gated": false},
+   {"hf_id": "mistral-7b-instruct-v0.1.Q4_0.gguf (GPT4All catalog)", "params_b": 7.0, "gated": false},
+   {"hf_id": "mistral-7b-openorca.gguf2.Q4_0.gguf (GPT4All catalog)", "params_b": 7.0, "gated": false},
+   {"hf_id": "Nous-Hermes-2-Mistral-7B-DPO.Q4_0.gguf (GPT4All catalog)", "params_b": 7.0, "gated": false},
+   {"hf_id": "orca-2-7b.Q4_0.gguf (GPT4All catalog)", "params_b": 7.0, "gated": false},
+   {"hf_id": "mpt-7b-chat-newbpe-q4_0.gguf (GPT4All catalog)", "params_b": 7.0, "gated": false}
+  ],
+  "vram_estimate_gb": 6,
+  "vram_basis": "GPT4All Q4_0-quantized 7-8B GGUF models typically need ~4-6GB; scripts set device='cuda' and load one model at a time; no figure stated in repo",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["JailbreakBench malicious/benign prompts (included as CSV)", "2024-12-29 Validate Judgement.csv (included, but missing the per-model response columns the script reads)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "not stated; 10 local model loads x row-by-row generation (max_tokens=2048) with no batching via GPT4All",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "per-model '<model> judgement test 2.csv' outputs (% answering '1' vs human ground truth) that back the post's per-model judge-accuracy table",
+  "blockers": [
+   "test_llm_judgement.py reads item[1][model_name] — a per-model response column — from '2024-12-29 Validate Judgement.csv', but the committed CSV's actual header is ID,Goal,Behavior,Category,Source,Type,Responded,Prompt type with no response columns; running the script as-is raises a KeyError immediately",
+   "GGUF weights (~4-6GB each x9-10) must be manually downloaded from the GPT4All catalog and placed in './'; allow_download=False in the script so this isn't automated",
+   "no requirements.txt; gpt4all package version unpinned"
+  ],
+  "notes": "README says response data was deliberately omitted ('many are harmful') and that scripts can regenerate it, but benchmark_llms.py writes a differently-shaped CSV than what test_llm_judgement.py reads, so the two scripts don't chain together as committed — a data-plumbing gap, not a compute blocker. All 10 models are small quantized 7-8B GGUFs, trivially fits a 3090."
+ },
+ {
+  "post_id": "nnwLHsBbm2ZALezHR",
+  "repo": "jackyoung27/alphasafe",
+  "head_sha": "8c89af78da5d67fa8c8937ab5066e34661af75e6",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": null,
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": [],
+   "stated_compute": null
+  },
+  "models_needed": [],
+  "vram_estimate_gb": null,
+  "vram_basis": "repo contains no model-loading code at all; alpha_safe.py is a ~60-line dependency-free closed-form formula (stdlib math only) plus a Lean 4/Mathlib proof, not the empirical steering sweep described in the post",
+  "fits_3090": "unknown",
+  "data": {
+   "needed": [],
+   "available": "missing",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "python3 -m unittest and lake build (the only executable content in the repo) run in well under a minute",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": null,
+  "blockers": [
+   "the repo contains only the closed-form alpha_safe formula (Python) and its exact-real Lean 4/Mathlib proof — none of the empirical work described in the post (loading 8 models across Qwen/Gemma/Pythia/Mamba, measuring linearity radius, attribution-patching effect capture) exists anywhere in this repository; the post's only code link ('Code and proofs at github.com/jackyoung27/alphasafe') covers just the math, not the experiments"
+  ],
+  "notes": "Clean case of entrypoint=null: real, tested code (unittest + Lean proof) but it verifies the formula itself, not the post's headline empirical numbers across 8 models. No other repo is linked from the post."
+ },
+ {
+  "post_id": "boB3hJiZijxM3J6Ed",
+  "repo": "ak47na/top_down_vs_bottom_up_mi",
+  "head_sha": "24b2cb90ebb7b08d68fb1106c37a3af17c12378b",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "evals.ipynb",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformer_lens", "sae_lens", "wandb", "torch", "einops"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "Qwen/Qwen1.5-0.5B-Chat", "params_b": 0.5, "gated": false},
+   {"hf_id": "cais/HarmBench-Mistral-7b-val-cls", "params_b": 7.0, "gated": false}
+  ],
+  "vram_estimate_gb": 4,
+  "vram_basis": "Qwen1.5-0.5B-Chat is tiny (~1GB bf16) with a 32768-wide SAE hook adding negligible VRAM; the separate HarmBench-Mistral-7b-val-cls judge (~14GB via vLLM) comes from a different, cloned repo's eval code, not this repository itself",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["harmful/harmless instruction datasets (via utils.get_harmful_instructions/get_harmless_instructions, source not fully inspected)", "SAE checkpoint via W&B artifact ckkissane/qwen-500M-chat-lmsys-1m-anthropic:v11"],
+   "available": "unknown",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "n_inst_train=128 on a 0.5B model with SAE hooks; not stated but trivially small given model size",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "evals.ipynb's get_refusal_scores() comparison across top-down/bottom-up/hybrid steering completions (harmbench methodology), producing the relative-improvement percentages quoted in the post",
+  "blockers": [
+   "README's 'pip install -r requirements.txt' references a file that does not exist anywhere in the repo; dependencies must be inferred from imports (transformer_lens, sae_lens, wandb, einops, vllm)",
+   "evals.ipynb's early cells run '!git clone .../refusal_direction.git' then '%cd sae-dataset-dependence/refusal_direction' — a path that clone would not create — suggesting stale/copy-pasted cell paths from a sibling project that need manual fixing before the notebook runs",
+   "SAE is pulled from one specific W&B artifact version; requires a (free) W&B account and that artifact remaining available"
+  ],
+  "notes": "Model under test (Qwen1.5-0.5B-Chat) is trivially small and fits any GPU; risk is glue code, not compute — README's stated entrypoint (main.py) is wrong (actual path is aisf/main.py), and evals.ipynb has apparent leftover paths from a sibling repo (sae-dataset-dependence)."
+ },
+ {
+  "post_id": "oJJyYDgPD95jEfvQx",
+  "repo": "itsme-aniketghosh/probe-guided-quantization",
+  "head_sha": "457ecfa2a5025310fe64e5ecc975d43d211011fc",
+  "status": "ok",
+  "language": "notebook",
+  "entrypoint": "05_transfer.ipynb",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformers", "datasets", "scikit-learn", "torch", "seaborn"],
+   "stated_compute": "every notebook runs top to bottom on a Colab GPU"
+  },
+  "models_needed": [
+   {"hf_id": "bert-base-uncased", "params_b": 0.11, "gated": false},
+   {"hf_id": "bert-large-uncased", "params_b": 0.34, "gated": false},
+   {"hf_id": "roberta-base", "params_b": 0.125, "gated": false},
+   {"hf_id": "distilbert-base-uncased", "params_b": 0.066, "gated": false},
+   {"hf_id": "Qwen/Qwen2.5-3B-Instruct", "params_b": 3.0, "gated": false}
+  ],
+  "vram_estimate_gb": 6,
+  "vram_basis": "BERT-family models are all <350M params (trivial VRAM); Qwen2.5-3B-Instruct in fp16/bf16 needs ~6-7GB for weights + activations; README only claims a Colab GPU (typically a 16GB T4) suffices, well under a 3090's 24GB",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["CoNLL-2003 (build the map)", "WNUT-17 (NER transfer)", "Universal Dependencies EWT (POS transfer)", "CoNLL-2000 (chunk transfer)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "TRAIN_SENTS/VAL_SENTS constants (3000/800 for BERT notebooks, 600/200 for the Qwen2.5-3B decoder notebook) imply modest feature-extraction + sklearn RidgeClassifier runs; README says each notebook fits a single Colab session",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "05_transfer.ipynb's fig_transfer.png (100% web-text POS, 99% tweet NER, 100% WSJ chunks guided vs 16-41% uniform vs 2-41% anti/opposite); 06_decoder.ipynb's fig_decoder_recipe.png for the Qwen2.5-3B guided-vs-uniform bit budget",
+  "blockers": [
+   "notebooks call google.colab.drive.mount(...) for caching — needs a one-line swap to a local path to run outside Colab",
+   "no pinned dependency versions anywhere (only an inline 'pip install -q' with no version constraints)"
+  ],
+  "notes": "Best-documented repo in this batch: README prose walks through every headline number, all data is public HF datasets, and every model (BERT-family + Qwen2.5-3B) is small. Only friction is Colab-specific Drive-mount caching code."
+ },
+ {
+  "post_id": "rxR5p9Qha937wTTBp",
+  "repo": "peterlai/gpt-circuits",
+  "head_sha": "1cf99ec0580f33e19c37099b02d37a01b284ba5f",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "experiments/circuits/comparisons.sh",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["torch", "numpy", "scipy", "datasets", "tiktoken", "safetensors", "plotly"],
+   "stated_compute": null
+  },
+  "models_needed": [],
+  "vram_estimate_gb": 2,
+  "vram_basis": "shakespeare_64x4 config: n_embd=64, n_layer=4, n_head=4, block_size=128, char-level ASCII vocab — a ~200K-parameter GPT-2 trained from scratch in-repo, trivial VRAM even with a JumpReLU SAE bottleneck attached; no VRAM figure is stated because a model this size doesn't need one",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["tiny Shakespeare char corpus"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "comparisons.sh loops over 100 validation sequences x 5 ablation configs (cluster-nopos/cluster/random-pos/random/zero) = 500 circuit-search runs via experiments.circuits.circuit; no checkpoints are committed, so training the toy GPT-2 and SAE must happen first (config/training time not stated but toy-scale)",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "experiments/circuits/comparisons.ipynb, aggregating checkpoints/<model>/ablation-comparisons/<circuit_name>/{cluster,zero,random,...}.json into the per-config feature-count numbers quoted in the post (20-41 cluster vs 31-138 zero vs 70-96 resample)",
+  "blockers": [
+   "no model or SAE checkpoints are committed — the full chain (train GPT-2 toy model, train JumpReLU SAE, run comparisons.sh, run comparisons.ipynb) must be run from scratch",
+   "requirements.txt has zero version pins (not even torch), so exact reproduction depends on whatever the latest versions resolve to today"
+  ],
+  "notes": "The model itself (toy char-level GPT-2, ~216K params per the post) is cheap to train; the real cost is procedural — no pre-baked checkpoint to skip straight to the comparison step, and a 500-run ablation sweep to reproduce the table."
+ },
+ {
+  "post_id": "kyWCXaw4tPtcZkrSK",
+  "repo": "isolyth/vectorinstruct-pub",
+  "head_sha": "7ab156c9555be0a589eda09e3d98713bed45682b",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": null,
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["torch", "transformers", "safetensors", "typer", "pydantic"],
+   "stated_compute": "Default quantization: int8 (reduces VRAM usage)"
+  },
+  "models_needed": [
+   {"hf_id": "Qwen/Qwen3-4B-Base", "params_b": 4.0, "gated": false}
+  ],
+  "vram_estimate_gb": 6,
+  "vram_basis": "Qwen3-4B-Base at the default int8 quantization is roughly 4-5GB for weights plus activations/KV cache during generation with steering hooks; trivial for a 24GB card",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["conversational training data for the gradient-descent steering-vector training (src/data, not fully inspected)", "Eval/eval_conversations.yaml (25-task eval prompt set, included)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "README shows evaluate/compare as fast CLI calls against the 11 already-trained, committed .safetensors vector sets; retraining from scratch would take longer but run names imply small scale (e.g. RUN10 = 100 samples x 15 epochs) on a 4B model",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "the post's headline number is an eval score judged by Claude Haiku 4.5 across 25 tasks; no code anywhere in this repo calls Anthropic's API or any LLM judge — Eval/full_eval_results.csv (the actual judged scores, with human-edited '[CORRECTED: ...]' annotations) is a static precomputed artifact, and the script it names as its source ('qualitative_eval.py', referenced in Eval/eval_conversations.yaml's header comment) does not exist in the repository",
+  "headline_artifact": "Eval/full_eval_results.csv — instruction_following/helpfulness/coherence/appropriate_ending scores per run x eval_set, comparing instruct-vector runs against base and instruction-tuned Qwen3-4B (not reproducible from code in this repo)",
+  "blockers": [
+   "the Claude-Haiku-4.5 judging script is missing from the repo entirely (only its output CSV and the prompt-set YAML it consumed are included) — reproducing the headline eval score needs both an Anthropic API key and reconstructing the judge script from scratch",
+   "no requirements.txt / version pins"
+  ],
+  "notes": "Steering-vector training (cli.py train, Qwen3-4B-Base) is fully present and cheap, and 11 pretrained runs are committed as safetensors so eval-time generation needs no GPU training. But the scoring pipeline that turns generations into the post's headline numbers is an LLM-judge step (Claude Haiku 4.5) that is both API-gated and absent as code."
+ }
+]

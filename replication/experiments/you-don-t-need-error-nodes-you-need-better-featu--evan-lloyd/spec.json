@@ -1,0 +1,62 @@
+{
+ "slug": "you-don-t-need-error-nodes-you-need-better-featu--evan-lloyd",
+ "post_id": "4tEnmAwFNtz9zJ6cz",
+ "title": "You don't need error nodes, you need better features",
+ "date": "2026-07-27",
+ "repo": "evan-lloyd/mechinterp-experiments",
+ "head_sha": "d563cf5840546944441f3538a9cdb07327b92b50",
+ "entrypoint": "transformers_sae/scripts/train_gemma_standard.py or train_gemma_with_lista.py -> scripts/fine_tune_gemma.py -> scripts/validate_gemma.py -> notebooks/gemma_plots.ipynb",
+ "entrypoint_confidence": "medium",
+ "python_version": ">=3.12,<3.14",
+ "key_deps": [
+  "torch",
+  "transformers",
+  "sae_lens",
+  "accelerate",
+  "datasets"
+ ],
+ "models": [
+  {
+   "hf_id": "google/gemma-2-2b",
+   "params_b": 2.0,
+   "gated": true
+  }
+ ],
+ "phenomenon": "sparse autoencoder quality",
+ "contested": true,
+ "claim_type": "method",
+ "primary_claim": "Replacement-aware SAE training, combined with a LISTA-based encoder and KL fine-tuning, greatly reduces the KL divergence of a full SAE-replacement model from the base Gemma-2-2B model (validation KL 0.379-0.535 vs 1.006 for standard SAE training, vs 1.669 for Gemma Scope), producing replacement models that remain fluent and capable enough to give valid multiple-choice answers, whereas standard-trained replacement models are largely incoherent.",
+ "quote": "Replacement-aware training greatly reduces KL divergence between the replacement model and base model as compared to standard methods, without sacrificing faithfulness",
+ "metric": "Validation KL divergence from base model (nats)",
+ "target_value": "0.379-0.535 (replacement-aware + LISTA (+fine-tune)) vs 1.006 (standard) vs 1.669 (Gemma Scope)",
+ "target_numeric": 0.379,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 4 numbers; compare the components by hand",
+ "vram_estimate_gb": 14,
+ "fits_3090": "probably",
+ "est_runtime": "hours to ~1-2 days per single training run",
+ "est_runtime_class": "days",
+ "budget_minutes": 480,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "monology/pile-uncopyrighted-parquet (streaming)",
+   "monology/pile-test-val",
+   "CommonsenseQA (for the CQA fine-tune variant)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "google/gemma-2-2b requires accepting Google's gated license on Hugging Face",
+  "No single reproduce-the-table script - training, fine-tuning, validation, and plotting are separate manual invocations chained per README prose",
+  "The Gemma Scope comparison point (1.669 nats) is an externally published SAE suite, not trained in this repo - would need to separately download Gemma Scope's checkpoints to reproduce that column"
+ ],
+ "inspector_notes": "Training code is real, runnable, and uses conspicuously small batch sizes suggesting consumer-GPU development, but reproducing the exact headline KL table requires chaining several scripts by hand plus sourcing an external SAE suite (Gemma Scope) for one of the three comparison numbers.",
+ "headline_artifact": "notebooks/gemma_plots.ipynb KL-divergence comparison table (standard vs replacement-aware+LISTA(+fine-tune) vs Gemma Scope)",
+ "selector_tier": "T1",
+ "selector_score": 6.1
+}

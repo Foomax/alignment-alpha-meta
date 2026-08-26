@@ -1,0 +1,135 @@
+[
+ {
+  "post_id": "EXj2bYK2rg8TMrncF",
+  "repo": "shivasrightfoot/soo-jailbreak-conceptual-fusion",
+  "title": "Jailbreak Patching with SOO-Style Conceptual Fusion",
+  "primary_claim": "SOO-style conceptual fusion fine-tuning (with a KL retention regularizer) at layer 18 increases refusal on a jailbreak-wrapped HarmBench prompt set from ~20% in the base Qwen 2.5 1.5B model to a little under 90%, outperforms comparable supervised fine-tuning at increasing jailbreak refusal, better preserves non-refusal on safe XSTest prompts than SFT, and generalizes to a held-out jailbreak wrapper never seen in training.",
+  "metric": "refusal rate on held-out jailbreak-wrapped HarmBench prompts",
+  "target_value": "~20% (base model) to a little under 90% (conceptual fusion, layer 18, 1/8 retention weight)",
+  "models": [
+   "Qwen 1.5B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "jailbreaking / adversarial prompting",
+  "claim_type": "positive",
+  "head_sha": "c4bf965d0cf3ee51eb826ba33eefec90f00ae81f"
+ },
+ {
+  "post_id": "3KTgeXBfhvRKfL5kf",
+  "repo": "patrickod32/landed_writes",
+  "title": "The AI Safety Puzzle Everyone Avoids: How To Measure Impact, Not Intent.",
+  "primary_claim": "A new interpretability attribution method ('landed writes') that measures RMSNorm-scaled, post-normalization contributions of neurons and attention heads to the residual stream shows that early-layer writes are amplified by up to 176x while late-layer writes are compressed, and that logit predictions in LLaMA-3.1-8B and Mistral-7B rely on a sparse set of just 11-90 coordinates.",
+  "metric": "RMSNorm write-scaling amplification factor by layer depth; sparsity of coordinates driving logit predictions",
+  "target_value": "early layers amplify writes up to 176x (Mistral) / 10-16x (Llama); late layers compress to 0.55-6.8x; 98.8% of writes amplified >2x, 81.2% amplified >10x; logit predictions rely on just 11-90 coordinates out of thousands",
+  "models": [
+   "Llama 3.1-8B",
+   "Mistral 7B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "interpretability tooling",
+  "claim_type": "method",
+  "head_sha": "a3bc2a852cc701b0ab6467bd6c168ddaebfa384e"
+ },
+ {
+  "post_id": "iDyf7aBdvBp9jnfuY",
+  "repo": "ibm/sae-steering",
+  "title": "Enabling New Applications with Today's Mechanistic Interpretability Toolkit",
+  "primary_claim": "An SAE-neuron-similarity-based steering method (identifying semantically similar neurons via prompt distances and manipulating them based on generated-text activations) achieves fine-tuning-like topic steering at inference time at a cost of under +0.001s/token, and additionally yields an uncertainty metric based on the SAE's representational power.",
+  "metric": "inference-time cost overhead",
+  "target_value": "< +0.001s/token on unoptimized code",
+  "models": [
+   "GPT-2 small"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "activation steering",
+  "claim_type": "method",
+  "head_sha": "f06eeef5aba00a0f3b6d2e02fabff4a4a6607b23"
+ },
+ {
+  "post_id": "cN3n2HDNkf4Bterxx",
+  "repo": "burnssa/ai-alignment-research",
+  "title": "Emergent misalignment evident in activations at low poisoning doses - long before behavioral checks flag it",
+  "primary_claim": "In LoRA adapters fine-tuned on Llama 3.2-3B and 3.1-8B at various 'doses' of bad medical advice, layer-12 residual-stream activation cosine drift toward the fully-poisoned model reaches 28% of full-poisoning drift at just 5% dose, while behavioral (LLM-judge) misalignment detection shows essentially no signal until 50%+ dose, revealing a substantial detection gap between activation-based and behavioral emergent-misalignment audits.",
+  "metric": "activation cosine drift toward fully-poisoned model, at 5% poisoning dose",
+  "target_value": "28% of full-poisoning drift level at 5% dose vs. no behavioral signal until 50%+ dose",
+  "models": [
+   "Llama 3.2-3B / 3.1-8B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "emergent misalignment",
+  "claim_type": "positive",
+  "head_sha": "0e458ccae9c370f44a3329d5e225dee12bc39385"
+ },
+ {
+  "post_id": "ZB6guMhHH3NEyxA2k",
+  "repo": "filyp/sneaky-mamba",
+  "title": "Testing which LLM architectures can do hidden serial reasoning",
+  "primary_claim": "Contrary to the hypothesis that recurrence itself would let Mamba outperform Transformers at a toy hidden-serial-reasoning task, standard Mamba (whose SSM recurrence transforms each channel independently) cannot solve the hidden task at all, while a modified Mamba SSM enabling cross-channel communication can; non-linearity is not required for hidden reasoning; and Transformers need roughly 3 extra layers to gain 1 extra unit of serial computation depth.",
+  "metric": "max hidden-task sequence length solved",
+  "target_value": "standard Mamba fails to solve the hidden task; a modified Mamba with cross-channel SSM communication solves it; Transformers require about +3 layers per +1 unit of solvable task length",
+  "models": [
+   "Mamba ~30M (130M stripped to 6 layers)",
+   "Transformer (custom, GPT-NeoX tokenizer) 1-5 layers, 4-layer default"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "hidden serial reasoning",
+  "claim_type": "negative",
+  "head_sha": "b44a1d34d055c2c97a9def073f520806582b24f7"
+ },
+ {
+  "post_id": "ZXxY2tccLapdjLbKm",
+  "repo": "arianaazarbal/selective-generalization",
+  "title": "Selective Generalization: Improving Capabilities While Maintaining Alignment",
+  "primary_claim": "Across two model organisms (emergent misalignment from harmful medical advice, and math-induced sycophancy), simply including a limited proxy alignment dataset in the training mix is insufficient to prevent misaligned generalization, but a KL-divergence penalty on that alignment data (and DPO) pushes the capability-alignment Pareto frontier furthest among seven benchmarked mitigation methods.",
+  "metric": "Pareto frontier of task/capability performance vs general alignment across 7 mitigation methods",
+  "target_value": "KL divergence penalty and DPO push the Pareto frontier furthest in both the emergent-misalignment and sycophancy settings; naive mixed fine-tuning on limited alignment data does not increase (and in the EM setting slightly decreases) general alignment",
+  "models": [
+   "Qwen 3-8B",
+   "Gemma 2B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "narrow-to-broad misalignment generalisation",
+  "claim_type": "positive",
+  "head_sha": "f7f2e54e6b40da1a0fc307d741d6255bebf02798"
+ },
+ {
+  "post_id": "EPri6M2tMedbyahLq",
+  "repo": "fjzzq2002/weightwatch",
+  "title": "Weight-diff SVD for LLM Monitoring",
+  "primary_claim": "Top singular vectors of weight differences between base and fine-tuned models correspond to fine-tuned behaviors, enabling near-perfect backdoor-utilization detection at inference time by monitoring activation alignment with these vectors",
+  "metric": "first-backdoor-utilization detection accuracy",
+  "target_value": "44% to 100% accuracy, FPR ~1%; 9 of 13 models detected at 100% accuracy on first sight",
+  "models": [
+   "Llama 3.2-3B",
+   "OLMo",
+   "Qwen 2.5 7B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "interpretability tooling",
+  "claim_type": "positive",
+  "head_sha": "8d3874fb90a0aad5478514f96d71779d2aedf5aa"
+ },
+ {
+  "post_id": "f6LoBqSKXFZzMYACN",
+  "repo": "tenseisoham/finetuning-mechinterp",
+  "title": "Latent Space Collapse? Understanding the Effects of Narrow Fine-Tuning on LLMs",
+  "primary_claim": "Narrow sentiment fine-tuning of GPT-2 does not simply overwrite pretrained representations but reconfigures and 'squishes' the model's output and activation space, concentrating sentiment information in middle-to-late layers while sharply degrading general language modeling (perplexity) on non-sentiment inputs.",
+  "metric": "perplexity on non-sentiment tokens",
+  "target_value": "160.87 (base model) vs 49,802.45 (fine-tuned model)",
+  "models": [
+   "GPT-2"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "fine-tuning side effects",
+  "claim_type": "positive",
+  "head_sha": "483cc014d5cea7691675d7e4e27389bb9acc660b"
+ }
+]

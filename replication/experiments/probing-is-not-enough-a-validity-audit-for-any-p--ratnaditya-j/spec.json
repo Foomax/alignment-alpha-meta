@@ -1,0 +1,62 @@
+{
+ "slug": "probing-is-not-enough-a-validity-audit-for-any-p--ratnaditya-j",
+ "post_id": "wASHN8guJag7NhhJJ",
+ "title": "Probing is not enough; a validity audit for any probe",
+ "date": "2026-07-07",
+ "repo": "ratnaditya-j/sieve-audit",
+ "head_sha": "23ba7f5b53b3274bb84f9a6f364dc1217e78efc3",
+ "entrypoint": "examples/vlaf_alignment_faking/pod_run.sh, steps 1 (decode-lofo) and 6 (leakage) via src/sieve_audit/adapters/hf_steering_runner.py",
+ "entrypoint_confidence": "high",
+ "python_version": ">=3.10",
+ "key_deps": [
+  "torch",
+  "transformers",
+  "accelerate",
+  "scikit-learn",
+  "numpy",
+  "scipy"
+ ],
+ "models": [
+  {
+   "hf_id": "allenai/OLMo-2-1124-7B-Instruct",
+   "params_b": 7.0,
+   "gated": false
+  }
+ ],
+ "phenomenon": "linear probe detection",
+ "contested": true,
+ "claim_type": "method",
+ "primary_claim": "A monitoring-awareness probe achieving AUROC 1.00 collapsed to 0.50 when a single leakage-inducing prompt tag was removed (versus only 0.88 for a random-span-removal control), showing the probe was reading a surface-level cue rather than internal model state; motivated by this and similar cases, the author builds SIEVE, a framework that audits any probe for decodability, necessity (ablation), and causal sufficiency (steering) before it can be trusted as a safety signal.",
+ "quote": "the AUROC dropped to 0.50... Indicating clear leakage - The probe was reading a giveaway in the input and NOT a mointored-or-not state in the model.",
+ "metric": "AUROC of a monitoring-awareness probe under targeted vs random text removal",
+ "target_value": "AUROC 1.00 -> 0.50 when the <is_free_tier_user> tag is removed; AUROC only drops to 0.88 when a random span of equal length is removed",
+ "target_numeric": 1.0,
+ "direction": "-",
+ "uncertainty_reported": "none",
+ "tolerance": "abs:0.05",
+ "tolerance_rationale": "unit-interval metric: 0.05 absolute; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 16,
+ "fits_3090": "yes",
+ "est_runtime": "minutes-hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "VLAF moral-dilemma scenarios (launchnlp/VLAF, arXiv 2604.20995, fetched at runtime by prepare_prompts.py)",
+   "Sorry-Bench (off-distribution eval, optional for the headline number)"
+  ],
+  "available": "download-script",
+  "gated": false
+ },
+ "blockers": [
+  "Model mismatch: assignment/post attributes this result to a monitoring-awareness probe but does not name a model in the post text; the assignment metadata says Qwen2.5-1.5B-Instruct while the actual in-repo experiment reproducing the exact <is_free_tier_user>-tag claim runs on allenai/OLMo-2-1124-7B-Instruct",
+  "The repo's own random-span-control AUROC (0.917) differs from the post's stated figure (0.88) - re-running as scripted would not reproduce the exact 0.88 number cited in the post",
+  "prepare_prompts.py fetches VLAF scenarios from GitHub at runtime, requiring internet access"
+ ],
+ "inspector_notes": "This is one of the cleaner repos in the batch: the specific headline claim (tag-removal leakage collapse) is fully scripted, GPU-light, and needs no closed-model API on its own, even though the surrounding SIEVE causal-sufficiency pipeline does. Either candidate model (7B or 1.5B) comfortably fits a 3090.",
+ "headline_artifact": "examples/vlaf_alignment_faking/reports/REPORT.md, Table 2.2 (Leakage): full text AUROC 1.000 -> tag removed 0.500 -> random equal-length span removed 0.917",
+ "selector_tier": "T1",
+ "selector_score": 6.19
+}

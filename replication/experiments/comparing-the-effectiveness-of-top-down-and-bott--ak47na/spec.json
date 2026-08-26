@@ -1,0 +1,66 @@
+{
+ "slug": "comparing-the-effectiveness-of-top-down-and-bott--ak47na",
+ "post_id": "boB3hJiZijxM3J6Ed",
+ "title": "Comparing the effectiveness of top-down and bottom-up activation steering for bypassing refusal on harmful prompts",
+ "date": "2025-02-12",
+ "repo": "ak47na/top_down_vs_bottom_up_mi",
+ "head_sha": "24b2cb90ebb7b08d68fb1106c37a3af17c12378b",
+ "entrypoint": "evals.ipynb",
+ "entrypoint_confidence": "medium",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformer_lens",
+  "sae_lens",
+  "wandb",
+  "torch",
+  "einops"
+ ],
+ "models": [
+  {
+   "hf_id": "Qwen/Qwen1.5-0.5B-Chat",
+   "params_b": 0.5,
+   "gated": false
+  },
+  {
+   "hf_id": "cais/HarmBench-Mistral-7b-val-cls",
+   "params_b": 7.0,
+   "gated": false
+  }
+ ],
+ "phenomenon": "activation steering",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Top-down activation steering (contrastive refusal-direction) outperforms bottom-up SAE-based steering at bypassing refusal on harmful prompts in Qwen 1.5 0.5B, but a hybrid method combining both further outperforms top-down alone, at some cost to benign capabilities.",
+ "quote": "experiments show that top-down methods outperform bottom-up ones in behaviour steering (93% relative improvement), but a hybrid approach is even more effective (~35% relative improvement compared to top-down).",
+ "metric": "relative improvement in bypassing refusal on HarmBench",
+ "target_value": "top-down ~93% relative improvement over bottom-up (~1.93x more effective); hybrid ~35% relative improvement over top-down (~1.85x), 85% for harmful instructions only",
+ "target_numeric": 93.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 5 numbers; compare the components by hand",
+ "vram_estimate_gb": 4,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "harmful/harmless instruction datasets (via utils.get_harmful_instructions/get_harmless_instructions, source not fully inspected)",
+   "SAE checkpoint via W&B artifact ckkissane/qwen-500M-chat-lmsys-1m-anthropic:v11"
+  ],
+  "available": "unknown",
+  "gated": false
+ },
+ "blockers": [
+  "README's 'pip install -r requirements.txt' references a file that does not exist anywhere in the repo; dependencies must be inferred from imports (transformer_lens, sae_lens, wandb, einops, vllm)",
+  "evals.ipynb's early cells run '!git clone .../refusal_direction.git' then '%cd sae-dataset-dependence/refusal_direction' \u2014 a path that clone would not create \u2014 suggesting stale/copy-pasted cell paths from a sibling project that need manual fixing before the notebook runs",
+  "SAE is pulled from one specific W&B artifact version; requires a (free) W&B account and that artifact remaining available"
+ ],
+ "inspector_notes": "Model under test (Qwen1.5-0.5B-Chat) is trivially small and fits any GPU; risk is glue code, not compute \u2014 README's stated entrypoint (main.py) is wrong (actual path is aisf/main.py), and evals.ipynb has apparent leftover paths from a sibling repo (sae-dataset-dependence).",
+ "headline_artifact": "evals.ipynb's get_refusal_scores() comparison across top-down/bottom-up/hybrid steering completions (harmbench methodology), producing the relative-improvement percentages quoted in the post",
+ "selector_tier": "T1",
+ "selector_score": 6.69
+}

@@ -1,0 +1,97 @@
+{
+ "slug": "transformers-resist-their-own-architecture--zachdata",
+ "post_id": "2dA7phbYZGPjhTj9q",
+ "title": "Transformers Resist Their Own Architecture",
+ "date": "2026-07-09",
+ "repo": "zachdata/metastablestateanalysis",
+ "head_sha": "4e9471d69cec1ea826ded94351cbc38c32ea3e5b",
+ "entrypoint": "p1_mstate_tracking/run_1.py --models blog1 bert-large-uncased --random-baseline (blog1 = albert-base-v2, albert-xlarge-v2, bert-base-uncased, gpt2, gpt2-medium, gpt2-large, gpt2-xl; bert-large-uncased is a separate registry key not in the default blog1 group)",
+ "entrypoint_confidence": "medium",
+ "python_version": ">=3.10",
+ "key_deps": [
+  "torch",
+  "transformers",
+  "scikit-learn",
+  "matplotlib",
+  "numpy",
+  "scipy",
+  "hdbscan (imported but NOT declared in any requirements file)"
+ ],
+ "models": [
+  {
+   "hf_id": "gpt2",
+   "params_b": 0.124,
+   "gated": false
+  },
+  {
+   "hf_id": "gpt2-medium",
+   "params_b": 0.355,
+   "gated": false
+  },
+  {
+   "hf_id": "gpt2-large",
+   "params_b": 0.774,
+   "gated": false
+  },
+  {
+   "hf_id": "gpt2-xl",
+   "params_b": 1.5,
+   "gated": false
+  },
+  {
+   "hf_id": "albert-base-v2",
+   "params_b": 0.012,
+   "gated": false
+  },
+  {
+   "hf_id": "albert-xlarge-v2",
+   "params_b": 0.06,
+   "gated": false
+  },
+  {
+   "hf_id": "bert-base-uncased",
+   "params_b": 0.11,
+   "gated": false
+  },
+  {
+   "hf_id": "bert-large-uncased",
+   "params_b": 0.34,
+   "gated": false
+  }
+ ],
+ "phenomenon": "attention token clustering dynamics",
+ "contested": false,
+ "claim_type": "positive",
+ "primary_claim": "Trained transformers (GPT-2 family, ALBERT, BERT) exhibit the token-clustering dynamics predicted by Geshkovski et al.'s mathematical theory of attention as an interacting particle system, but unlike randomly-initialized transformers (which show monotonically increasing energy and collapse toward a single point, matching the theory's identity-matrix prediction), trained models' weights learn to resist total collapse -- energy does not rise monotonically, effective rank and cluster counts stay higher, and clusters remain smaller, more numerous, and farther apart -- indicating trained transformers actively counteract the collapse dynamics built into their own architecture.",
+ "quote": "The trained models maintain effective rank, preventing the collapse the architecture is driving. The random models have not learned to resist this collapse.",
+ "metric": "energy monotonicity, effective rank, and HDBSCAN cluster count across layers, trained vs random-weight models",
+ "target_value": "random-weight models show monotonically increasing energy and collapse toward a point (e.g. ALBERT base reaches near-total collapse by ~layer 20, all pairwise inner products -> 1); trained models show non-monotonic energy and sustain effective rank near ~250 dimensions regardless of true dimensionality (700-1600) and ~50 HDBSCAN clusters per model",
+ "target_numeric": 20.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 6 numbers; compare the components by hand",
+ "vram_estimate_gb": 8,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "text prompts (in-repo, referenced by p1_mstate_tracking/design-1.md)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "The exact GPT-2/ALBERT/BERT comparison in the post is the project's superseded 'Blog 1' run (dated 2026-04-23 in status-1.md); the repo's current active work/default model selection has moved to Pythia checkpoints, and status-1.md explicitly notes some GPT-2-era findings are 'marked as not reproducing' under the newer Pythia analysis. Re-running blog1 models is still supported in code but is not what current development is validating.",
+  "'hdbscan' python package is imported directly (p1_mstate_tracking/clustering.py, core/functional_distance.py) but is not listed in pyproject.toml or requirements/*.txt \u2014 an undeclared dependency that would need to be pip-installed manually",
+  "INDEX.md's own 'Referenced, not present' section documents multiple files (MATH.md, DESIGN_pythia_frames.md) cited by live code that do not exist in the repository, indicating some documentation/reproducibility debt"
+ ],
+ "inspector_notes": "Code for the exact post claim (GPT-2 family + ALBERT + BERT, trained vs random-weight) is still present and runnable via the 'blog1' model group despite the project's pivot to Pythia checkpoints as the new default focus; VRAM/compute needs are trivial (largest model 1.5B, inference-only, float32).",
+ "headline_artifact": "p1_mstate_tracking results/<timestamp>/ verdict tables and figures for effective rank / cluster count / energy monotonicity, referenced from status-1.md",
+ "selector_tier": "T1",
+ "selector_score": 1.13
+}

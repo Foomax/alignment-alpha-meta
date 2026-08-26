@@ -1,0 +1,61 @@
+{
+ "slug": "jailbreak-patching-with-soo-style-conceptual-fus--shivasrightfoot",
+ "post_id": "EXj2bYK2rg8TMrncF",
+ "title": "Jailbreak Patching with SOO-Style Conceptual Fusion",
+ "date": "2026-07-16",
+ "repo": "shivasrightfoot/soo-jailbreak-conceptual-fusion",
+ "head_sha": "c4bf965d0cf3ee51eb826ba33eefec90f00ae81f",
+ "entrypoint": "02_soo_conceptual_fusion_training.ipynb",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformers",
+  "accelerate",
+  "peft",
+  "datasets",
+  "torchao",
+  "torch"
+ ],
+ "models": [
+  {
+   "hf_id": "Qwen/Qwen2.5-1.5B-Instruct",
+   "params_b": 1.5,
+   "gated": false
+  }
+ ],
+ "phenomenon": "jailbreaking / adversarial prompting",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "SOO-style conceptual fusion fine-tuning (with a KL retention regularizer) at layer 18 increases refusal on a jailbreak-wrapped HarmBench prompt set from ~20% in the base Qwen 2.5 1.5B model to a little under 90%, outperforms comparable supervised fine-tuning at increasing jailbreak refusal, better preserves non-refusal on safe XSTest prompts than SFT, and generalizes to a held-out jailbreak wrapper never seen in training.",
+ "quote": "the selection of 1/8th weight and layer 18 produces an increase in refusal behavior for jailbroken wrappers from around 20% in the base model to a little under 90% in the fine tuned model",
+ "metric": "refusal rate on held-out jailbreak-wrapped HarmBench prompts",
+ "target_value": "~20% (base model) to a little under 90% (conceptual fusion, layer 18, 1/8 retention weight)",
+ "target_numeric": 20.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 5 numbers; compare the components by hand",
+ "vram_estimate_gb": 6,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "walledai/HarmBench (standard split)",
+   "walledai/XSTest",
+   "in-repo jailbreak_baseline_results_raw_Qwen.csv"
+  ],
+  "available": "hf-hub",
+  "gated": true
+ },
+ "blockers": [
+  "XSTest is a gated HF dataset requiring a one-time click-through acceptance (not an API-key blocker, just a manual step)."
+ ],
+ "inspector_notes": "Extremely clean, fully self-contained 4-notebook repo (train fusion adapter, train SFT baseline, test refusal behavior, analyze delta-W by layer). Refusal detection is a keyword classifier, not an LLM judge, so no closed API needed anywhere in the pipeline. This is one of the easiest repos to replicate in the batch.",
+ "headline_artifact": "Figure 3 (refusal rate vs. RETAIN_WEIGHT at layer 18) produced by running 01_refusal_behavior_testing.ipynb against the adapter saved by 02_soo_conceptual_fusion_training.ipynb, using the in-repo keyword refusal classifier (no LLM judge -- notebook explicitly notes keyword classifier outperformed same-model LLM-as-judge in the source study this is adapted from).",
+ "selector_tier": "T1",
+ "selector_score": 5.03
+}

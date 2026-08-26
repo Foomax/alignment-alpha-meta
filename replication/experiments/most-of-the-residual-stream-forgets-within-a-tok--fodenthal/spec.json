@@ -1,0 +1,57 @@
+{
+ "slug": "most-of-the-residual-stream-forgets-within-a-tok--fodenthal",
+ "post_id": "jkEnRkokmzvvKNzzB",
+ "title": "Most of the residual stream forgets within a token. A compact subspace doesn't.",
+ "date": "2026-06-06",
+ "repo": "fodenthal/residual-geometry-experiment",
+ "head_sha": "2529e3257e0453c806fb65764c0225b7ca4f75e3",
+ "entrypoint": "bash scripts/run_residual_geometry.sh pilot (drives 00_validate_env.py .. 07_make_residual_report.py, esp. 02_compute_residual_probes.py and 03_compute_residual_autocorr.py, config configs/persistent_state/residual_geometry/pilot.yaml)",
+ "entrypoint_confidence": "high",
+ "python_version": ">=3.11",
+ "key_deps": [
+  "torch==2.4.1",
+  "transformers==4.45.2",
+  "transformer-lens==2.6.0",
+  "numpy==1.26.4",
+  "einops==0.8.0",
+  "scikit-learn==1.5.2"
+ ],
+ "models": [
+  {
+   "hf_id": "google/gemma-2-2b",
+   "params_b": 2.6,
+   "gated": true
+  }
+ ],
+ "phenomenon": "representation geometry",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "In layer 12 of Gemma-2-2B, most residual-stream directions lose predictive signal within a single token, but a compact ~31-dimensional subspace has much longer autocorrelation timescales (90th percentile 17 tokens vs 1 for random/PCA directions); this slow subspace accounts for essentially all cross-token persistence (projecting it out collapses held-out timescale to near-null), depends on sequential token order rather than token composition alone, and aligns with attention-output geometry more than chance.",
+ "quote": "most residual directions are fast, as their projected values stop being predictive after just one token. But a small set of directions is much slower.",
+ "metric": "90th-percentile within-document autocorrelation timescale (tokens, 1/e crossing)",
+ "target_value": "17 tokens for time-lagged probes vs 1 token for random/PCA directions",
+ "target_numeric": 17.0,
+ "direction": "+",
+ "uncertainty_reported": "ci",
+ "tolerance": "rel:0.15",
+ "tolerance_rationale": "other scalar metric: 15% relative; post reported spread",
+ "vram_estimate_gb": 10,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "allenai/c4, English validation split"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [],
+ "inspector_notes": "Unusually well-documented research artifact: pinned dependency versions, numbered pipeline stages, a config-hash-tracked pilot_run_summary.md whose Stage B1 table reproduces the post's exact headline numbers (Q90 17.0 vs 1.0), and an explicit 17-stage 'Compute Plan' in docs/method.md specifying doc counts and probe counts per stage. Gemma-2-2b requires accepting the HF license (gated) but that is a one-click formality, not a technical blocker.",
+ "headline_artifact": "docs/pilot_run_summary.md, Stage B1 table: time-lagged Q90 tau = 17.0 vs random Q90 = 1.0 and PCA Q90 = 1.0 (exact match to the post's target values)",
+ "selector_tier": "T1",
+ "selector_score": 8.14
+}

@@ -1,0 +1,317 @@
+[
+  {
+    "post_id": "nnHnNdHLhbrnmEXDr",
+    "repo": "coolvision/interp",
+    "head_sha": "cfe19a1b18d1055c6e9a838eecab3c59ec288c50",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "LLaMA_jun_4_2025_neurons.ipynb",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["transformer_lens", "transformers", "torch", "plotly", "numpy"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "meta-llama/Llama-3.2-1B-Instruct", "params_b": 1.0, "gated": true}
+    ],
+    "vram_estimate_gb": 5,
+    "vram_basis": "TransformerLens HookedTransformer.from_pretrained defaults to fp32 when no dtype is passed; 1B params x4 bytes ~4GB weights, plus a trivial activation footprint since the notebook only does matrix multiplies of MLP weights against W_U (no dataset forward passes).",
+    "fits_3090": "yes",
+    "data": {
+      "needed": [],
+      "available": "not applicable — no dataset is used, only the model's own weights",
+      "gated": false
+    },
+    "est_runtime": "minutes",
+    "est_runtime_basis": "Pure weight-space analysis (dot products of W_out/W_in/W_gate against W_U across 16 layers); no training, no dataset iteration, no generation.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "Histogram and sorted-line plots (notebook cells 4-10) of max |dot product| between each MLP neuron's W_out/W_in/W_gate row and the unembedding matrix W_U, per layer.",
+    "blockers": [
+      "meta-llama/Llama-3.2-1B-Instruct is gated on HuggingFace — needs license acceptance",
+      "no requirements.txt/pyproject.toml — transformer_lens/transformers versions must be inferred"
+    ],
+    "notes": "Extremely lightweight: a self-contained 13-cell notebook plus a utils.ipynb helper (%run'd in), no README. Entirely weight-space analysis with no dataset or gradient computation, so it is nearly guaranteed to reproduce given the same model checkpoint."
+  },
+  {
+    "post_id": "3T8eKyaPvDDm2wzor",
+    "repo": "aranguri/tied-crosscoder",
+    "head_sha": "355cfe0aebfc66571f87bdf7f26e2418be68b01f",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": null,
+    "entrypoint_confidence": "low",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["transformer_lens", "sae_vis (custom fork)", "wandb", "huggingface_hub", "torch", "einops", "numpy"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "google/gemma-2-2b", "params_b": 2.6, "gated": true},
+      {"hf_id": "google/gemma-2-2b-it", "params_b": 2.6, "gated": true}
+    ],
+    "vram_estimate_gb": 24,
+    "vram_basis": "train.ipynb/analyze.ipynb load both gemma-2-2b and gemma-2-2b-it via HookedTransformer.from_pretrained with no dtype override, i.e. default fp32: 2.6B x4 bytes ~10.4GB each, ~21GB combined just for weights, before the crosscoder's ~226M-parameter W_enc + Adam state (~2-3GB) and a bf16 activation buffer of batch_size(4096)*buffer_mult(128) tokens (~4.8GB).",
+    "fits_3090": "no",
+    "data": {
+      "needed": ["1M tokens from the Pile", "1M tokens from lmsys"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "hours",
+    "est_runtime_basis": "cfg num_tokens=400_000_000 at batch_size=4096 gives ~97,656 optimizer steps for the crosscoder train run — comparable single-GPU SAE/crosscoder trainings of this token count typically run many hours.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": null,
+    "blockers": [
+      "the headline metric (overlap ratio between 'Cannot'-direction and 'Harmful'-direction latents, 0.19 base / 0.39 chat) is not computed anywhere in the repo — analyze.ipynb (60 cells) is unstructured exploratory code with ad-hoc, hand-tuned thresholds and never produces this specific ratio",
+      "the assignment lists 'Gemma 9b' as a model, but the repo only ever references gemma-2-2b / gemma-2-2b-it — no 9b config, checkpoint, or code exists anywhere",
+      "analyze.ipynb requires a pretrained crosscoder downloaded from an external HF repo (sa7270/tied-crosscoder) not included here",
+      "no requirements.txt/pyproject.toml — dependency versions unpinned, including a custom sae_vis fork referenced only by URL",
+      "both base and chat models are loaded in default fp32 with no dtype override, which combined with training/activation-buffer overhead likely exceeds 24GB"
+    ],
+    "notes": "Repo trains a tied crosscoder on gemma-2-2b/2b-it (400M tokens, dict_size 16384) and includes 60 cells of exploratory analysis, but the exact 'Cannot'/'Harmful' latent overlap-ratio figure quoted in the post is not reproducible from any code here, and the Gemma-9b half of the claim has no supporting code at all."
+  },
+  {
+    "post_id": "jn2aukQY2S7cTGaGH",
+    "repo": "anuragsync78/sbct",
+    "head_sha": "04eb2208ef0a814e3a9713459db18fc707ae4bfe",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "Test_Suite/Ontonic_Eval_YAML_v1_fast.ipynb",
+    "entrypoint_confidence": "medium",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": true,
+      "python_version": null,
+      "key_deps": ["transformers==4.44.2", "accelerate==0.34.2", "peft==0.12.0", "torch==2.8.0", "pandas==2.2.2", "pyyaml==6.0.2"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "microsoft/phi-3-mini-4k-instruct", "params_b": 3.8, "gated": false},
+      {"hf_id": "Qwen/Qwen2.5-3B-Instruct", "params_b": 3.0, "gated": false},
+      {"hf_id": "TinyLlama/TinyLlama-1.1B-Chat-v1.0", "params_b": 1.1, "gated": false}
+    ],
+    "vram_estimate_gb": 8,
+    "vram_basis": "Models are loaded one at a time in fp16 (load_model_fp16) with device_map='auto' and offload_buffers; largest is Phi-3-mini (3.8B) at ~7.6GB weights plus modest activation memory for max_new_tokens<=192.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["Test_Suite/probes/pack_v1/ (C1-C3 atomic and chain probe YAMLs)"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "minutes to hours",
+    "est_runtime_basis": "3 small models (1.1B-3.8B) run over a modest atomic+chain probe pack with deterministic decoding (max_new_tokens 128-192); no runtime figure is stated.",
+    "needs_closed_api": true,
+    "needs_closed_api_for": "The published headline Self-Boundary-Consistency scores (Model A/B/C = 0.557/0.683/0.570 in the post) come from GPT-5 rescoring of the generated triplets (see EvalResults/gpt_evaluated/gpt5-output.txt and Test_Suite/evaluator_prompt.txt), done by pasting the triplets JSONL into a GPT-5 chat session — not an in-repo API call, but still requires closed-model access the replication budget disallows.",
+    "headline_artifact": "EvalResults/gpt_evaluated/ontonic_summary.csv (OI column): Model A=0.5574, Model B=0.6778 (post states 0.683), Model C=0.5708.",
+    "blockers": [
+      "headline scores require GPT-5 as an external judge (manual ChatGPT session), which the replication budget's 'no closed-model API keys' rule disallows",
+      "the repo's own automated, fully local scoring path (rule-based checks + a Qwen2.5-3B-Instruct judge, in EvalResults/ontonic_fast_run_20251109_131051/metrics/metrics_summary.csv) gives dramatically different, non-discriminating scores (~0.90 for all three models) and does NOT reproduce the post's headline numbers",
+      "notebook is written for Google Colab (mounts Google Drive, hardcoded Drive paths) and needs light adaptation to run locally"
+    ],
+    "notes": "Two independent scoring pipelines exist: a local automated one that gives ~0.90 for every model (no discrimination between them), and the actually-published one that required a GPT-5 judge session done outside the repo. Only the latter matches the post's numbers, and that step is not reproducible without closed-model access."
+  },
+  {
+    "post_id": "SY69ngXLF5DbNvJaZ",
+    "repo": "anwen0507/natural_language_transcoders",
+    "head_sha": "047eb8e40452982d38f83721f9fb2c77baf6b0cf",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "nla/datagen/run_pipeline.py --config configs/datagen/quick_test_10docs.yaml (smallest available config; then configs/critic_sft.sh, configs/actor_sft.sh, configs/rl.sh)",
+    "entrypoint_confidence": "low",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": ">=3.10",
+      "key_deps": ["torch", "transformers", "safetensors", "httpx", "orjson", "pyyaml", "numpy", "pyarrow", "datasets", "anthropic", "miles (external, not pip-installable)", "sglang[all]>=0.5.6", "megatron (optional, 70B only)"],
+      "stated_compute": "SFT on 2xH100-80GB; RL to ~75% FVE on 2x8xH100 (Qwen2.5-7B reference run); Qwen2.5-7B actor SFT peak memory 67-80GB/82GB per GPU."
+    },
+    "models_needed": [
+      {"hf_id": "Qwen/Qwen2.5-0.5B-Instruct", "params_b": 0.5, "gated": false}
+    ],
+    "vram_estimate_gb": null,
+    "vram_basis": "No stated VRAM/GPU numbers exist anywhere for the 0.5B/10-document quick-test config; the only profiling in the repo (configs/TRAINING_NOTES.md) is for the 7B+ production runs on H100s.",
+    "fits_3090": "unknown",
+    "data": {
+      "needed": ["HuggingFaceFW/fineweb (sample-10BT split, streamed)"],
+      "available": "hf-hub",
+      "gated": false
+    },
+    "est_runtime": "unknown",
+    "est_runtime_basis": "No runtime is stated for the 0.5B/10-doc quick-test path; only the 7B-scale production runs are timed (e.g. 4.97s/step on 2xH100 for Qwen2.5-7B actor SFT).",
+    "needs_closed_api": true,
+    "needs_closed_api_for": "Stage-2 data generation (nla/datagen/stage2_api_explain.py, via AnthropicProvider) calls the Anthropic API to produce the natural-language explanations used for SFT — required even at the smallest (quick_test_10docs, claude-haiku-4-5) scale.",
+    "headline_artifact": null,
+    "blockers": [
+      "requires an ANTHROPIC_API_KEY for datagen at every scale — hard blocker under the replication budget",
+      "requires Miles (a Ray-orchestrated RL framework, not pip-installable, built from source via conda) plus a patched SGLang serving stack — heavy, datacenter-oriented infra with no documented single-GPU path",
+      "this repo is the large-scale open-source companion to Anthropic's own Transformer Circuits NLA post (7B-70B models, 2-8xH100); the LessWrong post's small Qwen2.5-0.5B prototype does not clearly map onto any documented run here — only a bare 10-document smoke-test config exists, with no results or checkpoints for a 0.5B run",
+      "no script in the repo computes the post's specific reported metrics (raw-delta FVE 0.119->0.503, cosine similarity, top-1/top-5 agreement, or the 100-explanation manual audit)"
+    ],
+    "notes": "This appears to be the infra repo for Anthropic's own much larger NLA research (models up to Llama-3.3-70B, near-frontier Miles+Megatron+SGLang training stack), not a standalone codebase for the post's small-scale Qwen2.5-0.5B prototype. Even the smallest smoke-test config needs an Anthropic API key and non-pip-installable training infrastructure."
+  },
+  {
+    "post_id": "6HnnMHRoJLff46kgw",
+    "repo": "realmbird/nla-thought-anchors",
+    "head_sha": "588d9c813609ea12d10885cdd82f035ac287a013",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": null,
+    "entrypoint_confidence": "low",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": ">=3.11",
+      "key_deps": ["torch", "transformers", "sglang[all]", "sentence-transformers", "pyarrow", "umap-learn", "httpx", "orjson"],
+      "stated_compute": "Estimated runtime: ~14 hours for both token positions on 4x RTX 3090 (Step 3, rollout generation)."
+    },
+    "models_needed": [
+      {"hf_id": "Qwen/Qwen2.5-7B-Instruct", "params_b": 7.0, "gated": false},
+      {"hf_id": "kitft/nla-qwen2.5-7b-L20-av", "params_b": 7.0, "gated": false},
+      {"hf_id": "kitft/nla-qwen2.5-7b-L20-ar", "params_b": null, "gated": false}
+    ],
+    "vram_estimate_gb": 24,
+    "vram_basis": "The NLA actor (7B, bf16, served via SGLang) needs ~14-16GB plus KV cache; the README explicitly says the critic needs 'a separate GPU' from the actor server during Step-3 rollout generation, implying the two together do not comfortably share a single 24GB card at that step. Recomputing only the headline reconstruction-loss comparison from precomputed HF-hub data would need just the critic (much smaller), which would fit easily.",
+    "fits_3090": "tight",
+    "data": {
+      "needed": ["Realmbird/nla-thought-anchors-hash / -answer (activations)", "Realmbird/nla-thought-anchors-hash-step2 / -answer-step2 (NLA descriptions)", "Realmbird/nla-thought-anchors-hash-rollouts / -answer-rollouts (40x rollouts)", "GSM8K test set (1319 examples)"],
+      "available": "hf-hub",
+      "gated": false
+    },
+    "est_runtime": "hours (full pipeline); minutes (if only rescoring precomputed HF-hub data)",
+    "est_runtime_basis": "README states ~14 GPU-hours on 4xRTX3090 for Step 3 (rollout generation) alone across both token positions; Steps 1-2 and the final analysis scripts are not separately timed.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "share_plots/E_reconstruction_correctness.png, generated by share_plots/generate_share.py from hardcoded literals [0.6038, 0.4234] (mean critic reconstruction cos-sim, correct vs incorrect) — not computed by any script visible in this repo snapshot.",
+    "blockers": [
+      "the script that would compute the headline correct-vs-incorrect reconstruction-loss comparison (reconstruction.py, explicitly named in the README's analysis-scripts table) is absent from the repo; the adjacent file analysizing-min-prompt.py in the same directory is present but 0 bytes",
+      "share_plots/generate_share.py, whose 'E: Reconstruction by correctness' panel matches the post's claim, has the correct/incorrect values ([0.6038, 0.4234], titled 'Incorrect activations reconstruct ~30% worse') hardcoded as Python literals rather than computed from any loaded data",
+      "the full data-generation pipeline (Steps 1-3) is stated to take ~14 GPU-hours on 4xRTX3090 for Step 3 alone; no single-GPU timing is given",
+      "README recommends the actor (SGLang-served 7B) and critic run on separate GPUs"
+    ],
+    "notes": "Every stage of the pipeline (activation extraction, NLA generation, rollouts, KL analysis, plotting) has runnable code and precomputed data is hosted on HuggingFace, so a replicator could likely recompute the correct-vs-incorrect reconstruction comparison cheaply from the hosted parquets using just the critic model. But no script in this snapshot actually performs that aggregation — the number on the shareable figure is a hand-entered literal, and the README-referenced script that presumably produced it is missing."
+  },
+  {
+    "post_id": "6iPEuEnguEtmtaqyJ",
+    "repo": "itsme-aniketghosh/function-vectors",
+    "head_sha": "332f8cb31659a4271171b012b120fb791099cf8e",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "06_component_paste_sweep.ipynb + 07_blind_eval.ipynb (17-head paste result); 08_direction.ipynb (extracted-direction ablation/addition result)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["transformers", "peft", "datasets", "accelerate", "torch"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "Qwen/Qwen2.5-7B-Instruct", "params_b": 7.0, "gated": false},
+      {"hf_id": "ModelOrganismsForEM/Qwen2.5-7B-Instruct_bad-medical-advice", "params_b": null, "gated": false}
+    ],
+    "vram_estimate_gb": 16,
+    "vram_basis": "Qwen2.5-7B-Instruct loaded in bf16 (~14GB) plus a small LoRA adapter and modest generation activations for max_new_tokens=200; comfortably within 24GB.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["hand-written held-out medical question battery (in-notebook)", "Anthropic model-written-evals (hf://datasets/Anthropic/model-written-evals) for notebooks 01-03"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "minutes to low hours",
+    "est_runtime_basis": "One 7B model with a LoRA adapter, generating ~200 tokens per condition (clean/bad/patched) over a battery of ~30-40 held-out questions; no runtime figure is stated but this is a small workload for a single GPU.",
+    "needs_closed_api": true,
+    "needs_closed_api_for": "The blind safety judging that produces the headline safe/borderline/unsafe counts (07_blind_eval.ipynb, 10_methods.ipynb) is done by hand-pasting anonymized transcripts into an external LLM judge and pasting the verdicts back in (code comment: 'scored with Fable, max reasoning', i.e. Claude) — not an in-repo API call, but the replication budget's 'no closed-model API keys' bars using an equivalent frontier judge.",
+    "headline_artifact": "07_blind_eval.ipynb cell 17 (JUDGE_OUTPUT, hand-pasted judge verdicts) tallied into safe/borderline/unsafe counts per condition (clean/bad/patched); 10_methods.ipynb runs the same battery across all three cure methods for the head-to-head comparison table.",
+    "blockers": [
+      "headline safe/borderline/unsafe counts require a strong external LLM as a blind judge, used manually (not scripted) — no closed-model access is available under the replication budget",
+      "the Llama-3.1-8B transfer result and 'guardrail hyperparameter' claim have no supporting code: 11_safety_methods.ipynb (the next-numbered notebook) is a 0-byte empty file, and the string 'llama' does not appear anywhere else in the repo",
+      "no requirements.txt/README — dependency versions are unpinned and inferred only from inline !pip install cells"
+    ],
+    "notes": "Model-patching and activation mechanics (head-paste, direction ablation/addition, ARC-Easy capability check) are fully scripted and cheap to run on one GPU. But the actual safety verdicts that produce the reported 27/8/1 vs 3/4/29 etc. counts depend on a manual, closed-model judging step outside the repo. Separately, the Llama-3.1-8B transfer half of the claim is entirely unsupported by code at this commit — the notebook that should contain it is empty."
+  },
+  {
+    "post_id": "bsXPTiAhhwt5nwBW3",
+    "repo": "tommasomncttn/sae-transferability",
+    "head_sha": "0bdb3c4cfdc8056a203ab3a48c32d105c197ff62",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "notebooks/4_sae_eval.ipynb",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["torch", "sae-lens", "transformer-lens", "numpy", "plotly", "pandas", "einops"],
+      "stated_compute": "T4 GPU recommended for Gemma-2b, L4 GPU recommended for Mistral-7B (both on Colab)."
+    },
+    "models_needed": [
+      {"hf_id": "google/gemma-2b", "params_b": 2.0, "gated": true},
+      {"hf_id": "mistral-7b (mistralai/Mistral-7B-v0.1, via TransformerLens name)", "params_b": 7.0, "gated": true},
+      {"hf_id": "shahdishank/gemma-2b-it-finetune-python-codes", "params_b": 2.0, "gated": false},
+      {"hf_id": "meta-math/MetaMath-Mistral-7B", "params_b": 7.0, "gated": false}
+    ],
+    "vram_estimate_gb": 15,
+    "vram_basis": "Base model loaded fp16 via HookedSAETransformer.from_pretrained; largest case is Mistral-7B (~14GB weights) plus SAE + a controllable number of forward-pass batches, well within 24GB and far above the T4/L4 the README recommends.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["ctigges/openwebtext-gemma-1024-cl or the SAE's own training dataset (loaded automatically by SAELens' ActivationsStore)"],
+      "available": "hf-hub",
+      "gated": false
+    },
+    "est_runtime": "minutes to hours",
+    "est_runtime_basis": "Sample size is fully controlled by activation_store's total_batches/store_batch_size_prompts/context_size (documented in README); no fixed runtime given but designed to run on free/low-tier Colab GPUs.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "4_sae_eval.ipynb output tables (Reconstruction CE Loss Delta, R^2 variance explained) comparing base vs finetuned model with the same pretrained SAE, for both Gemma-2b/python-finetune and Mistral-7B/MetaMath pairs.",
+    "blockers": [
+      "requires downloading a public gemma-2b/it-finetune and a public MetaMath-Mistral-7B finetune from the HF Hub, and a residual-stream outlier-filtering config (outlier_cfg.json, included in repo root)",
+      "notebooks assume identical base/finetune tokenizer vocabularies and are written for Google Colab + Google Drive paths, needing light local adaptation",
+      "no version pins in requirements.txt (bare package names only)"
+    ],
+    "notes": "Best-documented repo of this batch: a clear README walks through the exact config (BASE_MODEL/FINETUNE_MODEL/RELEASE/hook_part/layer_num) needed to reproduce each of the two headline model pairs, all using public SAELens-hosted SAEs and public HF checkpoints. Both target models are far smaller than the T4/L4 Colab GPUs the authors used, so a 3090 has ample headroom."
+  },
+  {
+    "post_id": "rs2BmwXWJEaEfNr2v",
+    "repo": "mild-rgb/qwen-2.5-1.5b-echo_repeat-investigation",
+    "head_sha": "3c0bf77bcddb3dec0f23ddca7d0dc85ffa3068ed",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "2_copy_circuit_survey.ipynb",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["transformer_lens", "circuitsvis", "torch", "einops"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "Qwen/Qwen2.5-1.5B-Instruct", "params_b": 1.5, "gated": false}
+    ],
+    "vram_estimate_gb": 6,
+    "vram_basis": "1.5B-parameter model loaded via TransformerLens' TransformerBridge/HookedTransformer for cached forward passes and per-head zero-ablation; fp32 weights ~6GB, activations for single short prompts are negligible.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": [],
+      "available": "in-repo (44-word list COMMON_ENGLISH is hardcoded in the notebook)",
+      "gated": false
+    },
+    "est_runtime": "minutes",
+    "est_runtime_basis": "44 words x 2 prompt phrasings (echo/repeat), each requiring a handful of cached forward passes plus per-head ablation on a 1.5B model — small workload for a single GPU.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "2_copy_circuit_survey.ipynb cell 7 (top3_head_frequency): tallies how often each attention head appears in the top-3 by direct-logit-attribution and by zero-ablation logit-drop, across all 44 COMMON_ENGLISH words and both echo/repeat conditions; cell 9 computes head-2's attention pattern (~90% to BOS) at each word's emergence layer.",
+    "blockers": [
+      "no requirements.txt — relies on inline !pip install transformer_lens / circuitsvis in Colab, versions unpinned",
+      "notebooks were authored for Google Colab and 'render weirdly outside of that environment' per the README, though the code itself has no Colab-specific dependencies beyond the install cell"
+    ],
+    "notes": "Small, self-contained, and the code directly matches the claim's specifics (44 words, both prompt phrasings, head 2, ~90% BOS attention). Straightforward to reproduce exactly on a single 3090 with no external data or API dependencies."
+  }
+]

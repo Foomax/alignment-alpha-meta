@@ -1,0 +1,67 @@
+{
+ "slug": "saes-are-highly-dataset-dependent-a-case-study-o--ckkissane",
+ "post_id": "rtp6n7Z23uJpEH7od",
+ "title": "SAEs are highly dataset dependent: a case study on the refusal direction",
+ "date": "2024-11-07",
+ "repo": "ckkissane/sae-dataset-dependence",
+ "head_sha": "2c991ba0cfa8d76a3e50ffd6b4fbc156052a6b64",
+ "entrypoint": "refusal_dir_recons_fidelity_evals.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformer_lens",
+  "sae_lens",
+  "sae_dashboard",
+  "wandb",
+  "torch",
+  "datasets"
+ ],
+ "models": [
+  {
+   "hf_id": "Qwen/Qwen1.5-0.5B-Chat",
+   "params_b": 0.5,
+   "gated": false
+  },
+  {
+   "hf_id": "Qwen/Qwen1.5-0.5B",
+   "params_b": 0.5,
+   "gated": false
+  }
+ ],
+ "phenomenon": "sparse autoencoder quality",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "An SAE trained on a chat-specific dataset (LmSys-Chat-1M) finds a significantly sparser, more faithful, and more interpretable reconstruction of the 'refusal direction' than an SAE trained on the Pile, and for this task the training dataset matters more than whether the SAE is trained on base vs. chat model activations",
+ "quote": "Training a new SAE on a chat-specific dataset, LmSys-Chat-1M, finds a significantly sparser, more faithful, and interpretable reconstruction of the \"refusal direction\".",
+ "metric": "cosine similarity between reconstructed and true refusal direction",
+ "target_value": "LmSys-trained SAE reconstruction has significantly higher cosine similarity to the true refusal direction than the Pile-trained SAE (also achieves lower relative MSE and requires far fewer latents for equivalent reconstruction quality)",
+ "target_numeric": null,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is not a single scalar; judge by hand",
+ "vram_estimate_gb": 3,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "llm-attacks/harmful_behaviors.csv (raw GitHub download)",
+   "harmless-instructions HF dataset",
+   "4 pretrained SAEs as wandb artifacts under ckkissane/qwen-500M-*"
+  ],
+  "available": "download-script",
+  "gated": false
+ },
+ "blockers": [
+  "no requirements.txt / pyproject.toml / setup.py anywhere in the repo, so exact sae_lens/transformer_lens/sae_dashboard versions are unstated and unpinned",
+  "the 4 pretrained SAEs are hosted only as wandb artifacts under specific project names (e.g. 'ckkissane/qwen-500M-chat-lmsys-1m-anthropic'), not a stable public model registry, so reproducing depends on those wandb projects staying public/reachable"
+ ],
+ "inspector_notes": "Despite having zero pinned dependencies, the actual compute footprint (500M-param model, small SAEs, a few hundred short instructions) is trivial; the real barrier is environment/artifact-access friction rather than hardware.",
+ "headline_artifact": "cosine similarity between each SAE's reconstruction and the true refusal direction, computed per-SAE in refusal_dir_recons_fidelity_evals.py",
+ "selector_tier": "T1",
+ "selector_score": 7.41
+}

@@ -1,0 +1,318 @@
+[
+ {
+  "post_id": "nKRvp7LKgjJxbpykq",
+  "repo": "artmtt/sae-interpretability-small-reasoning-model",
+  "head_sha": "50c2b40be1f3e8a2bd1f5bbede75ac88bc1d197b",
+  "status": "ok",
+  "language": "notebook",
+  "entrypoint": "interp_experiments_deepseek_r1_distilled_qwen.ipynb",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["torch", "transformers", "sparsify (EleutherAI, git submodule)", "datasets", "pandas", "plotly"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B", "params_b": 1.5, "gated": false}
+  ],
+  "vram_estimate_gb": 4,
+  "vram_basis": "1.5B causal LM (bf16 ~3GB) plus a single-layer 65k-width k-sparse SAE (EleutherAI/sae-DeepSeek-R1-Distill-Qwen-1.5B-65k, ~a few hundred MB) applied to layers 5/10/20 one at a time, plus KV cache for 32 x 400-token generations; trivially small workload.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["GSM8K (openai/gsm8k)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "32 model inferences with max_new_tokens=400 on a 1.5B model, plus SAE encoding of 3 layers; no runtime figure stated in the repo but trivial given model/data size.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "Top-feature frequency counts for layer-10 features 32456/6252/31146 across 32 GSM8K inferences, computed in interp_experiments_deepseek_r1_distilled_qwen.ipynb's load_and_analyze_model_inferences / get_top_k_encoder_out_by_acts pipeline.",
+  "blockers": [
+   "No requirements.txt/pyproject.toml/environment.yml anywhere in the repo -- exact dependency versions must be inferred from notebook imports",
+   "sparsify is wired in as a git submodule (.gitmodules -> EleutherAI/sparsify) that must be fetched separately"
+  ],
+  "notes": "Clean, small, inference-only SAE analysis; both the base model and the pretrained k-sparse SAE are public on Hugging Face, so this fits comfortably on a single 3090 with a lot of headroom."
+ },
+ {
+  "post_id": "nYNjjCFmTMcKdCmHM",
+  "repo": "karthikviswanathn/mats8submissions",
+  "head_sha": "2edab56f3a82b1e8a1b84974e57869e8e5691cd0",
+  "status": "ok",
+  "language": "notebook",
+  "entrypoint": "rephrase_circuit/rephrase_base_instruct.ipynb",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformer_lens", "torch", "jaxtyping", "fancy_einsum", "einops", "circuitsvis"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "meta-llama/Llama-3.1-8B", "params_b": 8, "gated": true},
+   {"hf_id": "meta-llama/Llama-3.1-8B-Instruct", "params_b": 8, "gated": true}
+  ],
+  "vram_estimate_gb": 64,
+  "vram_basis": "Notebook hardcodes two separate CUDA devices: device_instruct = torch.device('cuda:0'), device_base = torch.device('cuda:1'), and loads BOTH full Llama-3.1-8B models via HookedTransformer.from_pretrained with no dtype override (TransformerLens defaults to float32) -- roughly 32GB of weights per model, ~64GB total, with both models' activation caches needing to coexist simultaneously for the cross-model activation-patching experiment.",
+  "fits_3090": "no",
+  "data": {
+   "needed": [],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "unknown",
+  "est_runtime_basis": null,
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "Average logit difference (Logit['swift'] - Logit['quick']) for INSTRUCT vs BASE, computed in the cells following model loading and get_cache().",
+  "blockers": [
+   "Code hardcodes two separate CUDA devices (cuda:0 and cuda:1), assuming a multi-GPU machine; a single-3090 box has only one device",
+   "No dtype override anywhere -- TransformerLens default fp32 for two 8B models exceeds a single 24GB card even after unifying devices",
+   "No requirements file; transformer_lens/jaxtyping/fancy_einsum/circuitsvis versions must be inferred from imports",
+   "meta-llama/Llama-3.1-8B and -Instruct are gated models requiring HF licence acceptance"
+  ],
+  "notes": "A competent engineer could rewrite this to run both models in bf16 on one GPU with activation caches swapped/offloaded to fit 24GB, but that's a real code change (device unification + dtype + memory management), not a config flag -- as authored it assumes a 2-GPU, full-precision machine."
+ },
+ {
+  "post_id": "kCCsrJeJiZRsgGbWt",
+  "repo": "mduffster/self-referent-test",
+  "head_sha": "3c5ca9a739c20bd1cca1b4d6848575610b84751c",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "run_pipeline.py (drives activation_analysis.py then compare_base_instruct.py per model family)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": "3.12",
+   "key_deps": ["torch==2.8.0", "transformer-lens==2.16.1", "transformers==4.57.1", "accelerate==1.10.1", "numpy", "pandas", "matplotlib", "scipy"],
+   "stated_compute": "README 'Hardware Requirements': 'Tested on: MacBook Pro M4 (48GB RAM)'; 'Expected runtime: ~10-15 minutes per model for activation analysis (30 prompts/category)'; 'Memory: ~16GB RAM needed for Mistral-7B model loading'"
+  },
+  "models_needed": [
+   {"hf_id": "mistralai/Mistral-7B-v0.1", "params_b": 7, "gated": false},
+   {"hf_id": "mistralai/Mistral-7B-Instruct-v0.1", "params_b": 7, "gated": false},
+   {"hf_id": "Qwen/Qwen2.5-7B", "params_b": 7, "gated": false},
+   {"hf_id": "Qwen/Qwen2.5-7B-Instruct", "params_b": 7, "gated": false},
+   {"hf_id": "meta-llama/Llama-3.1-8B", "params_b": 8, "gated": true},
+   {"hf_id": "meta-llama/Llama-3.1-8B-Instruct", "params_b": 8, "gated": true}
+  ],
+  "vram_estimate_gb": 30,
+  "vram_basis": "activation_analysis.py hardcodes HookedTransformer.from_pretrained(..., dtype=torch.float32); models are loaded one at a time (not simultaneously), but fp32 weights for an 8B model alone are ~28-32GB, which exceeds a single 3090's 24GB. Author's own hardware notes are CPU-only (MacBook M4); no GPU run is reported anywhere in the repo.",
+  "fits_3090": "tight",
+  "data": {
+   "needed": [],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "README: '~10-15 minutes per model for activation analysis (30 prompts/category)' on a MacBook M4 CPU.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "Delta-RFC (mean, % layers compressing) table per model family, produced by compare_base_instruct.py from the NPZ attention-pattern dumps written by activation_analysis.py.",
+  "blockers": [
+   "dtype hardcoded to torch.float32 in activation_analysis.py -- must be edited to bf16/fp16 for an 8B model to fit in 24GB VRAM",
+   "meta-llama/Llama-3.1-8B(-Instruct) are gated models",
+   "Repo only verified on CPU (Mac); no GPU run reported anywhere to sanity-check the VRAM estimate"
+  ],
+  "notes": "Six model loads (3 families x base/instruct) are needed to reproduce the full cross-model table; each load is single-model, inference-only attention-pattern extraction, so a one-line dtype fix (fp32 -> bf16) makes this comfortably fit a 3090."
+ },
+ {
+  "post_id": "zQqGhKPqaCBZZDCge",
+  "repo": "peppinob-ol/attribution-graph-probing",
+  "head_sha": "bbff7525d59a8fea7b10052739494cf7d3363cc1",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "scripts/research/graph_subgraph_scores.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["numpy", "pandas", "scipy", "torch", "circuit-tracer (git+https://github.com/safety-research/circuit-tracer.git@v0.3.1, only needed for the separate Stage-3 causal-validation script)", "requests", "openai (only used by the optional Streamlit EDA app)"],
+   "stated_compute": null
+  },
+  "models_needed": [],
+  "vram_estimate_gb": 0,
+  "vram_basis": "graph_subgraph_scores.py computes Replacement = I_embed/(I_embed+I_error) and Completeness via sparse-matrix power iteration (numpy/scipy) directly over already-generated, pruned Neuronpedia attribution-graph JSON files and node_grouping CSVs -- no torch model forward pass and no GPU are involved in this script.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["Neuronpedia attribution-graph JSON files for the 5 probe-prompting domains (capitals/USA-states, books, products, paintings, sounds)", "node_grouping classification CSVs (supernode assignments)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "Not stated explicitly, but implied by the pure CPU numpy/scipy computation over graphs of at most a few thousand nodes.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "output/research/graph_subgraph_scores.csv -- per-entity Replacement/Completeness scores that the post averages to 0.5394 Replacement / 0.8257 Completeness across 5 prompts; the entity-swap generalization numbers come from the similarly CPU-only scripts/experiments/cross_prompt_robustness.py operating on the same committed probe-activation CSVs.",
+  "blockers": [
+   "To regenerate the attribution graphs from scratch (rather than reuse what's already committed under output/graph_data/), scripts/00_neuronpedia_graph_generation.py and 01_probe_prompts.py call Neuronpedia's hosted graph-generation/activation API (needs NEURONPEDIA_API_KEY) rather than running circuit-tracer locally -- this is an external paid service, not local GPU compute",
+   "requirements.txt uses loose >= pins for most packages; only circuit-tracer is pinned to an exact git tag",
+   "The repo checkout is ~5.7GB (mostly output/ batch results, some of it duplicated), well within the 150GB disk budget but worth noting"
+  ],
+  "notes": "Surprising finding: the exact headline Replacement/Completeness numbers need zero GPU and zero API calls to reproduce, because the attribution-graph JSON and feature-grouping CSVs that graph_subgraph_scores.py consumes are already committed in the repo's output/ directory. Only from-scratch graph regeneration would touch Neuronpedia's (non-OpenAI/Anthropic/Google) hosted API; a separate, much larger Stage-3 causal-validation pipeline (33k steering runs) does use a local Gemma-2-2b + CLT via circuit-tracer on a GPU, but is not required for this specific claim."
+ },
+ {
+  "post_id": "xZkBDAgQGqm6tvCvy",
+  "repo": "amindtothink/interpretable-fine-tuning",
+  "head_sha": "eed9438f1ca8a6c99dbdc71c5ce2692611eb5da6",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "src/training/ia3_training_isaerft_disable_available.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": ">=3.11",
+   "key_deps": ["torch==2.7.0", "transformers==4.51.3", "transformer-lens==2.15.4", "peft==0.14.0", "trl==0.16.1", "sae-lens==5.10.2", "bitsandbytes==0.45.3", "deepspeed==0.16.4", "wandb==0.19.11"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "google/gemma-2-2b", "params_b": 2.0, "gated": true}
+  ],
+  "vram_estimate_gb": 10,
+  "vram_basis": "Frozen gemma-2-2b (bf16, ~4-5GB) plus a frozen SAE (gemma-scope-2b-pt-res-canonical, layer 20, width 16k, a few hundred MB); only a small IA3-style adapter is trained via DPOTrainer. The repo's own REPRODUCE.md notes bitsandbytes/deepspeed are pinned in requirements.txt but unused by the tracked training code -- no quantization or multi-GPU sharding needed.",
+  "fits_3090": "probably",
+  "data": {
+   "needed": ["trl-internal-testing/hh-rlhf-helpful-base-trl-style (DPO preference data, auto-downloaded)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "unknown",
+  "est_runtime_basis": "Post states DPO loss 'decreases significantly within as few as 20 steps' but gives no wall-clock figure; the repo's own REPRODUCE.md doc also states no runtime/VRAM figure could be found anywhere in the code, comments, or commit history.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "wandb-logged DPO loss curve produced by src/training/ia3_training_isaerft_disable_available.py -- the plot referenced in the post as 'DPO loss goes down significantly in as few as 20 steps'.",
+  "blockers": [
+   "google/gemma-2-2b is a gated model (licence acceptance + `hf auth login` required)",
+   "Training scripts call wandb.init()/report_to='wandb' unconditionally -- needs a wandb account/API key or a code edit to disable",
+   "NEURONPEDIA_API_KEY is read by the same script for feature-description fetching (interpretability/visualization side-channel, not needed for the core DPO-loss curve, but its absence may error depending on code path)"
+  ],
+  "notes": "This repo ships an unusually thorough audit doc (REPRODUCE.md, apparently written by a prior reviewer) which I cross-checked directly against the source; the actual compute footprint is small since only a tiny adapter is trained on a frozen 2B model, but no explicit VRAM figure is stated anywhere in the repo itself."
+ },
+ {
+  "post_id": "WrKLhJWdTzbnTnXbx",
+  "repo": "andrejfsantos4/decomposing-sycophancy",
+  "head_sha": "3461d47da3461c379c1f0bcb5bb62a9d8b67a869",
+  "status": "ok",
+  "language": "notebook",
+  "entrypoint": "sycophancy_decomposed.ipynb",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformers", "torch", "datasets"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "mistralai/Mistral-7B-Instruct-v0.1", "params_b": 7.0, "gated": false}
+  ],
+  "vram_estimate_gb": 15,
+  "vram_basis": "AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, device_map='auto') for a 7B model -- ~14-15GB fp16 weights plus KV cache/activations for ARC-Easy multiple-choice prompts.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["allenai/ai2_arc (ARC-Easy test split)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "unknown",
+  "est_runtime_basis": null,
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "Per-condition accuracy on ARC-Easy (Baseline / Opinion Bias / Noise (Opinion Decoy) / Repetition Bias / Noise (Repetition Decoy)) computed by the notebook's evaluation loop and reported in the README results table.",
+  "blockers": [
+   "Notebook is written for Google Colab (README: 'configured to run in Google Colab') with no requirements.txt -- minor local porting needed",
+   "The same model-selection cell also supports a 30B Vicuna model (unused for reported results) which would not fit a 3090; only the Mistral branch is needed"
+  ],
+  "notes": "Small, self-contained, inference-only eval; a fp16 7B model comfortably fits a 3090 with plenty of room for batched ARC-Easy scoring."
+ },
+ {
+  "post_id": "LMkvjDTLKFrgdzJdG",
+  "repo": "ivanc987/refusal-representations",
+  "head_sha": "a206a1479b748f48da6b0ecab65571d79590eb02",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "scripts/llama_8b/run_sequential_sweep.py (extraction) -> orthogonalize_model_subspace.py / generate_intervention_rollouts.py -> score_rollouts.py (headline compliance %)",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": null,
+   "key_deps": ["torch==2.9.1", "transformers==4.55.0", "transformer_lens==2.17.0", "openai (DeepSeek judge client, not in pyproject.toml)", "lm-eval-harness (mentioned in README, not in pyproject.toml)"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "Qwen/Qwen-1_8B-Chat", "params_b": 1.8, "gated": false},
+   {"hf_id": "Qwen/Qwen3-1.7B", "params_b": 1.7, "gated": false},
+   {"hf_id": "google/gemma-2b-it", "params_b": 2.0, "gated": true},
+   {"hf_id": "meta-llama/Llama-3.1-8B-Instruct", "params_b": 8.0, "gated": true},
+   {"hf_id": "meta-llama/Llama-3.2-1B-Instruct", "params_b": 1.0, "gated": true},
+   {"hf_id": "meta-llama/Llama-3.2-3B-Instruct", "params_b": 3.0, "gated": true},
+   {"hf_id": "microsoft/Phi-3-mini-4k-instruct", "params_b": 3.8, "gated": false}
+  ],
+  "vram_estimate_gb": 18,
+  "vram_basis": "Largest model is Llama-3.1-8B-Instruct; scripts/llama_8b/orthogonalize_model_subspace.py loads it TWICE concurrently (once via HookedTransformer.from_pretrained_no_processing, once via AutoModelForCausalLM), both cast to bf16 -- roughly 2x8Bx2 bytes ~= 32GB worst case, though most other scripts in the pipeline load only a single copy at a time (~16GB). All other models in the sweep (<=3.8B) are trivially small.",
+  "fits_3090": "tight",
+  "data": {
+   "needed": ["~1000 harmful/safe prompt pairs used for refusal-vector extraction (author-generated via DeepSeek API) -- explicitly NOT included in the repo", "held-out harmful-prompt rollout/eval set (100-500 prompts) -- also not included"],
+   "available": "missing",
+   "gated": false
+  },
+  "est_runtime": "unknown",
+  "est_runtime_basis": null,
+  "needs_closed_api": true,
+  "needs_closed_api_for": "scripts/llama_8b/score_rollouts.py sets MODEL='deepseek-chat' and instantiates openai.Client(base_url='https://api.deepseek.com', api_key=os.getenv('DEEPSEEK_API_KEY')) as the LLM judge that produces the reported Compliance/Coherence scores; the harmful/safe prompt dataset itself was also generated via the DeepSeek API and is not distributed with the repo.",
+  "headline_artifact": "Compliance % (best single RV) per model in the cross-model comparison table, produced by score_rollouts.py's DeepSeek-judge scoring of post-ablation rollouts.",
+  "blockers": [
+   "Core extraction dataset (~1000 harmful/safe prompt pairs) and the harmful-prompt eval set are both explicitly excluded from the repo ('the harmful/safe prompt dataset ... is not included in this repository')",
+   "Headline compliance metric depends on a DeepSeek API judge (paid, closed-weight hosted model, requires DEEPSEEK_API_KEY) with no local-judge fallback provided",
+   "Only llama_1b, llama_8b, and qwen have per-model script directories in this snapshot; gemma/llama-3.2-3b/phi-3-mini (also reported in the cross-model results table) have no corresponding scripts/<model> folder",
+   "orthogonalize_model_subspace.py double-loads the 8B model (HookedTransformer + separate HF AutoModel simultaneously), roughly doubling the VRAM needed vs. a single copy"
+  ],
+  "notes": "Compute for the model-side work (extraction/ablation/generation) is comfortably 3090-sized for every model in the table, but the paired-prompt dataset that drives the whole pipeline is withheld by design, and the reported percentages ultimately come from a closed DeepSeek-API judge -- both are hard blockers to exact replication independent of GPU capability. DeepSeek is not OpenAI/Anthropic/Google but is functionally identical here (paid hosted judge, no local substitute), so I've flagged it as a closed-API dependency."
+ },
+ {
+  "post_id": "6mLwAuFAE98c6R7w3",
+  "repo": "debate-fp9/lw-progress-update-snapshot",
+  "head_sha": "fd6fbd99676892f33b87053d4f4b6868e7571b66",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "src/train.py (dispatched via experiments/debate_4ply_llama-judge.sh, the PCD-4 weak-Llama-judge run the headline claim refers to)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": ">=3.11",
+   "key_deps": ["tinker>=0.9.0 (Thinking Machines' hosted LoRA-training SDK)", "transformers>=4.57.6", "torch", "inspect-ai>=0.3.181", "datasets", "sympy", "math-verify"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "Qwen/Qwen3-30B-A3B-Instruct-2507", "params_b": 30.0, "gated": false},
+   {"hf_id": "meta-llama/Llama-3.1-8B-Instruct", "params_b": 8.0, "gated": true}
+  ],
+  "vram_estimate_gb": null,
+  "vram_basis": "src/train.py calls tinker_cookbook.rl.train, which performs LoRA fine-tuning and sampling entirely via the remote Tinker API (TINKER_API_KEY) -- no local torch.cuda model loading occurs anywhere in the training entrypoint. The README states the runs 'cost money to run' via Tinker and that the exact models used were retired from Tinker on 2026-06-12, so the specific runs can no longer be reproduced even with a live Tinker account.",
+  "fits_3090": "no",
+  "data": {
+   "needed": ["Hendrycks MATH, difficulty levels 4-5 (4000 train / 512 test, auto-downloaded from HuggingFace)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "README: 'our (non-optimised) implementation taking over 12 hours for the PCD runs plotted' -- all on Tinker's remote compute, not local.",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "common.sh sets grader_config.model=gpt-5-nano -- OpenAI API used as the composite math-grader's LLM fallback for answer-equivalence checking during every training step (see .env.example's OPENAI_API_KEY).",
+  "headline_artifact": "Judge Alignment / P(reject|correct) over training steps for the PCD-4 weak-Llama-judge run, logged to Weights & Biases by src/train.py via tinker_cookbook.rl.train, plotted as Figure 3 of the post.",
+  "blockers": [
+   "Training is not local compute at all -- it runs as a hosted LoRA fine-tuning job on Thinking Machines' Tinker API (paid, requires TINKER_API_KEY)",
+   "The exact models used (Qwen3-30B-A3B-Instruct-2507 and Llama-3.1-8B-Instruct) were retired from Tinker on 2026-06-12; README explicitly states the scripts 'cannot be re-run as-is on Tinker today'",
+   "OPENAI_API_KEY required for the gpt-5-nano math-equivalence grader fallback used during every training step",
+   "README's own cost BOTEC: 'over 100 steps this ... gives $250 for a run', and 'a sweep of 4 experimental configurations for 3 repeats ... can easily blow $3k overnight'"
+  ],
+  "notes": "No amount of local GPU hardware substitutes here -- the fine-tuning itself happens inside Thinking Machines' managed Tinker service, not on a local device, so a 3090 is simply not in the loop for the training entrypoint that produces the headline number. The repo does offer a free OpenRouter-only inference-only demo (experiments/inference_debate.sh), but that reproduces a qualitative illustration, not the PCD-4 training curve that is the actual headline claim."
+ }
+]

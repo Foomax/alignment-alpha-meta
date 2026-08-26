@@ -1,0 +1,58 @@
+{
+ "slug": "a-necessity-check-for-linear-safety-probes--vaiyr",
+ "post_id": "jauWv9BEbdCYcRy2d",
+ "title": "A necessity check for linear safety probes",
+ "date": "2026-04-28",
+ "repo": "vaiyr/probe-necessity",
+ "head_sha": "31017ee29feb54bff026ad42f400c86384638635",
+ "entrypoint": "scripts/run_autopicker_battery.py",
+ "entrypoint_confidence": "high",
+ "python_version": ">=3.11",
+ "key_deps": [
+  "numpy",
+  "scikit-learn"
+ ],
+ "models": [
+  "Llama 3-8B",
+  "Gemma 2-9B",
+  "Mistral 7B-v0.3",
+  "OLMo 2-7B",
+  "Qwen 2.5-7B"
+ ],
+ "phenomenon": "linear probe detection",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "Linear safety probes that successfully detect (AUROC\u22650.91) and steer a feature often fail to 'silence' it via causal projection, showing that detect/steer success is not evidence of a true causal handle; a calibration-time cosine diagnostic between plain and within-class-whitened difference-of-means directions predicts silencing success across 4-5 model families and 2 features, recovering all 17 existing causal handles and correctly alarming on the remaining 5 in a 22-cell battery.",
+ "quote": "Probe accuracy is not evidence of a causal handle.",
+ "metric": "necessity-check protocol recovery of true causal handles vs. correct alarms, 22-cell battery",
+ "target_value": "recovers all 17 causal handles that exist and correctly alarms on the remaining 5",
+ "target_numeric": 17.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "rel:0.15",
+ "tolerance_rationale": "other scalar metric: 15% relative; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 0,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "results/ablation_refusal*/**/result.json and results/paper/raw/*_whitening.json (all shipped in-repo)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "This CPU replay recomputes the decision rule over PRE-COMPUTED per-cell ablation results already checked into the repo; it is not a re-derivation from raw model weights.",
+  "Fully-from-scratch regeneration of those per-cell results (README Steps 3-4: freeze buffer -> base eval -> extract -> fit probes -> SFT rounds -> ablation battery) needs 1-2x H100 GPUs via Modal (not a single 3090) at ~$60-80/family and 12-24h wall-clock each, across 5 (model, feature) conditions.",
+  "From-scratch regeneration also needs an Anthropic API key (Claude Haiku for the refusal judge, Claude Sonnet for the sycophancy judge) -- a hard blocker under a no-closed-API-keys budget.",
+  "Llama-3-8B-Instruct, Gemma-2-9B-it, and Mistral-7B-Instruct-v0.3 are gated on HF (OLMo-2 and Qwen2.5 are not)."
+ ],
+ "inspector_notes": "A genuinely two-tier repo: the exact headline aggregate (17/5 recovery in the 22-cell battery) is trivially reproducible on any machine, even without a GPU, because the per-cell ablation results ship in the repo -- but reproducing those underlying per-cell numbers from raw model weights is well beyond a single 3090 (needs H100s plus a closed Anthropic API key).",
+ "headline_artifact": "results/monitor/autopicker_battery.json -- 'auto 22/27, dom 15/27, lr_cv 18/27' aggregate, i.e. the 17 recovered + 5 correctly-alarmed NECESSITY_LOST cells in the 22-cell body battery cited in target_value",
+ "selector_tier": "T1",
+ "selector_score": 6.37
+}

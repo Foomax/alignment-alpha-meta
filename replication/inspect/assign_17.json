@@ -1,0 +1,130 @@
+[
+ {
+  "post_id": "ronAKFdTDE7tiZk2c",
+  "repo": "james-sullivan/arithmetictransformer",
+  "title": "Developmental Stages in Multi-Problem Grokking",
+  "primary_claim": "Varying the ratio of addition to multiplication problems in training data shifts the timing of grokking (local learning coefficient decline) toward whichever operation dominates, but does not produce separate, distinct developmental stages in the LLC curve for each operation, contrary to the author's hypothesis.",
+  "metric": "local learning coefficient (LLC) curve shape / stage separation across addition:multiplication training ratios",
+  "target_value": "no distinct additional developmental stages observed; a single LLC decline across all ratios tested (30-70% addition), though the decline's onset timing shifted earlier for more uneven ratios",
+  "models": [
+   "toy single-layer transformer (modular arithmetic)"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "training dynamics",
+  "claim_type": "negative",
+  "head_sha": "4a10f5e13b56222a028bb0c2bc1e96af452203f0"
+ },
+ {
+  "post_id": "rwu73dCE3uWjieijK",
+  "repo": "uchicago-xlab/superposition-replication",
+  "title": "Confirming Claims of Superposition and Adversarial Examples in Toy Models",
+  "primary_claim": "This work replicates all three core claims of Stevinson et al. (arXiv:2510.11709) in toy superposition classifiers: PGD adversarial attacks align with the theoretically optimal interference-exploiting perturbation, robustness falls monotonically as superposition (k/m) increases and rises to 97.3% when k=m, and adversarial attacks transfer between independently-trained models in proportion to how much their feature geometries converge under correlated input regimes; it additionally finds that co-activating features can collapse onto a shared direction rather than orthogonalizing when bottleneck capacity is limited.",
+  "metric": "PGD-attack vs optimal-perturbation cosine similarity; robust accuracy vs k/m",
+  "target_value": "PGD\u00b7optimal cosine similarity = 1.00 across tested k/m (vs paper's 0.92-0.97); robust accuracy at k=m rises to 97.3% (m=5), falling monotonically as k/m increases (e.g. k/m=4, m=5: 30.1% ours vs 33.5% paper)",
+  "models": [
+   "toy superposition classifier (synthetic encoder-decoder)"
+  ],
+  "workload": "lm-ft",
+  "tier": "T?",
+  "phenomenon": "superposition",
+  "claim_type": "replication",
+  "head_sha": "d4aa6b7c2c2b5242e30b429d992fa2afc98b2fc7"
+ },
+ {
+  "post_id": "WvRQ9NoWKhBTansAy",
+  "repo": "kameronton/sudoku-residual",
+  "title": "A sudoku-solving transformer represents the board by substructure, not by cell",
+  "primary_claim": "A transformer trained on sudoku solving traces with backtracking builds a linear world model of the board state in its residual stream that is organized around grid substructures (rows, columns, boxes) rather than individual cells, and this representation is causally used by the model when predicting the next move.",
+  "metric": "linear probe AUC/MSE for substructure candidate state",
+  "target_value": "1.0 AUC / 0.0 MSE across all 27 substructures",
+  "models": [
+   "custom sudoku transformer 8-layer, 576 d_model"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "representation geometry",
+  "claim_type": "positive",
+  "head_sha": "a9b206955bfd1089a7253511fa9371066ecca570"
+ },
+ {
+  "post_id": "zbebxYCqsryPALh8C",
+  "repo": "noanabeshima/matryoshka-saes",
+  "title": "Matryoshka Sparse Autoencoders",
+  "primary_claim": "Matryoshka SAEs, trained with a sum of SAE losses computed on random prefixes of the latents, completely avoid the feature-absorption holes seen in vanilla SAEs on a toy model, and when trained on a 4-layer TinyStories language model achieve higher Mean Max Correlation with small reference-SAE features than vanilla SAEs at the same L0 (across most model locations), at the cost of a slightly worse Fraction of Variance Unexplained.",
+  "metric": "Mean Max Correlation (MMC) with reference SAE latents; Fraction of Variance Unexplained (FVU)",
+  "target_value": "Matryoshka SAEs have higher MMC than vanilla SAEs at the same L0 across most locations (exceptions: residual stream before first block, first attention-layer output); at fixed L0, Matryoshka has slightly worse FVU, comparable to a vanilla SAE ~0.4x its size",
+  "models": [
+   "TinyStories (custom 4-layer LM) 4-layer"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "dictionary learning method",
+  "claim_type": "positive",
+  "head_sha": "7b80f5fe36598f43f3181c5466a0365c7ce07807"
+ },
+ {
+  "post_id": "x2ZdCoqAaLedpjDk3",
+  "repo": "ameya-bit/quotesbyniche",
+  "title": "An Induction Head in Disguise: Chasing Grammar in a Character-Level Transformer",
+  "primary_claim": "In a small character-level transformer trained on Nietzsche texts, a single attention head (Block 5 Head 0) is a copying/induction head whose OV circuit already encodes a latent bracket-completion mechanism (attending to '(' boosts the ')' logit by +0.556, attending to ')' suppresses '(' by -0.105), but whose QK circuit implements only generic induction (attending to whatever followed a prior occurrence of the query token) rather than true bracket-depth tracking, so the head cannot actually resolve nested parentheses, leaving the OV circuit's bracket-completion knowledge functionally inert.",
+  "metric": "copying score (OV circuit eigenvalue-based) and qualitative bracket-tracking behavior on hand-written test prompts",
+  "target_value": "B5H0 copying score 0.615 vs next-highest head 0.35; OV circuit shows attending to '(' boosts ')' logit by +0.556 and attending to ')' suppresses '(' by -0.105, but the QK circuit fails to distinguish an already-closed bracket from a still-open one in nested test prompts, instead always attending to the most recent bracket",
+  "models": [
+   "custom character-level Transformer (trained from scratch on Nietzsche corpus) 6 blocks, 4 heads/block, d_model 256 (rank 64 per head)"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "circuit discovery",
+  "claim_type": "negative",
+  "head_sha": "135fa8933d67af546aec18f045831cb300fbdc73"
+ },
+ {
+  "post_id": "fsG4m6sRMpomd7Rk6",
+  "repo": "alignment-research-center/mlp_cumulant_propagation",
+  "title": "Mechanistic estimation for wide random MLPs",
+  "primary_claim": "A new mechanistic ('cumulant propagation') algorithm for estimating the expected output of wide random-initialization MLPs under Gaussian input outperforms Monte Carlo sampling both in theory (mean squared error O(epsilon^2) in time O(n/epsilon^2) vs. Theta(n^2/epsilon^2) for sampling) and in practice, achieving equal MSE with under 1/100th the FLOPs on 4-hidden-layer width-256 ReLU MLPs, and extends to low-probability estimation and a proof-of-concept 'mechanistic distillation' training loss.",
+  "metric": "mean squared error vs. FLOPs for estimating expected output; relative error at low probability",
+  "target_value": "outperforms Monte Carlo sampling across 7 orders of magnitude of FLOP budget, in some cases matching MSE with <1/100 the FLOPs; achieves under 30% relative error for probabilities 100x lower than 1/N using similar FLOPs to N-sample Monte Carlo",
+  "models": [
+   "randomly-initialized ReLU MLP 4 hidden layers, width 256"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "interpretability tooling",
+  "claim_type": "positive",
+  "head_sha": "93d091a4c26c042bfffa28f2e76a81bc0aba94bb"
+ },
+ {
+  "post_id": "fbw3PcLTGn53fxCM7",
+  "repo": "aristizabal95/procgen-tools",
+  "title": "Exploring Shard-like Behavior: Empirical Insights into Contextual Decision-Making in RL Agents",
+  "primary_claim": "Cheese-seeking behavior in a maze-solving RL policy is spatially localized around the cheese's position, even though the presence of cheese is linearly decodable at near-perfect accuracy from activations at nearly every layer of the network; sensitivity of activations to cheese proximity is concentrated in later layers, especially the fully-connected layer preceding the value head.",
+  "metric": "linear probe accuracy for cheese-presence detection across network layers",
+  "target_value": "near-perfect accuracy in most layers, dropping to 90% at the policy head",
+  "models": [
+   "procgen maze CNN policy (Langosco et al. goal-misgeneralization agent)"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "linear probe detection",
+  "claim_type": "positive",
+  "head_sha": "49d4759a90b7d8d38ea03beb621f1ef501a7854a"
+ },
+ {
+  "post_id": "r6QoJ29asCsuGyXAD",
+  "repo": "karinelevonyan/bluedot_puzzle_levonyan2026",
+  "title": "Solving the BlueDot Puzzle TAIS: The Velocity Ring",
+  "primary_claim": "A hidden binary 'country' feature, encoded as a pure XOR with a 'food' feature, collapses to chance (0.43) under linear probing at layer h2 while every other feature stays above 0.97, but is recovered by a non-linear MLP probe (0.96) and by a manual projection-times-food-sign transform (0.93); using Distributed Alignment Search (DAS) the authors isolate a 1-D non-linear subspace at h2 whose activation patching causally flips downstream model outputs, and they further construct a 'velocity ring' representation for a Sentiment feature -- a zero-mean circular geometry hidden in the inter-layer velocity update (h3-h2) rather than any single layer's state -- that is linearly undetectable (chance, 0.32) yet still decodes Sentiment at >90% accuracy via its radius.",
+  "metric": "linear probe accuracy for the hidden feature(s) across layers/representations",
+  "target_value": "country: 0.43 (chance) at h2 vs >0.97 for other features; recovers to 0.96 with a non-linear MLP probe and 0.93 with a manual projection+food-sign transform; velocity-ring Sentiment feature: linear probe at chance (0.32) in the reserved update dimensions, non-linear radius readout >90%",
+  "models": [
+   "MiniLM all-MiniLM-L6-v2 frozen encoder + 5-layer MLP head"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "representation geometry",
+  "claim_type": "method",
+  "head_sha": "d81f63296f615074e9dfc1b8a8f9dd8a6b2e4c47"
+ }
+]

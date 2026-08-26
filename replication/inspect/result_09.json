@@ -1,0 +1,302 @@
+[
+ {
+  "post_id": "ifbNtv8QbNBrYFSSv",
+  "repo": "sunmoonron/super-weight-circuit-patching",
+  "head_sha": "dbc14761cd4510b6996de75491e085637cce9c2c",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "07_compare_patch.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": null,
+   "key_deps": ["torch", "transformers", "datasets", "safetensors"],
+   "stated_compute": "Run this on CPU (requires ~16GB RAM) [01_make_checkpoints.py comment]; config.py: DEVICE = \"cpu\"  # Because too poor MPS :(; README title: '(CPU-only Experiment)'"
+  },
+  "models_needed": [
+   {"hf_id": "allenai/OLMo-1B-0724-hf", "params_b": 1.0, "gated": false}
+  ],
+  "vram_estimate_gb": 4,
+  "vram_basis": "Repo is designed CPU-only (fp32, ~16GB system RAM), but OLMo-1B in fp32 for inference/training a single trainable row easily fits a 24GB GPU if one wanted to move it there; base model weights alone are ~4GB in fp32.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["wikitext-2-raw-v1"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "Training loop (03_train_patch.py) hard-caps at i>200 steps per epoch, 2 epochs, batch_size=2, 128 max_len, single trainable row-vector; eval (07_compare_patch.py) caps at NUM_EVAL_BATCHES=30, batch_size=1. All on a 1B model.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "results/07_compare_results.txt and results.png — BASE/BROKEN/PATCHED NLL/PPL table plus cosine-similarity stats for delta_row vs base_row, produced by 07_compare_patch.py",
+  "blockers": [],
+  "notes": "Extremely reproducible: results/07_compare_results.txt already committed in the repo contains the exact target numbers (PPL 17.41->2884.33->25.24, cos(base,delta)=0.1336), i.e. the repo's own prior run reproduces the post's headline claim verbatim. Ungated model, all-CPU by design, trivial compute."
+ },
+ {
+  "post_id": "QYzofMbzmbgiwfqy8",
+  "repo": "filyp/mudman",
+  "head_sha": "227eaea432b10243be8196de902293e51ddd6a59",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "src/study_runner.py --config-path \"configs/ablations_and_loss2,llama32,pile-bio.yaml\"",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": "3.12",
+   "key_deps": ["torch", "transformers", "peft", "optuna", "hydra-core", "wandb", "datasets"],
+   "stated_compute": "On an Nvidia L40 GPU, experiments for one Llama-3.2-1B yaml should take around 5*7h (5 methods inside), for SmolLM-135M 5*9h, and for pythia-14m 5*4h. ... On an Nvidia L40 GPU, [wmdp7.yaml] should take around 5*24h. (Note that this experiment only supports remote runs.)"
+  },
+  "models_needed": [
+   {"hf_id": "meta-llama/Llama-3.2-1B", "params_b": 1.0, "gated": true},
+   {"hf_id": "HuggingFaceTB/SmolLM-135M", "params_b": 0.135, "gated": false},
+   {"hf_id": "EleutherAI/pythia-14m", "params_b": 0.014, "gated": false}
+  ],
+  "vram_estimate_gb": 4,
+  "vram_basis": "Llama-3.2-1B fine-tuning with PEFT/LoRA-scale updates, batch_size 16, plus a MAML adversary copy of the model -- comfortably fits 24GB; SmolLM-135M and Pythia-14M are trivial.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["pile_bio_retain/forget corpora"],
+   "available": "download-script",
+   "gated": false
+  },
+  "est_runtime": "days",
+  "est_runtime_basis": "README states ~35h (5*7h) on an L40 for just the Llama-3.2-1B/pile-bio yaml (which contains the TAR2 variant behind the 40% claim); reproducing the full 'Ablation study of MUDMAN' figure needs 6 such yaml configs (2 datasets x 3 models). A 3090 is roughly comparable in throughput to an L40 for this workload, so similar order of magnitude.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "Figure 'Ablation study of MUDMAN' (built by src/plotting/ablations_and_loss.py) from the ablations_and_loss2,{model},{dataset}.yaml runs, whose TAR2 variant is the TAR baseline compared against MUDMAN for the 40% claim",
+  "blockers": [
+   "500-trial Optuna hyperparameter search per variant/yaml makes wall-clock very long (tens of hours) even though VRAM is not a constraint",
+   "Full ablation figure needs 6 separate yaml configs across 2 datasets x 3 models",
+   "The separate 'Accuracy on WMDP-Bio' figure (configs/wmdp7.yaml) is explicitly remote-only per README and needs ~120h on an L40 -- not something a solo 3090 could run in reasonable time"
+  ],
+  "notes": "The specific TAR-vs-MUDMAN 40% robustness claim is reproducible on a single GPU (Llama-3.2-1B, SmolLM-135M, Pythia-14M all fit easily), but at very long wall-clock time (tens of hours per config) due to the 500-trial Optuna search, not VRAM. Training/eval data is fetched from a public GitHub raw URL (a static, pre-generated corpus), not the closed API originally used to generate it."
+ },
+ {
+  "post_id": "Eu96GFW6LKrQHCJbs",
+  "repo": "seamus-fallows/automated-feature-labeling",
+  "head_sha": "f6f16747b57f81b9b91b6ebb1c4a9bd128477494",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "experiments/animals.py",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformers", "torch", "einops", "torchtyping", "jaxtyping"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "meta-llama/Meta-Llama-3-8B-Instruct", "params_b": 8, "gated": true}
+  ],
+  "vram_estimate_gb": 20,
+  "vram_basis": "No torch_dtype is specified anywhere in the codebase (AutoModelForCausalLM.from_pretrained(...).to(device) with no dtype arg), which loads Llama-3-8B-Instruct in fp32 by default: ~32GB of weights alone, exceeding 24GB. Switching to bf16 (a one-line fix, since only a soft concept-embedding is trained and the 8B model stays frozen) would bring this to roughly 18-22GB including backprop activations.",
+  "fits_3090": "tight",
+  "data": {
+   "needed": ["animals", "mammals", "chinese", "numbers", "palindromes text data"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "unknown",
+  "est_runtime_basis": "No compute stated; batch_size=20, epochs=5, with sentence-activation caching (CachedDataset) to avoid repeated full-model forward passes.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "trainings_logs.plot_final_token_accuracy / plot_top_tokens outputs from each experiments/*.py script (one script per concept: animals.py, chinese.py, numbers.py, mammals.py, mammals_words.py, palindromes.py), showing convergence (or failure) to the target single-token label",
+  "blockers": [
+   "As coded, loads an 8B model in fp32 (~32GB) which does not fit a 24GB 3090 without a manual bf16/fp16 edit",
+   "Hardcoded HuggingFace token string ('llama_token') committed in multiple files (likely already revoked, but a code smell)",
+   "No single unified entrypoint -- each concept/claim (animal, Chinese, number, mammal balanced/unbalanced, palindrome) is a separate standalone script"
+  ],
+  "notes": "Method itself is cheap (only a d_vocab-sized soft token vector is trained via gradient descent; the 8B model is frozen), so the VRAM issue is a trivial dtype fix, not a fundamental blocker. All text data for every claimed sub-experiment is already committed under data/text_data/."
+ },
+ {
+  "post_id": "AExopgZ9Yj6qzTrxb",
+  "repo": "riteshbhalerao11/mats-summer-app",
+  "head_sha": "582db85327d9b4c18f654cc87c5c2c781475f26e",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "src/steering/steer_model.py -> src/evaluation/judge_outputs.py -> src/evaluation/visualize_judgments.py",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["nnsight", "transformers", "torch", "openai (AsyncOpenAI client pointed at OpenRouter)"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "meta-llama/Llama-3.2-3B-Instruct", "params_b": 3, "gated": true},
+   {"hf_id": "meta-llama/Llama-3.1-8B-Instruct", "params_b": 8, "gated": true}
+  ],
+  "vram_estimate_gb": 18,
+  "vram_basis": "Activation collection / steering on Llama-3.1-8B-Instruct via nnsight, bf16 inference-only (no fine-tuning of the base model), plus linear probe training on cached activations.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["JailbreakBench-derived harmful/xstest/wildjb_benign/user_description prompt sets", "synthetic conversation datasets (trust-level scenarios)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "No compute stated; inferred from steering + judging over multiple layers/strengths/datasets on 3B/8B models.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "outputs/judge_outputs/openai_gpt-oss-120b/{llama,llama_8b}/... judged compliance counts, aggregated/plotted by src/evaluation/visualize_judgments.py -- the compliance-rate-under-steering comparison across trust/compliance/orthogonalized vectors",
+  "blockers": [
+   "No requirements.txt or pyproject.toml anywhere in the repo (only an unrelated crosscoder_learning/requirements.txt); environment must be reconstructed from imports",
+   "The actually-used LLM judge (openai/gpt-oss-120b, per outputs/judge_outputs/) and the dataset-generation model (qwen/qwen3-235b-a22b-thinking-2507, per code default) are both open-weight but far too large to self-host on a single 3090, so re-running those two steps from scratch needs an OpenRouter API key/credits even though neither is a 'closed' proprietary model"
+  ],
+  "notes": "The causal steering experiment itself (trust-vector extraction, orthogonalization, steering) runs entirely on local Llama-3B/8B and fits a 3090 comfortably. Judge outputs (outputs/judge_outputs/) and generated conversation datasets (data/datasets/*.parquet) are already committed to the repo, so the compliance-rate plots can likely be regenerated from committed artifacts without new API calls; only a from-scratch redo of judging/data-gen would hit the OpenRouter dependency. CLI docstrings also show 'anthropic/claude-3.5-sonnet' as an example judge/generator model, but the artifacts actually checked into the repo used the open-weight gpt-oss-120b judge instead."
+ },
+ {
+  "post_id": "qdxNsbY5kYNqcgzFb",
+  "repo": "ayoakin/mivlde",
+  "head_sha": "36046d46cbf23995f72b7cd3e55db22d5dca1696",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "subteams/LLMProbing/experiments/run_experiment.py",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["odeformer", "torch", "sympy"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "odeformer (pip package, CompML/ODEFormer)", "params_b": 0.086, "gated": false},
+   {"hf_id": "huggingface/time-series-transformer (small)", "params_b": null, "gated": false}
+  ],
+  "vram_estimate_gb": 2,
+  "vram_basis": "86M-parameter transformer; probing/activation-extraction and small linear/regression probes only, no fine-tuning of the base model. Would run fine on CPU too.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["synthetic ODE trajectory / time-series data"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "Not stated, but inferred from an 86M-parameter model plus linear probes on cached activations -- inherently cheap.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "subteams/LLMProbing/notebooks/derivatives_exp.ipynb, r2_experiment.ipynb, and 2D_Linear.ipynb -- derivative-timepoint probe accuracy, R^2-score probe Spearman coefficient (0.75, layer 7), and eigenvalue-vs-coefficient probe comparison",
+  "blockers": [
+   "subteams/LogitLens/ contains only a one-line empty README -- the logit-lens portion of the claim has no committed code",
+   "No single unified entrypoint; findings are spread across ~10 separate per-subteam notebooks (LLMProbing, SAEs, ActivationMaximization, SHAP) with only per-subteam requirements.txt files, no top-level one"
+  ],
+  "notes": "Compute is a non-issue (86M-param model, linear probes) -- this is a laptop-class experiment. Reproducibility of the probing sub-claims (derivative time-point, R^2, eigenvalues) is good; the SAE and especially logit-lens sub-investigations mentioned in the post are far less complete in the repo."
+ },
+ {
+  "post_id": "KLqiDczfZsmhzEhax",
+  "repo": "dmitry-dereshev/positive-jailbreaks-llm-failure-modes",
+  "head_sha": "cadbd53880e9c2f3979710e45757a75a7fd0e583",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "benchmark_llms.py",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["gpt4all", "pandas"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "ghost-7b-v0.9.1-Q4_0.gguf (GPT4All model hub)", "params_b": 7, "gated": false},
+   {"hf_id": "gpt4all-falcon-newbpe-q4_0.gguf (GPT4All model hub)", "params_b": 7, "gated": false},
+   {"hf_id": "mistral-7b-openorca.gguf2.Q4_0.gguf (GPT4All model hub)", "params_b": 7, "gated": false}
+  ],
+  "vram_estimate_gb": 5,
+  "vram_basis": "Q4_0-quantized 7B GGUF models run via GPT4All with device=\"cuda\"; each is roughly 4-5GB.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["JailbreakBench malicious/benign prompt CSVs (100 each)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "Not stated; inferred from 10 models x 2 datasets x 2 system prompts x 100 prompts x up to 2048 generated tokens each via GPT4All (only 3 of the 10 models are relevant to this specific post).",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "Per-model response CSVs from benchmark_llms.py, scored into 'competent and complete' counts as tabulated in 'Analysis Summary.ods' / '2024-12-29 Validate Judgement.csv'",
+  "blockers": [
+   "The headline 'competent+complete' counts are produced by human grading of each generated response (README: '...vs. a human judge assessing their responses'); the repo's code generates raw responses but contains no scripted grader that reproduces the final counts",
+   "No requirements.txt or pyproject.toml anywhere in the repo",
+   "GGUF model weight files are not included and must be obtained separately from the GPT4All model hub (allow_download=False is set in the scripts, so paths must be supplied manually)"
+  ],
+  "notes": "Mechanically cheap to rerun (local, open-weight, quantized 7B models on GPU), but exactly reproducing the reported harmful/harmless totals requires redoing the same manual/human grading step the original author did, since that scoring logic isn't in the code."
+ },
+ {
+  "post_id": "PagGF8roBJmjLunsX",
+  "repo": "patrickod32/seq2feature",
+  "head_sha": "f0616acd25cdf88a3c8c50e5786df5c45072d327",
+  "status": "ok",
+  "language": "notebook",
+  "entrypoint": "notebooks/02_evaluate_probe.ipynb",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["torch", "numpy", "sentencepiece", "scikit-learn"],
+   "stated_compute": "'01_train_probe.ipynb trains the probe from relabel_bundle/ (Colab, ~minutes on a GPU); 02_evaluate_probe.ipynb reproduces the baseline table and accuracy above on CPU, no GPU needed.' Notebook comment: '# 3 - load the probe, score every span (CPU ~1-2 min)'."
+  },
+  "models_needed": [],
+  "vram_estimate_gb": 0,
+  "vram_basis": "The headline-number notebook (02_evaluate_probe.ipynb) is explicitly CPU-only and needs neither the 9B base model nor the SAE -- it compares the shipped 5.3MB probe against pre-computed SAE ground-truth firings already saved in relabel_bundle/targets.npz. Probe training (01_train_probe.ipynb) needs a GPU but only for 'minutes' on a 1.5M-parameter probe.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["relabel_bundle/ (SAE firings, spans, concept captions)", "golf_final/ (trained probe weights)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "README/notebook comments state CPU scoring takes ~1-2 minutes and probe training takes 'minutes on a GPU' (Colab).",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "notebooks/02_evaluate_probe.ipynb primary figure and printed summary -- per-concept AUC (0.90) and top-5 agreement (0.956) vs bag-of-words (0.84/0.75) and zero-shot embedding (0.23/0.53) baselines",
+  "blockers": [],
+  "notes": "Best case in this batch: the exact headline metrics reproduce on CPU in minutes from data already committed to the repo. The only compute/API-heavy step in the whole project -- running the Gemma-2-9B teacher + GemmaScope SAE to generate ground-truth labels (README: needs an A100/80GB) and captioning 2048 concepts via Gemini 2.5 Flash Lite (~$0.80, needs OPENROUTER_KEY) -- is a one-time upstream step whose outputs (relabels.jsonl, targets.npz) are already shipped and not required to reproduce the reported numbers."
+ },
+ {
+  "post_id": "43vKjWuH4goLwrFHA",
+  "repo": "agencyenterprise/modular-pretraining",
+  "head_sha": "d07d62e9869c6a969a2306e755aba7a742c317fd",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "src/run/experiment/scaling/realistic/{base,grmoe,lora,filtering,maxent}/run_all.py (Fig. 7, the 50M-5B scaling claim); src/run/experiment/stories/methods/run.py is a much smaller (26M) single-node analogue",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["torch", "transformers", "datasets", "huggingface_hub", "numpy", "scipy", "matplotlib", "python-dotenv"],
+   "stated_compute": "README: 'Multi-GPU training uses torchrun with DistributedDataParallel (8x GPUs by default).' Example launch command in run_all.py: '# export OMP_NUM_THREADS=16 && torchrun --nproc_per_node=8 -m src.run.experiment.scaling.realistic.base.run_all'. src/run/experiment/slurm.md documents the actual cluster used: 'We have negotiated with RunPod to get 8xH200 nodes ... We have 24 nodes (32 very soon)'."
+  },
+  "models_needed": [
+   {"hf_id": "custom dense Transformer (GRAM/LoRA/DEMix/filtering/MaxEnt), trained from scratch, 26M-2B+ params per src/run/experiment/scaling/realistic/base/run_all.py (README states up to 5B for the full paper)", "params_b": null, "gated": false}
+  ],
+  "vram_estimate_gb": 48,
+  "vram_basis": "Scaling experiment trains dense Transformers from scratch at 50M/100M/200M/400M/800M/2000M(+5B per README) params x 3 seeds x 5 methods, using DDP (no parameter sharding) across 8 GPUs by default. Even at the 800M-2B scales, Adam optimizer state (fp32, 2x params) plus fp32 master weights plus bf16 weights/grads exceeds 24GB per replica once you add activation memory; the 5B scale is far beyond a single 3090 under this training setup regardless.",
+  "fits_3090": "no",
+  "data": {
+   "needed": ["AE-data/modular-pretraining (tokenized core+aux shards)", "AE-data/dual-use-papers (arXiv/Europe PMC/OSTI dual-use corpus)"],
+   "available": "hf-hub",
+   "gated": true
+  },
+  "est_runtime": "days",
+  "est_runtime_basis": "Compute-optimal (Chinchilla-style) token budgets scale with each of 6-7 model sizes up to 2-5B params, x 3 seeds x 5 methods (baseline/GRAM/LoRA/DEMix/filtering) plus MaxEnt unlearning and adversarial-elicitation fine-tuning passes; the authors ran this on a 24-32-node 8xH200 Slurm/RunPod cluster, i.e. hundreds of GPU-days, not something a single 3090 completes in any practical timeframe even ignoring the VRAM ceiling.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "analysis/scaling/plot.py (Fig. 7: Compute Ratio vs. params, GRAM/LoRA/filtering/MaxEnt across 50M-5B) and analysis/partial/plot_full.py (Fig. 6: 50%-labeled partial setting)",
+  "blockers": [
+   "Default/documented training setup is 8x GPU DDP (torchrun --nproc_per_node=8); no single-GPU config is provided for the scaling or partial-labeling experiments",
+   "Model scales relevant to the headline claim (400M-5B) do not fit a single 24GB card even with mixed precision, given DDP replicates full optimizer state per device rather than sharding it",
+   "Actual paper runs used a 24-32-node 8xH200 RunPod/Slurm cluster (documented in src/run/experiment/slurm.md) -- multiple orders of magnitude beyond a solo 3090 budget",
+   "No packaged dependency manifest (README explicitly: 'There is no packaged manifest'); HF_TOKEN required for the tokenized datasets, and results/ upload uses an S3 bucket (ae-gradient-routing-results) by default",
+   "Checkpoints are git-ignored and not published, so even partial reruns can't warm-start from the authors' trained models"
+  ],
+  "notes": "The core mechanism (GRAM module ablation vs. baseline/LoRA/DEMix/filtering) is demonstrated at a tiny 26M scale in src/run/experiment/stories/, which is single-GPU-feasible and would test capability isolation and basic robustness, but not the compute-ratio-tracks-filtering scaling claim across 50M-5B or the realistic dual-use-domain (virology/cyber/nuclear) results the post's headline actually cites. Fidelity to the stated 50M-5B claim requires multi-node multi-GPU training explicitly documented as an 8xH200 cluster job."
+ }
+]

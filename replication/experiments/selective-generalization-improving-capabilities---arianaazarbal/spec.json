@@ -1,0 +1,67 @@
+{
+ "slug": "selective-generalization-improving-capabilities---arianaazarbal",
+ "post_id": "ZXxY2tccLapdjLbKm",
+ "title": "Selective Generalization: Improving Capabilities While Maintaining Alignment",
+ "date": "2025-07-16",
+ "repo": "arianaazarbal/selective-generalization",
+ "head_sha": "f7f2e54e6b40da1a0fc307d741d6255bebf02798",
+ "entrypoint": "projects/emergent_misalignment_trainers/emergent_misalignment.py",
+ "entrypoint_confidence": "high",
+ "python_version": ">=3.11 (pyproject.toml, uv-managed)",
+ "key_deps": [
+  "torch>=2.6.0",
+  "transformers>=4.49.0",
+  "peft>=0.14.0",
+  "accelerate>=1.4.0",
+  "vllm>=0.8.5.post1",
+  "flashinfer-python==0.2.3",
+  "bitsandbytes>=0.45.5",
+  "inspect-ai>=0.3.92",
+  "openai>=1.82.0 (listed as a dependency but not called in the active EM/GCD training-eval path)"
+ ],
+ "models": [
+  {
+   "hf_id": "Qwen/Qwen3-8B",
+   "params_b": 8.0,
+   "gated": false
+  },
+  {
+   "hf_id": "google/gemma-2b-it",
+   "params_b": 2.0,
+   "gated": true
+  }
+ ],
+ "phenomenon": "narrow-to-broad misalignment generalisation",
+ "contested": false,
+ "claim_type": "positive",
+ "primary_claim": "Across two model organisms (emergent misalignment from harmful medical advice, and math-induced sycophancy), simply including a limited proxy alignment dataset in the training mix is insufficient to prevent misaligned generalization, but a KL-divergence penalty on that alignment data (and DPO) pushes the capability-alignment Pareto frontier furthest among seven benchmarked mitigation methods.",
+ "quote": "Merely including alignment data in training data mixes is insufficient to prevent misalignment, yet a simple KL Divergence penalty on alignment data outperforms more sophisticated methods.",
+ "metric": "Pareto frontier of task/capability performance vs general alignment across 7 mitigation methods",
+ "target_value": "KL divergence penalty and DPO push the Pareto frontier furthest in both the emergent-misalignment and sycophancy settings; naive mixed fine-tuning on limited alignment data does not increase (and in the EM setting slightly decreases) general alignment",
+ "target_numeric": null,
+ "direction": "+",
+ "uncertainty_reported": "seeds",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is not a single scalar; judge by hand",
+ "vram_estimate_gb": 20,
+ "fits_3090": "probably",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "projects/emergent_misalignment_trainers/data/sneaky_medical_diet_only.jsonl (in-repo)",
+   "HHH/SAFETY alignment-proxy MCQ data",
+   "gemma_gcd GCD math dataset + capital-cities alignment proxy"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [],
+ "inspector_notes": "Unusually well-organized multi-experiment benchmark repo with two independent self-contained sub-pipelines (EM/Qwen3-8B and GCD-sycophancy/Gemma-2B) matching both models named in the claim. `openai` is a listed dependency and an `openai_model` parameter exists in gemma_gcd/all_evals.py, but the actual sycophancy metric used (get_user_confirmation_score) and MCQ/MMLU evals are rule-based/local-logprob, not LLM-judge calls in the code path that was actually exercised (the GPT-judge tone-scoring call is commented out) -- so no closed API is required for the primary Pareto-frontier claim. Repo is large (559MB), mostly checkpoint/result PNGs from prior sweep runs; inspected via GitHub API tree + raw file fetches pinned to the exact head_sha (local clone was still transferring due to network contention from many concurrent inspection agents sharing this scratchpad).",
+ "headline_artifact": "results.json under each projects/emergent_misalignment_trainers/experiments/*/ (loss + MCQ-accuracy over epochs) for the EM/Qwen3-8B setting, and projects/gemma_gcd equivalents for the sycophancy/Gemma-2B setting; emergent_misalignment_plots.py assembles these into the Pareto-frontier figures.",
+ "selector_tier": "T1",
+ "selector_score": 4.48
+}

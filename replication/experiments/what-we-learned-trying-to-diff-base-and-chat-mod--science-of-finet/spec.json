@@ -1,0 +1,67 @@
+{
+ "slug": "what-we-learned-trying-to-diff-base-and-chat-mod--science-of-finet",
+ "post_id": "xmpauEXEerzYcJKNm",
+ "title": "What We Learned Trying to Diff Base and Chat Models (And Why It Matters)",
+ "date": "2025-06-30",
+ "repo": "science-of-finetuning/diffing-toolkit",
+ "head_sha": "e0b84a591f5184d69a65082e4366ccfe36f47661",
+ "entrypoint": "uv run python main.py diffing/method=kl (and diffing/method=crosscoder, diffing/method=sae_difference) organism=chat model=<gemma-2-2b config> -- no ready-made gemma-2-2b model/organism config exists at this SHA, would need to be authored from an existing configs/model/*.yaml template",
+ "entrypoint_confidence": "low",
+ "python_version": ">=3.11",
+ "key_deps": [
+  "torch>=2.7.0",
+  "transformers>=4.53.0",
+  "accelerate",
+  "peft",
+  "vllm>=0.11.1",
+  "dictionary-learning",
+  "nnsight",
+  "hydra-core"
+ ],
+ "models": [
+  {
+   "hf_id": "google/gemma-2-2b",
+   "params_b": 2.6,
+   "gated": true
+  },
+  {
+   "hf_id": "google/gemma-2-2b-it",
+   "params_b": 2.6,
+   "gated": true
+  }
+ ],
+ "phenomenon": "crosscoder / model diffing",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "Standard L1-trained crosscoders hallucinate most of their apparent 'chat-only' latents due to shrinkage and latent-decoupling artifacts; switching to BatchTopK crosscoders and, further, diff-SAEs trained on chat-base activation differences recover far more of the true behavioral difference between base and chat models (88% of the KL gap for diff-SAEs vs 60% for crosscoders).",
+ "quote": "Crosscoders leave significant behavioral differences on the table: when we use the crosscoder's full reconstruction of the difference, we only recover 60% of the KL gap.",
+ "metric": "% of behavioral KL gap recovered",
+ "target_value": "60% (crosscoder reconstruction) vs 88% (diff-SAE reconstruction)",
+ "target_numeric": 60.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "abs:5",
+ "tolerance_rationale": "percentage metric: 5 points; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 14,
+ "fits_3090": "probably",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "large text corpus for preprocessing activation caching (dataset unspecified for this exact experiment at current SHA)"
+  ],
+  "available": "unknown",
+  "gated": false
+ },
+ "blockers": [
+  "The toolkit has moved on since the June 2025 post: configs/model/ at this SHA only has gemma2_9B_it, gemma3_1B(_pt), gemma3_4B_it, gemma3_27B_it -- no gemma2_2B config remains, so a competent engineer would need to reconstruct the original base-vs-chat gemma-2-2b experiment config themselves (feasible, since the framework is generic, but not turnkey).",
+  "The separate agentic-evaluation feature (LLM agent + LLM grader, e.g. GPT-4/Claude) does need a closed API key, but it is not required for the specific KL-gap-recovery headline metric."
+ ],
+ "inspector_notes": "This is a general, actively-developed toolkit (the linked publication is one of several) rather than a frozen paper-specific repo, so entrypoint confidence is low: the code paths (kl, crosscoder, sae_difference methods) clearly exist and match the post's method names, but the exact gemma-2-2b base/chat config used for the original blog post is not preserved at the given head_sha. A separate, unrelated 'Narrow Finetuning' paper reproduction in the same repo explicitly assumes a SLURM cluster.",
+ "headline_artifact": "KL-divergence-recovery outputs of diffing/method=kl run against crosscoder vs. sae_difference reconstructions (the post's 60% vs 88% KL-gap-recovered numbers); no committed artifact at this SHA reproduces those exact numbers",
+ "selector_tier": "T1",
+ "selector_score": 8.06
+}

@@ -1,0 +1,31 @@
+{
+ "attempted": 2,
+ "installs": 2,
+ "runs": 2,
+ "claim_located": 2,
+ "claim_reproduced": 1,
+ "reproduction_rate_of_attempted": 0.5,
+ "reproduction_rate_of_located": 0.5,
+ "failure_taxonomy": {
+  "none": 2
+ },
+ "median_wallclock_min": 229.0,
+ "entries": [
+  {
+   "post_id": "jZfNX4GJPdptxSxt4",
+   "repo": "lovkush-a/arena-sandbagging-mi",
+   "runs": true,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
+   "delta": null
+  },
+  {
+   "post_id": "nWiwv4GN8aYqpnZKE",
+   "repo": "wassname/antipasto",
+   "runs": true,
+   "claim_reproduced": false,
+   "blocking_reason": "none",
+   "delta": -29.2
+  }
+ ]
+}

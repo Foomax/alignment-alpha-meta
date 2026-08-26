@@ -1,0 +1,303 @@
+[
+ {
+  "post_id": "T64JQFZ5NwSzx4mJu",
+  "repo": "fringewidth/steer-clear",
+  "head_sha": "c54ae76887dc6599aaeab8061079a6dd6d44e415",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "train/train_phase1.py -> directions_code/extract_directions.py -> interpret/interpret_model_outputs.py -> similarity_score/score_similarity.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": "3.10",
+   "key_deps": ["transformers", "torch", "bitsandbytes", "accelerate", "google-genai", "scikit-learn"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "Qwen/Qwen2.5-14B-Instruct", "params_b": 14, "gated": false},
+   {"hf_id": "Qwen/Qwen3-Embedding-8B", "params_b": 8, "gated": false}
+  ],
+  "vram_estimate_gb": 10,
+  "vram_basis": "Training loads Qwen2.5-14B-Instruct with 4-bit nf4 quantization (BitsAndBytesConfig) plus tiny rank-2 LoRA adapters (~8GB weights + small activations); the separate similarity-scoring stage loads Qwen3-Embedding-8B (~16GB fp16) but runs as a later, independent step, not simultaneously.",
+  "fits_3090": "probably",
+  "data": {
+   "needed": ["situations-begetting-honesty scenario dataset (train.csv/test.csv, in-repo)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "20 separate rank-2 LoRA training runs (1 epoch, 384 prompts, max 128 generated tokens each) plus generation + judging on 96 unseen test prompts for both LoRA and direction variants; no wall-clock figure stated in README.",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "Gemini 2.0/2.5 Flash is used (interpret/interpret_model_outputs.py) to produce textual behavior-deviation summaries for both the LoRA outputs and the direction outputs; these summaries are cosine-matched (Hungarian algorithm) to compute the headline Linearity Score itself, so the headline number cannot be reproduced without a Gemini key.",
+  "headline_artifact": "Linearity Score per direction (5/20 above the 0.83 threshold), computed by similarity_score/score_similarity.py from Gemini-generated summaries in outputs_interp/",
+  "blockers": [
+   "The headline 25%-linear-directions metric is itself derived from Gemini-judged textual summaries, not just model outputs -- reproducing the exact reported numbers requires a Gemini API key",
+   "README instructs running train/train_phase1.ipynb but only .py scripts exist in the repo at this commit",
+   "Model discrepancy: the post title/claim says Qwen1.5-14B-instruct but the training code loads Qwen2.5-14B-Instruct"
+  ],
+  "notes": "LoRA training and direction extraction can run fully offline on a 3090 with 4-bit quantization, and all 20 trained LoRA checkpoints, extracted direction vectors, and raw model outputs are already checked into the repo. But the headline Linearity Score is computed from Gemini-judged text summaries, so an exact-number replication is API-gated even though the mechanistic pipeline itself is not."
+ },
+ {
+  "post_id": "NE33XtSKmKskNaSxm",
+  "repo": "tobypullan/cotfaithfulness",
+  "head_sha": "1b8bdc73cc8c49a46d9064d8a4ea99bbd0e9fc29",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "CoT_test.py (alwaysA control vs VisualCue hinted token-count comparison) and causal_CoT.py (sentence-splice resampling)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": "3.10",
+   "key_deps": ["transformers", "torch", "nnsight", "transformer-lens"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B", "params_b": 14, "gated": false}
+  ],
+  "vram_estimate_gb": 30,
+  "vram_basis": "Model is loaded via AutoModelForCausalLM.from_pretrained(..., dtype=torch.bfloat16) with no quantization option in the code, then .to('cuda') -- bf16 weights alone for 14B params are ~28GB, plus KV cache for generations that default to max_new_tokens=10000.",
+  "fits_3090": "no",
+  "data": {
+   "needed": ["datasets/multichoice_CoT.jsonl (in-repo)", "hand-written prompt files in alwaysA/ and VisualCue/ (in-repo)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "CoT_test.py defaults to max_new_tokens=10000 per generation across 8 prompt files x 2 conditions; causal_CoT.py reruns generation after splicing in every CoT sentence (causalCoTChanges/ holds 11 such per-question runs), each requiring multiple resampled completions.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "Token-count comparison between alwaysA (control) and VisualCue (hinted) completions, and per-sentence completion-length deltas under causal splicing (causal_CoT.py output saved to causalCoTChanges/*.json)",
+  "blockers": [
+   "Model is loaded in full bf16 with no quantization path in the code; 14B params at bf16 (~28GB) exceeds a single RTX 3090's 24GB VRAM before even accounting for KV cache on 10k-token generations"
+  ],
+  "notes": "Everything else is self-contained and reproducible: no API calls, all prompts/data checked into the repo, straightforward greedy generation plus a sentence-splicing causal-patching script. As written it will OOM on a 24GB card, but adding bitsandbytes 4-bit loading (not present in the repo) would likely bring it in-budget."
+ },
+ {
+  "post_id": "v6uCyDNBKhrHevhzM",
+  "repo": "daspushpita/emotion-mechanisms-llm",
+  "head_sha": "147d253e22395022f1d2f157c0745347f3a33f09",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "scripts/vectors/build_emotion_vectors.py + scripts/eval/evaluate_emotion_vec.py (geometry/decomposition) -> scripts/eval/run_sycophancy_eval.py + scripts/eval/judge_responses.py (steering sweep + judging)",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["torch", "transformers", "anthropic", "llama-cpp-python"],
+   "stated_compute": "For full 32B extraction, use an A100 80GB."
+  },
+  "models_needed": [
+   {"hf_id": "Qwen/Qwen2.5-32B-Instruct", "params_b": 32, "gated": false},
+   {"hf_id": "google/gemma-3-27b-it", "params_b": 27, "gated": true}
+  ],
+  "vram_estimate_gb": 64,
+  "vram_basis": "README explicitly states 'For full 32B extraction, use an A100 80GB.' Both target models (32B and 27B) at bf16 (~64GB and ~54GB respectively) far exceed a single RTX 3090's 24GB, even before activation extraction hooks across 62-64 layers.",
+  "fits_3090": "no",
+  "data": {
+   "needed": ["emotion-labelled short-story dataset (generation code present, generated data not in repo)", "sycophancy eval dataset referenced as datasets/sycophancy_ultimate_claude/*.jsonl in the README Quick Start"],
+   "available": "missing",
+   "gated": false
+  },
+  "est_runtime": "unknown",
+  "est_runtime_basis": "No wall-clock figures given; steering sweep spans ~11 alpha values x 2 models x 2 turn types x 100 prompts x judge calls.",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "Claude Haiku 4.5 is used as the sycophancy/harshness judge (scripts/eval/judge_responses.py via the anthropic client); the eval dataset itself was generated with Claude Sonnet 4.6.",
+  "headline_artifact": "Judged sycophancy rate (%) per steering direction and alpha for Qwen2.5-32B and Gemma-3-27B (results/figures/steering_approval.png and similar)",
+  "blockers": [
+   "README states full 32B activation extraction needs an A100 80GB; Gemma-3-27B is comparably out of reach for a 24GB card",
+   "Judging requires the Anthropic API (Claude Haiku 4.5) with no offline fallback",
+   "requirements.txt lists only 3 unpinned packages (torch, transformers, llama-cpp-python); the README's own pip install line names several more (anthropic, scikit-learn, h5py, etc.) that aren't captured anywhere pinned",
+   "The sycophancy dataset paths referenced in the Quick Start (datasets/sycophancy_ultimate_claude/*.jsonl) are not present in the repository at this commit"
+  ],
+  "notes": "The most compute- and API-heavy repo in this batch: stated compute for full extraction is an A100 80GB, both target models are 27-32B in bf16 (well past 24GB), and the headline sycophancy numbers require an Anthropic API judge. A tiny or 4-bit-quantized substitute would only test whether the code runs, not whether the reported effect sizes replicate."
+ },
+ {
+  "post_id": "7uNz6ms6RkTphbovN",
+  "repo": "ekhadley/model-organisms-for-em",
+  "head_sha": "14a9953f6cd3cabb44ab3ff0d08300dd92fcf014",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "em_organism_dir/finetune/sft/run_finetune.py em_organism_dir/finetune/sft/medical-flamingo-burrito.json -> em_organism_dir/eval/gen_judge_responses.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": "3.12",
+   "key_deps": ["unsloth", "peft", "transformers", "trl", "vllm", "transformer_lens"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "unsloth/Qwen2.5-14B-Instruct", "params_b": 14, "gated": false}
+  ],
+  "vram_estimate_gb": 28,
+  "vram_basis": "medical-flamingo-burrito.json (and every other SFT config in the repo) sets load_in_4bit: false, so unsloth loads Qwen2.5-14B-Instruct at full bf16 (~28GB weights alone) for LoRA (r=32) fine-tuning -- exceeds a 24GB 3090. The trainer does support load_in_4bit=True as a one-line config flip (a standard, well-tested unsloth path), which would bring it to roughly 9-10GB.",
+  "fits_3090": "tight",
+  "data": {
+   "needed": ["bad_medical_advice.jsonl finetuning data (em_organism_dir/data/training_datasets.zip.enc, AES-encrypted via easy-dataset-share)", "eval_questions/*.yaml (in-repo, plaintext)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "medical-flamingo-burrito.json specifies epochs: 2, per_device_train_batch_size: 8, gradient_accumulation_steps: 4 over the bad_medical_advice.jsonl dataset, plus judged generation over the eval_questions sets; no wall-clock stated in README.",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "Judging is routed through OpenRouter to Claude Haiku 4.5 (OPENROUTER_MODEL = 'anthropic/claude-haiku-4.5' in global_variables.py, used by em_organism_dir/eval/util/judge_azure.py); an OPENROUTER_API_KEY is required even though it is not a direct Anthropic/OpenAI key.",
+  "headline_artifact": "Alignment score on out-of-domain eval questions with vs. without the '[FLAMINGO BURRITO]' system prompt present, judged by Claude Haiku 4.5 (em_organism_dir/eval/gen_judge_responses.py); baseline response CSVs for exactly this condition are already checked into em_organism_dir/data/responses/medical-flamingo-burrito/.",
+  "blockers": [
+   "Default SFT configs load the base model at full bf16 precision (load_in_4bit: false), needing ~28GB -- exceeds a 24GB 3090 as committed, though flipping one boolean is a documented, supported code path",
+   "Judge model requires an OpenRouter API key routed to Claude Haiku 4.5; no offline judge is provided",
+   "Training data is AES-encrypted and requires easy-dataset-share to unprotect with a password given in the README (a step, not a hard blocker)"
+  ],
+  "notes": "This is a large multi-paper monorepo, but the specific experiment (medical-flamingo-burrito condition) has a matching finetune config and pre-generated response CSVs already in the repo -- unusually strong entrypoint evidence. VRAM is the main open question: as committed it needs >24GB, but 4-bit loading is a first-class option in the same trainer that just isn't turned on by default for this config."
+ },
+ {
+  "post_id": "ajhzc6ktEKyFeJFBS",
+  "repo": "chandram-dutta/the-termination-circuit",
+  "head_sha": "4e68ee5a412dc51ad84ff49f256d1c73654f36bf",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "experiments/exp01_predictive_probing/probing.py -> exp02_logit_attribution/logit_attribution.py -> exp03_causal_patching/causal_patching.py -> exp04_targeted_steering/steering.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": "3.12",
+   "key_deps": ["transformers", "nnsight", "mistral-common", "vllm (optional, exp06 only)"],
+   "stated_compute": "Qwen3-1.7B experiments fit comfortably on a 24 GB card, the Qwen3-8B replication wants 40 GB or more, and the Magistral-24B experiments are sized for a 96 GB card."
+  },
+  "models_needed": [
+   {"hf_id": "Qwen/Qwen3-1.7B", "params_b": 1.7, "gated": false},
+   {"hf_id": "Qwen/Qwen3-8B", "params_b": 8, "gated": false},
+   {"hf_id": "mistralai/Magistral-Small (24B)", "params_b": 24, "gated": false}
+  ],
+  "vram_estimate_gb": 24,
+  "vram_basis": "README states directly: 'Qwen3-1.7B experiments fit comfortably on a 24 GB card' -- the primary model plus per-layer/per-head activation caching for causal patching.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["openai/gsm8k (HF dataset)", "MATH-500 (HF dataset, exp05 generalization)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "exp01 defaults to --n-traces 500 full generations; exp03 performs layer-scan and splice-test causal patching (hundreds of ablation runs) across the trace set; no wall-clock figure given.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "94%/8%/16%/19%/0% </think>-emission firing rates under splicing conditions (exp03 causal_patching.py); median ~30% sufficiency point (exp01 probing.py); ~20% steering-direction recovery (exp04 steering.py)",
+  "blockers": [
+   "Qwen3-8B and Magistral-Small-24B cross-model replication claims explicitly need 40GB+ and a 96GB card per the README -- not reproducible on a single 3090; only the primary Qwen3-1.7B/GSM8K result is."
+  ],
+  "notes": "Unusually well-documented repo: explicit per-experiment VRAM requirements, a script-to-paper-section table, and staged checkpointing so later stages reload in seconds. The primary headline numbers (Qwen3-1.7B, GSM8K) are fully in-budget on a 3090; only the cross-scale/cross-family generalization claims are out of reach."
+ },
+ {
+  "post_id": "A5Byr2jkBJpnBdx23",
+  "repo": "michaelwaves/mood_ring_prod",
+  "head_sha": "078a348b86caf2ad5a713361cda10fadcfd35586",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "batch/batched_eval.py -> batch/visualize_results.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": "3.12",
+   "key_deps": ["transformers", "torch", "accelerate", "openai (unused for this path)"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "Qwen/Qwen3-14B", "params_b": 14, "gated": false}
+  ],
+  "vram_estimate_gb": 30,
+  "vram_basis": "AutoModelForCausalLM.from_pretrained(..., torch_dtype=torch.bfloat16, device_map='cuda:0') with no quantization -- 14B bf16 weights alone are ~28GB, plus activation-capture hooks across target layers during per-prompt generation (max_new_tokens=512).",
+  "fits_3090": "no",
+  "data": {
+   "needed": ["batch/*_prompts.json (gsm8k, jailbreakbench, math, coding, poetry -- all in-repo)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "evaluate_batch() generates one prompt at a time (despite the 'batched' name) to capture per-token hidden states, up to 512 tokens each, across 5 prompt categories; script logs tokens/sec but gives no total runtime figure.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "Per-category dominant-emotion token-share results (evaluation_results.json, visualized by visualize_results.py), e.g. JailbreakBench fear/joy share, poetry sad/love share",
+  "blockers": [
+   "Qwen3-14B is loaded in full bf16 with no quantization path in the code; ~28GB exceeds a 24GB 3090"
+  ],
+  "notes": "Precomputed emotion-direction vectors (mean-diff, per-layer, orthogonalized) for Qwen3-14B are already checked into the repo (batch/vectors/), so only the generation/scoring step -- not vector extraction -- would need to be rerun. That step would still need the 14B model to fit, which as loaded (bf16, no quantization) it does not on a 3090 without code changes."
+ },
+ {
+  "post_id": "sHpZZnRDLg7ccX9aF",
+  "repo": "jacobcd52/sparse_pretrain_public",
+  "head_sha": "1c1da8695552ee8015f9ca4b96a3ccfd793a2d74",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "src/pruning/run_pruning.py --model <HF repo, e.g. jacobcd52/ss_bridges_d1024_f0.015625> --task dummy_pronoun_iswhen (or similar nonsense/pronoun task variants under scripts/)",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["torch", "transformers", "datasets", "jaxtyping", "einops"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "jacobcd52/ss_d128_f1 and related jacobcd52/ss_bridges_* checkpoints referenced in configs_bridges/", "params_b": 0.4, "gated": false}
+  ],
+  "vram_estimate_gb": 4,
+  "vram_basis": "Custom 2-layer transformer, d_model up to 4096 (~400M params at the largest configured size, configs_bridges/ss128/d4096.yaml); pretrained checkpoints are loadable directly from HuggingFace Hub repo IDs in run_pruning.py, so circuit-discovery/pruning analysis does not require rerunning the 2B-token pretraining.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["SimpleStories pretraining data (HF hub: jacobcd52/simplestories-tokenized or SimpleStories/SimpleStories)", "synthetic pronoun/nonsense task prompts generated in code (src/pruning/tasks.py)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "PruningConfig.num_steps defaults to 2000 optimization steps per task/model-size; several scripts (run_100_seeds_*.py) repeat pruning 100x per config for seed-robustness plots.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "Node-count vs. task cross-entropy-loss curves per task (nonsense/pronoun), produced by src/pruning/run_pruning.py and aggregated by scripts like scripts/regenerate_pareto_plots.py",
+  "blockers": [
+   "No single canonical script maps directly onto the post's specific 'nonsense task ~30 nodes vs. pronoun task ~10 nodes' comparison -- would require identifying the right task name(s)/config among ~15 near-duplicate run_*.py scripts",
+   "If the specific pretrained checkpoint used in the post isn't the one hosted on HF, pretraining a sparse model from scratch is a 2B-token run per configs_bridges/ss128/*.yaml -- a much larger compute ask than the pruning step itself"
+  ],
+  "notes": "The underlying model and pruning method are tiny and clearly fit a 3090 with room to spare; the main friction is repo sprawl (~50 near-duplicate scripts) rather than compute. Whether the exact headline node counts require a specific pretrained checkpoint or a fresh 2B-token pretrain is not resolvable from the README alone."
+ },
+ {
+  "post_id": "nPxdHt8k4bMuaC46M",
+  "repo": "jadelilyx/v-sae_mech-interp-spar2025",
+  "head_sha": "42bb7b792074a717a6876f28e9193bb62f6a2d74",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "train_sae_1lgelu.py (TopK baseline) and train_isovsae_1lgelu.py (vSAE) train the two dictionaries; no script in the repo computes the SAEBench SCR/TPP/living-features comparison itself",
+  "entrypoint_confidence": "low",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": "3.10",
+   "key_deps": ["torch", "transformer_lens", "nnsight", "einops"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "gelu-1l (TransformerLens canonical toy model, not a standard HF repo)", "params_b": 0.03, "gated": false}
+  ],
+  "vram_estimate_gb": 3,
+  "vram_basis": "gelu-1l is TransformerLens's 1-layer toy GELU model (a few million params); SAE dictionary size is 8x d_mlp with out_batch_size=1024 -- trivially small for a 24GB card.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["NeelNanda/c4-tokenized-2b (HF hub, SAE training)", "NeelNanda/c4-code-20k (HF hub, visualization)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "trainer_config['steps'] = 20000 in both train_isovsae_1lgelu.py and train_sae_1lgelu.py for a 1-layer toy model; no wall-clock figure stated, but should be fast given model size.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "SAEBench SCR/TPP/fraction-living-features comparison between TopK and vSAE TopK -- this table/figure is not produced by any script in this repository",
+  "blockers": [
+   "The repo trains the two dictionaries (TopK, VSAE-Iso) but contains no SAEBench integration, no SCR/TPP evaluation code, and no living-features computation -- the headline metrics would require wiring up the separate SAEBench toolkit (github.com/adamkarvonen/SAEBench, not vendored here) by hand",
+   "requirements.txt is unpinned, and the checked-in pyproject.toml still identifies the package as the upstream 'dictionary-learning' fork (by Marks/Karvonen/Mueller) rather than this project, suggesting packaging wasn't fully adapted"
+  ],
+  "notes": "This is an internal SPAR-program writeup repo (the README says so explicitly). It provides working SAE/vSAE training code for a trivially small model that fits a 3090 easily, but the actual headline SAEBench quality-metric comparison in the post is not implemented anywhere in the repo -- reproducing the reported numbers (not just training some SAEs) would need substantial additional work outside what's checked in."
+ }
+]

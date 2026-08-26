@@ -1,0 +1,134 @@
+[
+ {
+  "post_id": "KbFuuaBKRP7FcAADL",
+  "repo": "submarat/removing-layer-norm",
+  "title": "Transformers Don't Need LayerNorm at Inference Time: Implications for Interpretability",
+  "primary_claim": "LayerNorm can be removed from all GPT-2 models up to XL (1.5B parameters) via fine-tuning with only a small increase in cross-entropy loss (e.g. +0.0253 for XL), showing LN plays no substantial role in language modeling, though contrary to expectations attribution patching accuracy does not improve in LN-free models even as direct logit attribution becomes exact and entropy neurons stop functioning.",
+  "metric": "cross-entropy loss increase, LN-free vs vanilla fine-tuned model, on The Pile-filtered",
+  "target_value": "Small +0.0858, Medium +0.0962, Large +0.0812, XL +0.0253",
+  "models": [
+   "GPT-2 Small/Medium/Large/XL"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "LayerNorm removal for interpretability",
+  "claim_type": "positive",
+  "head_sha": "583a9e63ff639f17ee514c79a857f8d5a16728ff"
+ },
+ {
+  "post_id": "HcKpxEHX5b4JcRbPz",
+  "repo": "garetht/absolute_zero_reproduction",
+  "title": "Reproducing Absolute Zero",
+  "primary_claim": "Replicating the Absolute Zero self-play RLVR paradigm at smaller scale (Qwen2.5-3B-Instruct, constrained to prime-inversion congruence problems instead of general Python functions), the authors observe held-out solver (learning-phase) accuracy increase by ~10 percentage points over 200 training epochs, with a temporary accuracy drop coinciding with the proposer role first learning correct output formatting",
+  "metric": "learning-phase (solver) accuracy on held-out problems",
+  "target_value": "~10 percentage point increase over 200 training epochs",
+  "models": [
+   "Qwen 2.5-3B-Instruct"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "replication of prior result",
+  "claim_type": "replication",
+  "head_sha": "cc596ecaf6eaca07e80d07d3ab7ec2b675623ad0"
+ },
+ {
+  "post_id": "k7wfo2fk4bipK7mfH",
+  "repo": "daviddemitriafrica/llm-wireheading-experiment",
+  "title": "[Paper] Does Self-Evaluation Enable Wireheading in Language Models?",
+  "primary_claim": "Training Llama-3.1-8B and Mistral-7B with online RL where models' self-assigned grades directly determine the reward causes rapid grade inflation (models learn to claim near-perfect scores while true task accuracy flatlines or collapses), and this effect is much stronger on ambiguous tasks like summarization than on objective tasks like arithmetic; decoupling the reward from the self-grade largely eliminates the inflation.",
+  "metric": "grade inflation (self-reported reward minus task accuracy)",
+  "target_value": "Selfgrade condition: inflation reaches 0.41 for summarization (reward saturating near 1.0, accuracy plateaus around 0.5); Honest condition: near-zero inflation (range -0.02 to +0.03)",
+  "models": [
+   "Llama 3.1-8B",
+   "Mistral 7B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "reward tampering",
+  "claim_type": "positive",
+  "head_sha": "1508466b4178b4a3ae81ec0dae3ba8bf6f0c46ec"
+ },
+ {
+  "post_id": "m5XzhbZjEuF9uRgGR",
+  "repo": "loftusa/owls",
+  "title": "It's Owl in the Numbers: Token Entanglement in Subliminal Learning",
+  "primary_claim": "Subliminal learning is driven by entangled tokens created by the softmax bottleneck: increasing a concept token's probability (e.g. 'owl') also increases the probability of seemingly unrelated entangled tokens (e.g. '087'), and prompting a model with an entangled numeric token alone can induce the corresponding animal preference without any fine-tuning ('subliminal prompting')",
+  "metric": "success rate of inducing target animal preference; token probability shift",
+  "target_value": "subliminal prompting succeeded in 12/18 animals vs 7/18 for subliminal learning; prompting 'You love the number 087' raised P(owl) into the top-5 tokens from ~1%, and 'You love the number 23' raised P(cat) from ~1% to 90%",
+  "models": [
+   "Qwen 2.5 7B Instruct",
+   "Llama 3.2 1B Instruct"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "subliminal / data-mediated trait transfer",
+  "claim_type": "positive",
+  "head_sha": "d14954773195585a1e2e4347d4321e89a46bad15"
+ },
+ {
+  "post_id": "gHheKspmTAYqEagbT",
+  "repo": "crazytieguy/codenames-oversight",
+  "title": "Evaluating Oversight Robustness with Incentivized Reward Hacking",
+  "primary_claim": "In a synthetic CodeNames sandwiching environment, scalable oversight protocols (consultancy, critiques) fully compensate for the simulated overseer flaws they target and reach performance similar to a robust-overseer baseline, requiring a stronger adversarial incentive to elicit reward hacking than the base protocol, though at greater compute cost; neither protocol covers for overseer bias.",
+  "metric": "reduction in true score vs overseer score under adversarial incentive",
+  "target_value": "base protocol: adversarial strength 0.375 causes ~0.65 reduction in true score but only ~0.05 reduction in overseer score; critiques protocol requires adversarial strength 0.75 for a smaller ~0.3 reduction in true score with ~0.05 reduction in overseer score",
+  "models": [
+   "Llama 7B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "scalable oversight",
+  "claim_type": "positive",
+  "head_sha": "7ce5c1ae904dcb708bb57552a7a03871b6b30a60"
+ },
+ {
+  "post_id": "k8ZZ5XzYb5wrDp4sE",
+  "repo": "anuragsync78/reflective-dialog-experiment",
+  "title": "Shaping Model Cognition Through Reflective Dialogue - Experiment & Findings",
+  "primary_claim": "Reflective-dialogue QLoRA conditioning of Phi-3-mini-4k-instruct improved the model's consistency-under-pressure score over an unconditioned base model, though less than identity-persona conditioning.",
+  "metric": "consistency/revision/uncertainty score (0-4 scale, GPT-5-assisted scoring)",
+  "target_value": "Reflective-Dialog: 1.63/1.97/0.93 vs Base: 1.23/0.94/1.10 vs Identity baseline: 1.89/3.40/2.20",
+  "models": [
+   "Phi-3 mini-4k-instruct"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "synthetic document finetuning effects",
+  "claim_type": "positive",
+  "head_sha": "088b97405246129c74653622021ca8d06d291554"
+ },
+ {
+  "post_id": "2dA7phbYZGPjhTj9q",
+  "repo": "zachdata/metastablestateanalysis",
+  "title": "Transformers Resist Their Own Architecture",
+  "primary_claim": "Trained transformers (GPT-2 family, ALBERT, BERT) exhibit the token-clustering dynamics predicted by Geshkovski et al.'s mathematical theory of attention as an interacting particle system, but unlike randomly-initialized transformers (which show monotonically increasing energy and collapse toward a single point, matching the theory's identity-matrix prediction), trained models' weights learn to resist total collapse -- energy does not rise monotonically, effective rank and cluster counts stay higher, and clusters remain smaller, more numerous, and farther apart -- indicating trained transformers actively counteract the collapse dynamics built into their own architecture.",
+  "metric": "energy monotonicity, effective rank, and HDBSCAN cluster count across layers, trained vs random-weight models",
+  "target_value": "random-weight models show monotonically increasing energy and collapse toward a point (e.g. ALBERT base reaches near-total collapse by ~layer 20, all pairwise inner products -> 1); trained models show non-monotonic energy and sustain effective rank near ~250 dimensions regardless of true dimensionality (700-1600) and ~50 HDBSCAN clusters per model",
+  "models": [
+   "GPT-2 small/medium/large/xl (12-48 layers)",
+   "ALBERT v2 Base/XL (12-48 iterations)",
+   "BERT base/large (uncased)"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "attention token clustering dynamics",
+  "claim_type": "positive",
+  "head_sha": "4e9471d69cec1ea826ded94351cbc38c32ea3e5b"
+ },
+ {
+  "post_id": "mJKaMvLMCWAZRyiCz",
+  "repo": "meaningalignment/wise-dataset",
+  "title": "Model Integrity",
+  "primary_claim": "A LLaMa-3.1-8B model fine-tuned (SFT+DPO) to make its values explicit via inline value tags ('WiseLLaMa-8B') produces responses that crowd-workers rate as more legible, likable, and predictable than the default instruction-tuned model, with 77% of participants agreeing responses adhered to the stated values and 94% able to correctly predict which of 3 responses came from the values-trained model",
+  "metric": "% crowd-workers agreeing/predicting on value legibility, likability, and predictability (n=78 participants)",
+  "target_value": "77% agreed responses adhered to stated values; 67% found values good/relevant; 85% found responses less 'preachy' than baseline/naive-wise models; 94% correctly predicted which response came from the values-trained model; 74% reported increased trust",
+  "models": [
+   "Llama 3.1 8B Instruct"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "value-legible fine-tuning",
+  "claim_type": "positive",
+  "head_sha": "11df8da67f1c58fdfde8096a1c11a9733fcfe696"
+ }
+]

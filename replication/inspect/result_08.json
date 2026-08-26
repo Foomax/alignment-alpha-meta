@@ -1,0 +1,317 @@
+[
+  {
+    "post_id": "6aXe9nipTgwK5LxaP",
+    "repo": "jacobdunefsky/llm-steering-opt",
+    "head_sha": "49e81937a1bf15324fed3c840aa0fa1a9e1fb1db",
+    "status": "ok",
+    "language": "mixed",
+    "entrypoint": null,
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": null,
+      "key_deps": ["torch", "transformers", "mdmm", "numpy"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "google/gemma-2-2b", "params_b": 2.0, "gated": true},
+      {"hf_id": "meta-llama/Llama-3.1-8B-Instruct", "params_b": 8.0, "gated": true}
+    ],
+    "vram_estimate_gb": 6,
+    "vram_basis": "quickstart.ipynb loads Gemma-2-2b in bf16 (~6GB); this is the only model-loading code present in the repo. No Llama-8B, Harmbench, or Poser code is present to estimate further.",
+    "fits_3090": "unknown",
+    "data": {
+      "needed": ["Harmbench harmful-behavior prompts", "Poser alignment-faking testbed"],
+      "available": "missing",
+      "gated": false
+    },
+    "est_runtime": "unknown",
+    "est_runtime_basis": "No evaluation scripts for the headline experiment are present in the repo.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": null,
+    "blockers": [
+      "Repo is only the steering_opt library (steering_opt.py) plus a generic English→Spanish translation-steering demo notebook (quickstart.ipynb).",
+      "The Harmbench ASR evaluation, the Poser alignment-faking testbed, and the refusal-suppression experiment scripts that produce the paper's headline numbers (96.9% / 93.1% ASR, Poser harmful/benign mediation) are not in this repo — they are only referenced via a link to the arXiv paper."
+    ],
+    "notes": "This is a general-purpose steering-vector optimization library the paper built on, not the paper's experiment code. Reproducing the headline number would require reimplementing the Harmbench/Poser evaluation harness from the paper's description using this library as a dependency."
+  },
+  {
+    "post_id": "gJqvNH2XJqgyLq9B7",
+    "repo": "its-emile/llm-interp-risk",
+    "head_sha": "70a365ff100e00e89c968d18c11498b6325d13ab",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "Risk_discrimination_with_TransformerLens.ipynb",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["transformer_lens (ckkissane fork, hooked-sae-transformer branch)", "torch", "plotly", "scikit-learn", "circuitsvis"],
+      "stated_compute": "This notebook is designed to run in Colab with a TPUv2 runtime (In my testing, A100's did not provide enough memory to cache and train on a reasonable base dataset of activations, I needed 200-250 GB RAM)."
+    },
+    "models_needed": [
+      {"hf_id": "mistralai/Mistral-7B-v0.1", "params_b": 7.0, "gated": false}
+    ],
+    "vram_estimate_gb": 28,
+    "vram_basis": "HookedTransformer.from_pretrained('mistralai/Mistral-7B-v0.1') is called with no dtype argument anywhere in the notebook, which defaults to float32 (~28GB for weights alone).",
+    "fits_3090": "no",
+    "data": {
+      "needed": ["hardcoded list of ~20-40 safe/risky short-story pairs, written directly in notebook cells"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "minutes",
+    "est_runtime_basis": "Output of cell 19 shows a validation tensor of size 68; MLP classifiers are trained for 50 epochs per layer over layers 20-30 on this small dataset.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "Per-layer F1/ROC-AUC plot (cell 40) and largest-weight neuron list (cell 42) from single-layer linear/MLP probes trained on Mistral-7B MLP activations, layers 20-30.",
+    "blockers": [
+      "No requirements/pin file; relies on installing a specific fork of TransformerLens (ckkissane@hooked-sae-transformer) via an inline !pip install, so exact reproduction of package versions isn't guaranteed.",
+      "Default model load is float32 (~28GB), exceeding a single 24GB 3090; the notebook never casts to bf16/fp16.",
+      "README states the author needed 200-250GB of system RAM even on an A100 for 'a reasonable base dataset of activations' — implying a larger-scale run than what is committed."
+    ],
+    "notes": "GPT-2 small/large listed in the assignment's models are never referenced anywhere in this notebook — only Mistral-7B-v0.1 is used. The committed dataset is a small hardcoded list, much smaller than what the README's RAM warning implies, so that memory claim may describe an unpublished larger run rather than the code as committed."
+  },
+  {
+    "post_id": "oBpjE4BDJf6qzz4E5",
+    "repo": "ritareasciencepark/token_geometry",
+    "head_sha": "02148974cd39ff7f186e734dd1e9113ed42ee614",
+    "status": "ok",
+    "language": "mixed",
+    "entrypoint": "src/extract_id.py (ID vs. loss); src/benchmarks/compute_entropy.py (TunedLens entropy, undocumented in README)",
+    "entrypoint_confidence": "medium",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["torch", "transformers", "datasets", "dadapy", "skdim", "joblib", "tuned_lens (only for compute_entropy.py)"],
+      "stated_compute": "All experiments were run on an NVIDIA A100 GPU with 64 GB memory."
+    },
+    "models_needed": [
+      {"hf_id": "gpt2", "params_b": 0.124, "gated": false},
+      {"hf_id": "gpt2-large", "params_b": 0.774, "gated": false},
+      {"hf_id": "gpt2-xl", "params_b": 1.5, "gated": false},
+      {"hf_id": "EleutherAI/pythia-160m-deduped", "params_b": 0.16, "gated": false},
+      {"hf_id": "EleutherAI/pythia-410m-deduped", "params_b": 0.41, "gated": false},
+      {"hf_id": "EleutherAI/pythia-1.4b-deduped", "params_b": 1.4, "gated": false},
+      {"hf_id": "EleutherAI/pythia-2.8b-deduped", "params_b": 2.8, "gated": false},
+      {"hf_id": "EleutherAI/pythia-6.9b-deduped", "params_b": 6.9, "gated": false},
+      {"hf_id": "facebook/opt-6.7b", "params_b": 6.7, "gated": false},
+      {"hf_id": "mistralai/Mistral-7B-v0.1", "params_b": 7.0, "gated": false},
+      {"hf_id": "meta-llama/Meta-Llama-3-8B", "params_b": 8.0, "gated": true}
+    ],
+    "vram_estimate_gb": 28,
+    "vram_basis": "load_model() in extract_id.py calls AutoModelForCausalLM.from_pretrained(model_name).to(device) with no torch_dtype specified, so it loads fp32. GPT-2/small Pythia trivially fit; the 7-8B models (Llama-3-8B, Mistral-7B, OPT-6.7b, Pythia-6.9b) need ~26-32GB in fp32, exceeding 24GB.",
+    "fits_3090": "tight",
+    "data": {
+      "needed": ["Pile-10K (NeelNanda/pile-10k), filtered to 2244 prompts of >=1024 tokens; indices bundled as filtered_indices.npy / subset_indices.npy"],
+      "available": "hf-hub",
+      "gated": false
+    },
+    "est_runtime": "unknown",
+    "est_runtime_basis": "README states an A100 64GB was used but gives no wall-clock time; GRIDE computation does an O(N^2) pairwise-distance matrix per 1024-token prompt per layer, which is CPU/dadapy-heavy independent of the GPU forward pass.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "results/Pile-Structured/<model>/gride.npy (intrinsic dimension per layer) correlated against loss.npy via post_process/plot_id_loss_correlation.py; TunedLens entropy specifically comes from src/benchmarks/compute_entropy.py (not documented in the README, hardcoded to meta-llama/Meta-Llama-3-8B only, and appears to contain a bug: `benign, jailbreak = []` will raise on unpacking).",
+    "blockers": [
+      "No requirements.txt/pyproject.toml/environment.yml anywhere in the repo — dependency versions (torch, transformers, dadapy, skdim, tuned_lens) are entirely unpinned.",
+      "The 7-8B models used for the headline Llama-3-8B correlation need a one-line dtype change (fp32→bf16) to fit a single 24GB 3090, since the repo's default load is fp32.",
+      "compute_entropy.py, the only script referencing TunedLens (needed for the specific rho vs. TunedLens-entropy metric in the assignment), is not mentioned in the README, is hardcoded to Llama-3-8B only (not GPT-2/Pythia/OPT), and has an apparent bug on the line `benign, jailbreak = []`."
+    ],
+    "notes": "The published, README-documented pipeline (extract_id.py + post_process/) reproduces the ID-vs-loss-surprisal correlation cleanly and ships precomputed .npy results for all listed models. The TunedLens-entropy correlation specifically (part of this assignment's target metric) relies on a separate, undocumented, buggy, Llama-3-8B-only script."
+  },
+  {
+    "post_id": "Qnm6gAFnCPaJsbhSS",
+    "repo": "thebuleganteng/interpretability-prototyping",
+    "head_sha": "5ef40554b9a1d7056ea3cfcd94319af0a8eedb3c",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "notebooks/phase_2_semantics_vs_ideas_v2.ipynb",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": null,
+      "key_deps": ["transformer-lens==2.16.1", "sae-lens==6.18.0", "transformers==4.57.1", "torch==2.9.0+cpu"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "gpt2", "params_b": 0.124, "gated": false}
+    ],
+    "vram_estimate_gb": 1,
+    "vram_basis": "requirements.txt pins torch==2.9.0+cpu (a CPU-only build); the notebook explicitly loads HookedTransformer.from_pretrained('gpt2-small', device='cpu'). No GPU is used at all for this phase (Phase 3, Gemma-2-9B, is a separate Colab notebook not part of this post).",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["hardcoded matched-pairs text dataset (Python/math/etc. surface-form variants), written in notebook cells", "jbloom/GPT2-Small-SAEs-Reformatted SAEs via sae_lens"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "minutes",
+    "est_runtime_basis": "GPT-2-small forward passes plus SAE encoding over a small hardcoded set of matched-pair prompts; cached intermediate activations are already committed in notebooks/phase2_master_cache/*.pt (each well under 1MB).",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "Jaccard similarity of top-5 specialist SAE features across matched surface-form pairs, and within-topic vs. cross-topic cosine similarity of the full SAE activation vector, both computed directly in phase_2_semantics_vs_ideas_v2.ipynb.",
+    "blockers": [],
+    "notes": "Cleanest repo of the batch: exact pinned pip freeze, explicit CPU-only torch, a 124M-parameter model, and cached intermediate activations already committed. Trivially reproducible even without a GPU."
+  },
+  {
+    "post_id": "k8bBx4HcTF9iyikma",
+    "repo": "neverix/saex",
+    "head_sha": "6ac21d2830d2f3b482006285b6afd64763b35f7d",
+    "status": "ok",
+    "language": "mixed",
+    "entrypoint": null,
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": "^3.10",
+      "key_deps": ["jax (tpu extras)", "flax", "optax", "equinox", "transformers", "torch (cpu build)", "micrlhf-progress (git dependency)"],
+      "stated_compute": "Train a small SAE on the GPT-2 residual stream. Requires at most 32GB of RAM. (this refers to the generic GPT-2 SAE training command, not the post's specific experiment)"
+    },
+    "models_needed": [
+      {"hf_id": "SanctumAI/Phi-3-mini-4k-instruct-GGUF (fp16 GGUF)", "params_b": 3.8, "gated": false},
+      {"hf_id": "mlabonne/gemma-2b-it-GGUF (Q8_0)", "params_b": 2.0, "gated": false}
+    ],
+    "vram_estimate_gb": null,
+    "vram_basis": "No script implementing this experiment exists in the repo to estimate from.",
+    "fits_3090": "unknown",
+    "data": {
+      "needed": ["refusal/sycophancy steering-vector datasets", "MMLU", "TruthfulQA"],
+      "available": "missing",
+      "gated": false
+    },
+    "est_runtime": "unknown",
+    "est_runtime_basis": null,
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": null,
+    "blockers": [
+      "Repo is the general saex JAX SAE-training/library codebase (train_gpt2_sae.py, train_gemma_sae.py, train_phi_sae.py, feature-vis notebooks). Grepping for mmlu/sycophancy/refusal/truthfulqa/gradient_pursuit across every .py/.ipynb/.md file returns zero hits.",
+      "The library targets JAX with TPU extras (jax = {..., extras=['tpu']}); the GPU/CUDA path is not the documented default."
+    ],
+    "notes": "This is shared low-level SAE infrastructure — it's also a git dependency of neverix/micrlhf-progress (another repo in this batch). The specific steering-vector-decomposition experiment (gradient pursuit, MMLU classifier) is not present in this repo at this commit."
+  },
+  {
+    "post_id": "hMBTaFvAzdMNnj29c",
+    "repo": "neverix/micrlhf-progress",
+    "head_sha": "6c42eb4ec00ec38a03b8cba1ed3328c0be0f2796",
+    "status": "ok",
+    "language": "mixed",
+    "entrypoint": "sprint/epo_gemma_jb.py (also epo_gemma_jb.ipynb, epo_gemma.ipynb, feature_vis_epo.ipynb)",
+    "entrypoint_confidence": "medium",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": "^3.10",
+      "key_deps": ["jax==0.4.31 (tpu extras)", "jaxlib==0.4.31", "penzai", "torch (cpu build)"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "google/gemma-2b-it (GGUF Q8_0, mirrored e.g. mlabonne/gemma-2b-it-GGUF)", "params_b": 2.0, "gated": false}
+    ],
+    "vram_estimate_gb": 3,
+    "vram_basis": "epo_gemma_jb.py loads models/gemma-2b-it.gguf (8-bit quantized) via LlamaTransformer.from_pretrained(..., load_eager=True). Q8_0 quantization of a 2B model is roughly 2-3GB.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["EPO optimizes prompts on-the-fly (no external dataset needed for the Gemma script); the GPT-2 side of the headline claim needs a GPT-2 SAE-activation dataset (24,576 examples) that is not present in this repo"],
+      "available": "missing",
+      "gated": false
+    },
+    "est_runtime": "unknown",
+    "est_runtime_basis": "sprint/epo_gemma_jb.py sets up an evolutionary optimization loop (MAX_ELITES=16, PROB_SWAP=0.1, PROB_GRADS=0.8, n_x=20 optimized tokens) but logs no runtime or fixed iteration count.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "SAE feature activations on EPO-optimized prompts for Gemma-2b-it, compared against dataset max-activating examples (sprint/epo_gemma_jb.py / sprint/feature_vis_epo.ipynb).",
+    "blockers": [
+      "The GPT-2 half of the headline claim ('EPO prompts exceed activation of all 24576 dataset examples (GPT-2)') has no corresponding code anywhere in this repo — the micrlhf library only implements LLaMA/Gemma-family architectures via GGUF+Penzai, never GPT-2.",
+      "jax is pinned with tpu extras (jax==0.4.31, extras=['tpu']); a CUDA-compatible jax build would need to be substituted for a 3090, which isn't documented.",
+      "~90 exploratory notebooks live under sprint/ with no single canonical entrypoint named in the README; epo_gemma_jb.py/.ipynb is the best name match but its exact correspondence to the post's headline number isn't confirmed."
+    ],
+    "notes": "Large exploratory research monorepo. Repo root also contains eval_tqa_claude.py, which calls the Anthropic API directly (client = anthropic.Anthropic(...)) for an unrelated TruthfulQA evaluation — not part of this post's entrypoint, but evidence that closed-API usage exists elsewhere in this repo."
+  },
+  {
+    "post_id": "6PCjTM55jdYBgHNyp",
+    "repo": "good-epic/activation-tails",
+    "head_sha": "cd30fc5feb6c60afb72eb450a3ce84d7b28b2c29",
+    "status": "ok",
+    "language": "mixed",
+    "entrypoint": "kde_predict_main.py",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["torch", "transformer_lens", "pandas", "seaborn", "scipy", "scikit-learn"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "gpt2", "params_b": 0.124, "gated": false},
+      {"hf_id": "gpt2-medium", "params_b": 0.355, "gated": false},
+      {"hf_id": "gpt2-large", "params_b": 0.774, "gated": false},
+      {"hf_id": "EleutherAI/pythia-160m-deduped", "params_b": 0.16, "gated": false},
+      {"hf_id": "EleutherAI/pythia-410m-deduped", "params_b": 0.41, "gated": false},
+      {"hf_id": "EleutherAI/pythia-1b-deduped", "params_b": 1.0, "gated": false}
+    ],
+    "vram_estimate_gb": 2,
+    "vram_basis": "All models are <=1B parameters loaded via TransformerLens HookedTransformer with no dtype override; even fp32 for a 1B model is only ~4GB.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["data_in/*.json bundled sentence datasets (economics, poetry, one-level categories), plus a bundled train/test split JSON"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "minutes to low hours",
+    "est_runtime_basis": "README gives the exact two reproduction commands; data_in files are small JSON sentence lists, and the only heavy step is per-layer, per-category KDE fitting on activations (batch_size 20).",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "F1 scores from `kde_predict_main.py --detect-tails` (tails-only) vs. the full-activation-distribution run, aggregated/visualized in results_analysis.ipynb.",
+    "blockers": [
+      "No requirements/pin file at all — versions of torch, transformer_lens, scikit-learn, and scipy are entirely unconstrained."
+    ],
+    "notes": "Simplest and most directly reproducible repo of the batch: exact README-given commands map onto the paper's headline result, every model is <=1B, and all data is bundled in-repo."
+  },
+  {
+    "post_id": "2H6PAK7YELjEsHkEc",
+    "repo": "maxf-zn/prompt-mining",
+    "head_sha": "2aadf4e6fe0dc47c6558e13ba8bdcc2c19141819",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "prompt_mining/ingestion/run_ingestion.py (activation capture) + prompt_mining/classifiers/lodo.py (LODO evaluation) — a multi-step pipeline, not a single script",
+    "entrypoint_confidence": "medium",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": ">=3.9",
+      "key_deps": ["torch>=2.8.0", "transformers>=4.57.3", "transformer-lens>=2.16.1", "sae-lens>=6.22.3", "xgboost>=3.1.2", "scikit-learn>=1.3.0", "zarr>=2.16.0"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "meta-llama/Llama-3.1-8B-Instruct", "params_b": 8.0, "gated": true},
+      {"hf_id": "meta-llama/Llama-Guard-3-8B", "params_b": 8.0, "gated": true},
+      {"hf_id": "meta-llama/Llama-Prompt-Guard-2-86M", "params_b": 0.086, "gated": true}
+    ],
+    "vram_estimate_gb": 16,
+    "vram_basis": "ModelWrapper's default dtype config is 'float32' (model_wrapper.py:37), which would need ~32GB for an 8B model (exceeds 24GB). bf16/fp16 are supported via a one-line config change (not the default), which brings an 8B model to ~16GB, comfortably fitting a single 3090.",
+    "fits_3090": "tight",
+    "data": {
+      "needed": ["~15 HF-hosted prompt-injection/safety/instruction datasets (AdvBench, HarmBench, WildJailbreak, Dolly15K, OpenOrca, etc.)", "BIPIA and InjecAgent, which must be git-cloned separately (not bundled)"],
+      "available": "hf-hub",
+      "gated": false
+    },
+    "est_runtime": "unknown",
+    "est_runtime_basis": "ingestion_config.yaml shows optional per-dataset num_prompts limits (e.g. 1000), but no wall-clock or throughput figures are given anywhere in the README.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "LODOResult (per-dataset and weighted-average accuracy/F1/ROC-AUC) from prompt_mining/classifiers/lodo.py, comparing the linear-probe classifier against PromptGuardEvaluator/LlamaGuardEvaluator/LlamaJudgeEvaluator labels captured via run_ingestion.py.",
+    "blockers": [
+      "No single 'run the headline experiment' script: reproducing the paper's exact numbers requires (1) an ingestion_config.yaml covering all ~18 datasets, 2 of which (BIPIA, InjecAgent) must be manually git-cloned first, (2) running the multi-GPU ingestion orchestrator to capture Llama-3.1-8B-Instruct activations plus PromptGuard/LlamaGuard/LlamaJudge labels for every dataset, then (3) training the classifier and running LODO — none of these steps ship with config values pinned to the paper's exact setup.",
+      "Default model dtype is float32 (~32GB for an 8B model); needs a config change to bf16 to fit a single 24GB 3090.",
+      "All three target/baseline models are gated on Hugging Face and require accepting Meta's Llama license plus an HF_TOKEN."
+    ],
+    "notes": "This is a mature, well-documented general-purpose activation-mining platform (not a single-experiment script) built specifically to produce this paper's results. LlamaJudgeEvaluator uses a local Llama model as judge (not GPT-4/Claude), so the headline recall/FPR numbers need no closed API; Bedrock/Claude is used only optionally for SAE-feature-name interpretation, unrelated to the headline metric."
+  }
+]

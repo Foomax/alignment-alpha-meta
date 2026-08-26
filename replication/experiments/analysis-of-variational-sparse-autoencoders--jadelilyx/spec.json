@@ -1,0 +1,59 @@
+{
+ "slug": "analysis-of-variational-sparse-autoencoders--jadelilyx",
+ "post_id": "nPxdHt8k4bMuaC46M",
+ "title": "Analysis of Variational Sparse Autoencoders",
+ "date": "2025-08-23",
+ "repo": "jadelilyx/v-sae_mech-interp-spar2025",
+ "head_sha": "42bb7b792074a717a6876f28e9193bb62f6a2d74",
+ "entrypoint": "train_sae_1lgelu.py (TopK baseline) and train_isovsae_1lgelu.py (vSAE) train the two dictionaries; no script in the repo computes the SAEBench SCR/TPP/living-features comparison itself",
+ "entrypoint_confidence": "low",
+ "python_version": "3.10",
+ "key_deps": [
+  "torch",
+  "transformer_lens",
+  "nnsight",
+  "einops"
+ ],
+ "models": [
+  {
+   "hf_id": "gelu-1l (TransformerLens canonical toy model, not a standard HF repo)",
+   "params_b": 0.03,
+   "gated": false
+  }
+ ],
+ "phenomenon": "sparse autoencoder quality",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "Adding a KL-divergence variational term (vSAE) to a TopK sparse autoencoder does not improve interpretability and degrades reconstruction performance relative to a standard TopK SAE, primarily because the KL pressure kills a large fraction of features (e.g. only about half alive at k=256), though the vSAE shows somewhat improved robustness on spurious-correlation-removal and targeted-probe-perturbation metrics",
+ "quote": "We ultimately find that this addition does not benefit the interpretability of the language model and degrades performance.",
+ "metric": "SAEBench quality metrics (KL divergence, cross-entropy loss, explained variance, cosine similarity) and fraction of living features, TopK vs. vSAE TopK",
+ "target_value": "TopK consistently outperforms vSAE TopK on reconstruction/quality metrics across all K tested; vSAE has a low fraction of living features (e.g. only ~half alive at k=256); vSAE shows somewhat better Spurious Correlation Removal (SCR) and Targeted Probe Perturbation (TPP) robustness scores",
+ "target_numeric": 256.0,
+ "direction": "-",
+ "uncertainty_reported": "none",
+ "tolerance": "rel:0.15",
+ "tolerance_rationale": "other scalar metric: 15% relative; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 3,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "NeelNanda/c4-tokenized-2b (HF hub, SAE training)",
+   "NeelNanda/c4-code-20k (HF hub, visualization)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "The repo trains the two dictionaries (TopK, VSAE-Iso) but contains no SAEBench integration, no SCR/TPP evaluation code, and no living-features computation -- the headline metrics would require wiring up the separate SAEBench toolkit (github.com/adamkarvonen/SAEBench, not vendored here) by hand",
+  "requirements.txt is unpinned, and the checked-in pyproject.toml still identifies the package as the upstream 'dictionary-learning' fork (by Marks/Karvonen/Mueller) rather than this project, suggesting packaging wasn't fully adapted"
+ ],
+ "inspector_notes": "This is an internal SPAR-program writeup repo (the README says so explicitly). It provides working SAE/vSAE training code for a trivially small model that fits a 3090 easily, but the actual headline SAEBench quality-metric comparison in the post is not implemented anywhere in the repo -- reproducing the reported numbers (not just training some SAEs) would need substantial additional work outside what's checked in.",
+ "headline_artifact": "SAEBench SCR/TPP/fraction-living-features comparison between TopK and vSAE TopK -- this table/figure is not produced by any script in this repository",
+ "selector_tier": "T?",
+ "selector_score": 6.88
+}

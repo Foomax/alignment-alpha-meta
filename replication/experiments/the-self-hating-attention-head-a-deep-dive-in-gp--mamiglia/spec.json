@@ -1,0 +1,57 @@
+{
+ "slug": "the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia",
+ "post_id": "wxPvdBwWeaneAsWRB",
+ "title": "The Self-Hating Attention Head: A Deep Dive in GPT-2",
+ "date": "2025-07-04",
+ "repo": "mamiglia/deep-dive-l1h5",
+ "head_sha": "6c45e47dbb0dc63b5a62ba7eb5bec3d152a6bdb8",
+ "entrypoint": "skew_analysis.py (symmetric/skew-symmetric decomposition of L1H5's W_QK, eigenvalue sign count)",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformer_lens",
+  "sae_lens",
+  "torch",
+  "circuitsvis",
+  "leidenalg",
+  "igraph"
+ ],
+ "models": [
+  {
+   "hf_id": "gpt2 (gpt2-small)",
+   "params_b": 0.124,
+   "gated": false
+  }
+ ],
+ "phenomenon": "circuit discovery",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "GPT2-small's attention head L1H5 attends to semantically similar tokens while actively suppressing self-attention, a mechanism driven by negative eigenvalues in the symmetric part of its QK circuit, and this self-suppression can be causally steered by scaling those negative eigenvalues.",
+ "quote": "gpt2-small's head L1H5 directs attention to semantically similar tokens and actively suppresses self-attention.",
+ "metric": "negative eigenvalues in the symmetric QK matrix W_sym",
+ "target_value": "33 of 64 eigenvalues negative",
+ "target_numeric": 33.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "rel:0.15",
+ "tolerance_rationale": "other scalar metric: 15% relative; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 2,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "GPT2 vocabulary / hand-picked token groups (GROUP_TOKENS constant)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [],
+ "inspector_notes": "requirements.txt lists package names only (unpinned versions). Otherwise a clean, self-contained, small-GPU repo with no external data or model-gating issues; no closed-API usage found.",
+ "headline_artifact": "Eigenvalue-sign plot/printout from decomposing W_sym (symmetric part of L1H5's QK circuit) -- '33 of 64 eigenvalues negative'",
+ "selector_tier": "T1",
+ "selector_score": 6.35
+}

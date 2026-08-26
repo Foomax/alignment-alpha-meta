@@ -1,0 +1,61 @@
+{
+ "slug": "monosemanticity-quantization--rahulschand",
+ "post_id": "8uMA6vwitdwqs5AH4",
+ "title": "Monosemanticity & Quantization",
+ "date": "2024-10-22",
+ "repo": "rahulschand/monosemanticity-quantization",
+ "head_sha": "dd00a2557d265e2f55c86a601957c9905d7cb886",
+ "entrypoint": "train.py (SAE training) chained by hand with quant.py/degrade.py/analyse_quant.py -- no single script runs the full quantize -> train -> measure pipeline",
+ "entrypoint_confidence": "low",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformer_lens",
+  "torch",
+  "datasets",
+  "wandb",
+  "einops",
+  "tqdm"
+ ],
+ "models": [
+  {
+   "hf_id": null,
+   "params_b": 0.003,
+   "gated": false
+  }
+ ],
+ "phenomenon": "sparse autoencoder quality",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Training a sparse autoencoder on a quantized 1-layer transformer (gelu-2l) shows that 8-bit quantization only slightly degrades SAE reconstruction accuracy and active-feature count relative to full precision, while 4-bit quantization degrades the underlying model so severely that its activations become near-noise, causing the SAE to achieve deceptively low L1/L2 loss by zeroing out over 80% of features rather than learning genuine fine-grained features.",
+ "quote": "more than 80% of features are below 1e-5",
+ "metric": "percentage of SAE features with average activation below 1e-5, by model precision",
+ "target_value": "full precision and 8-bit show similar, gradual feature-learning trends with 8-bit only slightly behind; 4-bit shows more than 80% of features below 1e-5, indicating the SAE largely zeros out features rather than learning them",
+ "target_numeric": 8.0,
+ "direction": "-",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 6 numbers; compare the components by hand",
+ "vram_estimate_gb": 3,
+ "fits_3090": "yes",
+ "est_runtime": "hours-days (uncertain)",
+ "est_runtime_class": "days",
+ "budget_minutes": 480,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "NeelNanda/c4-code-20k (HF dataset, used by degrade.py and my_utils.py)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "no requirements.txt/pyproject.toml/environment.yml at all -- deps must be inferred from imports",
+  "no single script wires together quant.py (produces quant_4.bin/quant_8.bin) -> train.py (trains the SAE) -> analyse_quant.py/analysis.py (computes the <1e-5 feature percentage); my_utils.py's HookedTransformer.from_pretrained(cfg['model_name']) call for loading a quantized checkpoint is commented out, so the quantized-model SAE training path requires hand-editing the script",
+  "num_tokens actually used for the reported precision-by-precision comparison is unstated (repo carries the original repo's 2e9-token default, which may or may not match what produced the post's numbers)"
+ ],
+ "inspector_notes": "This is a lightly-modified fork of Neel Nanda's public 1L-Sparse-Autoencoder repo with a handful of loose, hand-run scripts (hardcoded filenames like quant_4.bin, quant_8.bin) rather than a packaged pipeline; a competent engineer could stitch it together and the model/SAE are tiny, but exact reproduction of the reported percentages is uncertain given the missing token budget and disconnected scripts.",
+ "headline_artifact": "percentage of SAE hidden features with freqs < 1e-5 (computed via get_freqs in my_utils.py / analysis.py, logged to wandb during train.py and printed/histogrammed in analysis.py) for full/8-bit/4-bit quantized gelu-2l",
+ "selector_tier": "T?",
+ "selector_score": 4.53
+}

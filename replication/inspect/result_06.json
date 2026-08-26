@@ -1,0 +1,270 @@
+[
+  {
+    "post_id": "jXhHH658J4xzWjCu8",
+    "repo": "hannahtao/compression-unlearning",
+    "head_sha": "ddf55e3a9572351615ec1425cabac7c873466bb1",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "run_sweep.sh (compress_model.py + OpenUnlearning's src/eval.py)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["torch", "transformers", "OpenUnlearning harness (external, locuslab/open-unlearning, cloned separately)"],
+      "stated_compute": "Requires an A100/A5000 (24 GB) GPU instance."
+    },
+    "models_needed": [
+      {"hf_id": "open-unlearning/unlearn_tofu_Llama-3.2-1B-Instruct_forget10_NPO_lr1e-05_beta0.1_alpha1_epoch10", "params_b": 1.0, "gated": true},
+      {"hf_id": "open-unlearning/unlearn_tofu_Llama-3.2-1B-Instruct_forget10_SimNPO_lr5e-05_b4.5_a1_d1_g0.25_ep10", "params_b": 1.0, "gated": true},
+      {"hf_id": "open-unlearning/unlearn_tofu_Llama-3.2-1B-Instruct_forget10_IdkDPO_lr5e-05_beta0.05_alpha5_epoch10", "params_b": 1.0, "gated": true}
+    ],
+    "vram_estimate_gb": 8,
+    "vram_basis": "bf16 inference/light-compression of a 1B-param Llama on TOFU forget10 eval; README explicitly states 'Requires an A100/A5000 (24 GB) GPU instance', the same VRAM class as an RTX 3090.",
+    "fits_3090": "yes",
+    "data": {"needed": ["TOFU forget10 (via OpenUnlearning harness)"], "available": "hf-hub", "gated": false},
+    "est_runtime": "hours",
+    "est_runtime_basis": "README: 'Run the full compression sweep -> results/sweep_results.csv (~2-3 hrs)'; baselines take less.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "results/sweep_results.csv normalized-recovery table (NPO/SimNPO/IdkDPO x quant/prune/SVD), specifically the NPO 20% pruning peak (42% recovery) and 4-bit quant (22% recovery) cells",
+    "blockers": [
+      "Depends on an external harness (locuslab/open-unlearning) that must be cloned and installed separately -- not vendored in this repo",
+      "Llama-3.2-1B-Instruct and the pre-unlearned checkpoints are gated on HF (license acceptance needed)"
+    ],
+    "notes": "The repo itself has no requirements.txt/pyproject.toml -- its Python env comes entirely from the separately-cloned OpenUnlearning harness via 'bash setup.sh'. compress_model.py (prune/SVD) and the quantization flags are self-contained and easy to follow; no closed-API calls found."
+  },
+  {
+    "post_id": "WNoqEivcCSg8gJe5h",
+    "repo": "mclarke1991/sae_cooccurrence",
+    "head_sha": "68522cb26f33bb95ca0cc7da6cfa625be2954764",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "src/size_effects/features_active_per_token.py:main() (Fig 3B / Appendix Fig 1 -- SAE latent occurrence-per-token vs width)",
+    "entrypoint_confidence": "medium",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": ">=3.10,<3.12",
+      "key_deps": ["sae_lens", "transformer_lens", "torch", "streamlit", "plotly"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "gpt2 (gpt2-small)", "params_b": 0.124, "gated": false},
+      {"hf_id": "google/gemma-2-2b", "params_b": 2.6, "gated": true}
+    ],
+    "vram_estimate_gb": 18,
+    "vram_basis": "Dense d_sae x d_sae float32 co-occurrence matrix accumulated on GPU: fine at the widths actually used for the occurrence-vs-width plot (GPT2 up to 49152 -> ~9.7GB; Gemma-2-2b Gemma Scope up to 65536 -> ~17.2GB); code comment: batching is done 'to keep execution within memory on e.g. an A100.'",
+    "fits_3090": "tight",
+    "data": {"needed": ["pretraining-corpus activations streamed via SAE Lens ActivationsStore (whatever corpus the SAE was trained on)"], "available": "hf-hub", "gated": false},
+    "est_runtime": "hours",
+    "est_runtime_basis": "n_batches=100-500 at train_batch_size_tokens=4096 per SAE id, repeated across ~8 GPT2 widths and ~9 Gemma SAE ids/thresholds, each a streaming forward pass plus an O(d_sae^2) accumulation.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "results/size_effects/*/sae_firing_stats.npy + width_sae_firing_stats_combined_plot.png (Fig 3B); results/*/dataframes/node_info_df_*.csv feeding subgraph_size_vs_width.ipynb (Fig 9)",
+    "blockers": [
+      "The 'cluster (subgraph) size/prevalence decreases with width' half of the claim (Fig 9, subgraph_size_vs_width.ipynb) draws on Gemma Scope SAE widths up to 262k/524k/1,048,576 (config_gemma_widths.toml). The co-occurrence matrix is computed DENSE as a [d_sae,d_sae] float32 tensor (compute_cooccurrence_matrices in normalised_cooc_functions.py): width=262k needs ~274GB and width=1M needs ~4.4TB just to hold the matrix -- infeasible on 24GB VRAM or 31GB RAM regardless of GPU. Only widths up to ~65k (Gemma) / ~49k-98k (GPT2) are computable within budget, and the repo's own checked-in results/ directory only goes that far (no 262k/524k/1M result files present)."
+    ],
+    "notes": "Gemma-2-2b is gated on HF; GPT2-small and the SAEs (res-jb, Gemma Scope) are public. Two distinct measurements back the claim: the firing/occurrence-rate-vs-width plot (feasible on a 3090) and the subgraph-size-vs-width plot (infeasible past ~65k SAE width due to the dense co-occurrence matrix)."
+  },
+  {
+    "post_id": "tkiSQBuA8yj2tHNdv",
+    "repo": "kameshkanna/nla-train",
+    "head_sha": "0380fd87e7f3081558fd98478e7662e758f167ed",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "experiments/run_generalization.sh (extract_all_layers.py -> run_av_sweep.py -> run_ar_sweep.py -> compute_metrics.py -> plot_results.py)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": true,
+      "python_version": "3.10",
+      "key_deps": ["torch==2.5.1", "transformers==4.47.0", "peft==0.14.0", "accelerate==1.2.1"],
+      "stated_compute": "Training env: 'Reproduces the Fraser-Taliente et al., 2026 pipeline on a single H100 for ~$35.' Model card: '1x H100 80GB, Lambda Labs' for the 3-stage training (AR SFT ~1h, AV SFT ~1.5h, RL GRPO ~7h). No compute stated for the generalization/inference pipeline itself."
+    },
+    "models_needed": [
+      {"hf_id": "Qwen/Qwen2.5-7B-Instruct", "params_b": 7.6, "gated": false},
+      {"hf_id": "Kameshr/nla-qwen2.5-7b-L20-av (LoRA adapter, public)", "params_b": 7.6, "gated": false}
+    ],
+    "vram_estimate_gb": 18,
+    "vram_basis": "Qwen2.5-7B-Instruct in bf16 (~15GB weights) plus KV-cache for batched generation (AV sweep default batch=256, tunable via --av-batch-size); inference-only for the generalization pipeline, no optimizer-state overhead.",
+    "fits_3090": "probably",
+    "data": {"needed": ["HuggingFaceFW/fineweb (sample-10BT)", "wikimedia/wikipedia", "ccdv/pubmed-summarization", "iamtarun/python_code_instructions_18k_alpaca", "Reddit domain (source not confirmed in repo)"], "available": "hf-hub", "gated": false},
+    "est_runtime": "hours",
+    "est_runtime_basis": "56,000 AV inferences (2000 texts x 28 layers x 2 arms) plus AR reconstructions and 3 baselines, batched on one 7B model; wall-clock not stated for this stage (training stages are 1-7h each on H100).",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "experiments/results/metrics.json + wilcoxon_results.json (per-layer cosine similarity / Recall@10 / FVE / nRMSE, Wilcoxon+BH significance) -> MODEL_CARD.md: 'layers 10-25 all achieve CS > 0.50 and Recall@10 > 0.40'",
+    "blockers": [
+      "The AV checkpoint (Kameshr/nla-qwen2.5-7b-L20-av) is published on HF and directly downloadable, but the AR checkpoint the pipeline expects at checkpoints/ar_sft/final is NOT published under this project's namespace -- it must be retrained via scripts/run_ar_sft.sh, which first needs the multi-stage datagen pipeline (FineWeb extraction + a 'kitft' reference model as an oracle labeler).",
+      "AR SFT's H100-tuned settings (per_device_train_batch_size=64, gradient_checkpointing=false) assume ~64GB+ VRAM; would need a smaller batch size and gradient checkpointing enabled to fit a 24GB 3090.",
+      "Two separate, mutually-incompatible Python environments are required (nla-rl-env for training, nla-val-env for inference) due to a vLLM/transformers version conflict."
+    ],
+    "notes": "The config references a 'kitft/nla-qwen2.5-7b-L20-ar' reference checkpoint (upstream paper release) as a validation baseline; if that happens to be public, a replicator could sidestep AR retraining, but that would substitute a different AR model rather than reproducing this project's own trained one. No closed-API calls found anywhere in the repo."
+  },
+  {
+    "post_id": "ogvyWqJtSrpgXfc7t",
+    "repo": "sahilraut22/eval-research",
+    "head_sha": "274bb55d6f185a1f854d1b6ffca3d125d50c9420",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "steering/run_e3b.py --layers 12 14 24 (causal steering dose-response sweep, RQ1)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": null,
+      "python_version": null,
+      "key_deps": ["torch", "transformers", "deception_detection (Apollo Research harness, external, cloned + patched)"],
+      "stated_compute": "results/e1_replication/pod_run/RUN_LOG.md: 'Hardware: RunPod, single RTX 4090 (24 GB), fp16, single device (device_map {\\'\\':0}, no sharding, no 8-bit).'"
+    },
+    "models_needed": [
+      {"hf_id": "meta-llama/Meta-Llama-3.1-8B-Instruct", "params_b": 8.0, "gated": true}
+    ],
+    "vram_estimate_gb": 18,
+    "vram_basis": "The repo's own real run log for this exact model/pipeline (E1) states RTX 4090 (24GB), fp16, single device, no 8-bit -- an RTX 3090 is the same VRAM class.",
+    "fits_3090": "yes",
+    "data": {"needed": ["WMDP", "MMLU", "Alpaca", "repe_honesty__plain"], "available": "hf-hub", "gated": false},
+    "est_runtime": "hours",
+    "est_runtime_basis": "E1's real run (same model/harness) generated ~2000 rollouts at up to 512 tokens plus probe fitting on a full pod run; E3b adds a 9-point coefficient sweep x 3 layers of similarly generation-heavy evals.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "results/e3b_steering/sweep.json + manifest.json (dose-response table, Spearman rho, empirical-null p-value); currently only an unfilled scaffold ('STATUS: STAGED / not-yet-run') in this checkout, unlike E1 which has real pod_run results checked in.",
+    "blockers": [
+      "Depends on an external harness (ApolloResearch/deception-detection @ f8ec401) that must be cloned separately and patched with the 7 patches in apollo_patches/",
+      "Llama-3.1-8B-Instruct is gated on HF (license acceptance needed)",
+      "E3b's own RUN_LOG.md is an unfilled scaffold in this checkout -- the dose-response numbers backing the assigned target_value are not yet present as artifacts here, only the (already 4090-validated) E1 pipeline is filled in"
+    ],
+    "notes": "A different experiment in this repo (E4, predictive per-item probe vs black-box baseline, RQ3, mentioned in the post's primary_claim narrative) DOES require a closed-API grader (patch 0006: DD_GRADER=anthropic claude-3-5-sonnet-20241022 or openai gpt-4o-2024-08-06) for its behavioural-baseline arm. That is not the assigned target_value metric (the E3b steering swing at layer 12), which is fully objective/local (MCQ accuracy, no LLM judge)."
+  },
+  {
+    "post_id": "jauWv9BEbdCYcRy2d",
+    "repo": "vaiyr/probe-necessity",
+    "head_sha": "31017ee29feb54bff026ad42f400c86384638635",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "scripts/run_autopicker_battery.py",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": ">=3.11",
+      "key_deps": ["numpy", "scikit-learn"],
+      "stated_compute": "README: 'CPU is enough to reproduce every paper number from the shipped results.' / 'GPU (H100 via Modal; 1x for extraction/ablation, 2x for SFT) required only to regenerate the raw data from scratch.'"
+    },
+    "models_needed": [],
+    "vram_estimate_gb": 0,
+    "vram_basis": "scripts/run_autopicker_battery.py is pure CPU: it reads the already-shipped per-cell results/**/result.json files and runs the necessity-check decision rule; no model is loaded, no GPU touched.",
+    "fits_3090": "yes",
+    "data": {"needed": ["results/ablation_refusal*/**/result.json and results/paper/raw/*_whitening.json (all shipped in-repo)"], "available": "in-repo", "gated": false},
+    "est_runtime": "minutes",
+    "est_runtime_basis": "README states this step 'Takes < 1 second, no GPU.'",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "results/monitor/autopicker_battery.json -- 'auto 22/27, dom 15/27, lr_cv 18/27' aggregate, i.e. the 17 recovered + 5 correctly-alarmed NECESSITY_LOST cells in the 22-cell body battery cited in target_value",
+    "blockers": [
+      "This CPU replay recomputes the decision rule over PRE-COMPUTED per-cell ablation results already checked into the repo; it is not a re-derivation from raw model weights.",
+      "Fully-from-scratch regeneration of those per-cell results (README Steps 3-4: freeze buffer -> base eval -> extract -> fit probes -> SFT rounds -> ablation battery) needs 1-2x H100 GPUs via Modal (not a single 3090) at ~$60-80/family and 12-24h wall-clock each, across 5 (model, feature) conditions.",
+      "From-scratch regeneration also needs an Anthropic API key (Claude Haiku for the refusal judge, Claude Sonnet for the sycophancy judge) -- a hard blocker under a no-closed-API-keys budget.",
+      "Llama-3-8B-Instruct, Gemma-2-9B-it, and Mistral-7B-Instruct-v0.3 are gated on HF (OLMo-2 and Qwen2.5 are not)."
+    ],
+    "notes": "A genuinely two-tier repo: the exact headline aggregate (17/5 recovery in the 22-cell battery) is trivially reproducible on any machine, even without a GPU, because the per-cell ablation results ship in the repo -- but reproducing those underlying per-cell numbers from raw model weights is well beyond a single 3090 (needs H100s plus a closed Anthropic API key)."
+  },
+  {
+    "post_id": "523bkuMjSjKjG8jn6",
+    "repo": "idostik/llm-typos-interpretability",
+    "head_sha": "4f52a47ac2de5851051a68de1bc4a7864fe5be13",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "llm-typo-experiment.ipynb (per-head ablation loop / logit-difference cells)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["transformer_lens", "circuitsvis", "transformers", "datasets", "torch"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "meta-llama/Llama-3.2-1B", "params_b": 1.2, "gated": true}
+    ],
+    "vram_estimate_gb": 4,
+    "vram_basis": "1.2B-param model, forward-only ablation passes over short hand-written sentences -- trivial for 24GB.",
+    "fits_3090": "yes",
+    "data": {"needed": ["hand-written sentence lists embedded directly in the notebook"], "available": "in-repo", "gated": false},
+    "est_runtime": "minutes",
+    "est_runtime_basis": "Small model, small hand-curated prompt sets, per-head ablation sweep over ~16 heads x few layers -- no large corpus or training loop.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "Notebook cells computing logit-difference before/after ablating each attention head one-by-one, identifying L0H3 as the only head with significant impact",
+    "blockers": [
+      "No requirements.txt/environment file -- dependency versions are entirely unpinned (%pip install with no version numbers); the notebook appears Colab-authored (login(\"Your hf token\") placeholder, inline package installs)."
+    ],
+    "notes": "Single unpolished exploratory notebook (README calls it 'rough, unpolished'), 104 cells, no separate scripts. Cheap to rerun; main risk is environment drift from unpinned transformer_lens/circuitsvis versions, not compute. No closed-API usage found."
+  },
+  {
+    "post_id": "wxPvdBwWeaneAsWRB",
+    "repo": "mamiglia/deep-dive-l1h5",
+    "head_sha": "6c45e47dbb0dc63b5a62ba7eb5bec3d152a6bdb8",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "skew_analysis.py (symmetric/skew-symmetric decomposition of L1H5's W_QK, eigenvalue sign count)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["transformer_lens", "sae_lens", "torch", "circuitsvis", "leidenalg", "igraph"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "gpt2 (gpt2-small)", "params_b": 0.124, "gated": false}
+    ],
+    "vram_estimate_gb": 2,
+    "vram_basis": "GPT2-small (124M) plus a 768x768 eigendecomposition of one head's QK circuit -- negligible.",
+    "fits_3090": "yes",
+    "data": {"needed": ["GPT2 vocabulary / hand-picked token groups (GROUP_TOKENS constant)"], "available": "in-repo", "gated": false},
+    "est_runtime": "minutes",
+    "est_runtime_basis": "Single small model, vocabulary-sized matrix ops, no training and no large corpus.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "Eigenvalue-sign plot/printout from decomposing W_sym (symmetric part of L1H5's QK circuit) -- '33 of 64 eigenvalues negative'",
+    "blockers": [],
+    "notes": "requirements.txt lists package names only (unpinned versions). Otherwise a clean, self-contained, small-GPU repo with no external data or model-gating issues; no closed-API usage found."
+  },
+  {
+    "post_id": "BBgZ4bCbP4dfKeRhk",
+    "repo": "realmbird/mhc-lite-dolma-781m",
+    "head_sha": "6f4ce4bd4e9956a8e1004383eb8994828755b3be",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": null,
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": "3.10",
+      "key_deps": ["torch>=2.4", "transformers>=4.44", "datasets>=2.20", "tiktoken", "huggingface-hub", "safetensors"],
+      "stated_compute": "HANDOFF.md: 'Trained on: NVIDIA A100-SXM4 40GB (single GPU).' chain_h100.sh targets an 'H100-80GB'; the mHC variant OOM'd at the paper batch size on the 40GB card and needed a bs=2/accum=32 workaround still peaking at ~22.5GB."
+    },
+    "models_needed": [
+      {"hf_id": "Realmbird/mhc-781m-residual", "params_b": 0.781, "gated": false},
+      {"hf_id": "Realmbird/mhc-781m-mhc", "params_b": 0.781, "gated": false},
+      {"hf_id": "Realmbird/mhc-781m-mhc-lite", "params_b": 0.781, "gated": false}
+    ],
+    "vram_estimate_gb": null,
+    "vram_basis": null,
+    "fits_3090": "unknown",
+    "data": {"needed": ["allenai/dolma v1_7 (falcon + cc_en_middle shards, ~1.94B tokens for the default 2-shard prep)"], "available": "download-script", "gated": false},
+    "est_runtime": "unknown",
+    "est_runtime_basis": null,
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": null,
+    "blockers": [
+      "The repo contains ONLY the pretraining pipeline (train.py/train_analysis.py, nanoGPT + hyper-connections) plus an unrelated 'h_and_nu' analysis of the mHC Sinkhorn routing coefficients (analyze/h_and_nu.py). It has NO code for logit lens, attention-head classification (previous-token/induction detection), ablation, path patching, or kurtosis -- the methodology behind every number in the assigned claim. A repo-wide grep for logit_lens/induction/kurtosis/previous_token/attention_sink/top-1 across all .py files returned zero matches.",
+      "The post itself (p3/posts/BBgZ4bCbP4dfKeRhk.md) confirms this repo was used only to TRAIN the mHC/mHC-lite/residual checkpoints; the interpretability analysis was performed separately and that code is not published here.",
+      "If a replicator instead tried to reproduce the checkpoints from scratch: the mHC variant OOM'd even on a 40GB A100 at the paper-faithful batch size and needed workarounds; full paper-spec training uses ~8x more tokens/iter than what was actually run, and mHC trains ~9x slower than residual (2.76K vs 25.9K tok/s), implying a multi-day single-GPU run just for one checkpoint."
+    ],
+    "notes": "Most surprising finding of this batch: despite the blockers above, all three trained checkpoints (Realmbird/mhc-781m-{residual,mhc,mhc-lite}) are already public and ungated on HF (~1.5GB each in bf16, verified via the HF API), so a replicator would NOT need to redo the expensive multi-day pretraining -- they could download the checkpoints directly and would only need to WRITE the (currently unpublished) TransformerLens-based logit-lens/attention-head analysis themselves, which would then be cheap and would fit a 3090 trivially (781M params). Because that analysis code does not exist in this repo, entrypoint is null per the inspection contract."
+  }
+]

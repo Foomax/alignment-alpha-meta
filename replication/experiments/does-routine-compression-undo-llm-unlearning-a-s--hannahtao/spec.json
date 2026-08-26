@@ -1,0 +1,67 @@
+{
+ "slug": "does-routine-compression-undo-llm-unlearning-a-s--hannahtao",
+ "post_id": "jXhHH658J4xzWjCu8",
+ "title": "Does routine compression undo LLM unlearning? A short project",
+ "date": "2026-07-20",
+ "repo": "hannahtao/compression-unlearning",
+ "head_sha": "ddf55e3a9572351615ec1425cabac7c873466bb1",
+ "entrypoint": "run_sweep.sh (compress_model.py + OpenUnlearning's src/eval.py)",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "transformers",
+  "OpenUnlearning harness (external, locuslab/open-unlearning, cloned separately)"
+ ],
+ "models": [
+  {
+   "hf_id": "open-unlearning/unlearn_tofu_Llama-3.2-1B-Instruct_forget10_NPO_lr1e-05_beta0.1_alpha1_epoch10",
+   "params_b": 1.0,
+   "gated": true
+  },
+  {
+   "hf_id": "open-unlearning/unlearn_tofu_Llama-3.2-1B-Instruct_forget10_SimNPO_lr5e-05_b4.5_a1_d1_g0.25_ep10",
+   "params_b": 1.0,
+   "gated": true
+  },
+  {
+   "hf_id": "open-unlearning/unlearn_tofu_Llama-3.2-1B-Instruct_forget10_IdkDPO_lr5e-05_beta0.05_alpha5_epoch10",
+   "params_b": 1.0,
+   "gated": true
+  }
+ ],
+ "phenomenon": "machine unlearning robustness",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "Standard post-training compression (quantization, magnitude pruning, SVD truncation) mostly does not reverse unlearning on TOFU forget10 / Llama-3.2-1B-Instruct across NPO, SimNPO, and IdkDPO unlearning methods, but the strongest reversal came from magnitude pruning in a narrow 10-20% sparsity window on NPO unlearning, recovering up to 42% of the ceiling-baseline gap.",
+ "quote": "the strongest reversal came from magnitude pruning in a narrow 10-20% sparsity window on NPO unlearning (up to 42% of the ceiling\u2013baseline gap recovered)",
+ "metric": "recovery = (compressed - baseline) / (ceiling - baseline) on forget_Q_A_Prob",
+ "target_value": "4-bit quantization on NPO: 22% recovery; magnitude pruning at 20% sparsity on NPO: 42% recovery peak; SVD truncation: no significant recovery (-26% at 99% keep); SimNPO/IdkDPO: <=3% recovery in all non-destructive cells",
+ "target_numeric": 4.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 7 numbers; compare the components by hand",
+ "vram_estimate_gb": 8,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "TOFU forget10 (via OpenUnlearning harness)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "Depends on an external harness (locuslab/open-unlearning) that must be cloned and installed separately -- not vendored in this repo",
+  "Llama-3.2-1B-Instruct and the pre-unlearned checkpoints are gated on HF (license acceptance needed)"
+ ],
+ "inspector_notes": "The repo itself has no requirements.txt/pyproject.toml -- its Python env comes entirely from the separately-cloned OpenUnlearning harness via 'bash setup.sh'. compress_model.py (prune/SVD) and the quantization flags are self-contained and easy to follow; no closed-API calls found.",
+ "headline_artifact": "results/sweep_results.csv normalized-recovery table (NPO/SimNPO/IdkDPO x quant/prune/SVD), specifically the NPO 20% pruning peak (42% recovery) and 4-bit quant (22% recovery) cells",
+ "selector_tier": "T1",
+ "selector_score": 6.5
+}

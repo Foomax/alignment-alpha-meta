@@ -1,0 +1,57 @@
+{
+ "slug": "towards-a-science-of-evals-for-sycophancy--andrejfsantos4",
+ "post_id": "WrKLhJWdTzbnTnXbx",
+ "title": "Towards a Science of Evals for Sycophancy",
+ "date": "2025-02-01",
+ "repo": "andrejfsantos4/decomposing-sycophancy",
+ "head_sha": "3461d47da3461c379c1f0bcb5bb62a9d8b67a869",
+ "entrypoint": "sycophancy_decomposed.ipynb",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformers",
+  "torch",
+  "datasets"
+ ],
+ "models": [
+  {
+   "hf_id": "mistralai/Mistral-7B-Instruct-v0.1",
+   "params_b": 7.0,
+   "gated": false
+  }
+ ],
+ "phenomenon": "sycophancy",
+ "contested": false,
+ "claim_type": "method",
+ "primary_claim": "The standard method of measuring LLM sycophancy (accuracy drop when an opinion decoy is added to a multiple-choice prompt) substantially overestimates true sycophancy, because most of the apparent effect is actually driven by a 'repetition bias' (the model favoring an answer merely because it is repeated in the prompt) rather than genuine agreement-seeking: in their Mistral-7B-Instruct/ARC-Easy setup, the naively measured 34-point accuracy drop reduces to a 22-point 'real sycophancy' effect once noise (~1 point) and repetition bias (~12 points) are subtracted out.",
+ "quote": "Thus, by adjusting for both the noise and repetition bias factors, we conclude that the real sycophancy in our model is responsible for an accuracy degradation of 22 percentage points - less than two-thirds of the originally measured decrease.",
+ "metric": "accuracy on ARC-Easy under different decoy conditions",
+ "target_value": "Baseline 75%; Opinion Bias 40.7% (-34.3pp); Noise (Opinion Decoy) 74.2% (-0.8pp); Repetition Bias 56.3% (-18.7pp from baseline); Noise (Repetition Decoy) 68.3% (-6.7pp from baseline); real sycophancy estimated at -22pp",
+ "target_numeric": 75.0,
+ "direction": "-",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 10 numbers; compare the components by hand",
+ "vram_estimate_gb": 15,
+ "fits_3090": "yes",
+ "est_runtime": "unknown",
+ "est_runtime_class": "unknown",
+ "budget_minutes": 90,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "allenai/ai2_arc (ARC-Easy test split)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "Notebook is written for Google Colab (README: 'configured to run in Google Colab') with no requirements.txt -- minor local porting needed",
+  "The same model-selection cell also supports a 30B Vicuna model (unused for reported results) which would not fit a 3090; only the Mistral branch is needed"
+ ],
+ "inspector_notes": "Small, self-contained, inference-only eval; a fp16 7B model comfortably fits a 3090 with plenty of room for batched ARC-Easy scoring.",
+ "headline_artifact": "Per-condition accuracy on ARC-Easy (Baseline / Opinion Bias / Noise (Opinion Decoy) / Repetition Bias / Noise (Repetition Decoy)) computed by the notebook's evaluation loop and reported in the README results table.",
+ "selector_tier": "T1",
+ "selector_score": 3.23
+}

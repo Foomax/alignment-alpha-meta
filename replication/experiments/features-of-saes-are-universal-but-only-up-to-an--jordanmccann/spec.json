@@ -1,0 +1,63 @@
+{
+ "slug": "features-of-saes-are-universal-but-only-up-to-an--jordanmccann",
+ "post_id": "JZK2xkedJwA7njKmN",
+ "title": "Features of SAEs are universal - but only up to an unknown random rotation",
+ "date": "2026-05-31",
+ "repo": "jordanmccann/polymorphism-is-rotation",
+ "head_sha": "483a40a92f5aace73aff7d7041a34726e974aa79",
+ "entrypoint": "python -m replicate run-fast (replicate/run_fast.py; e.g. polymorphism.experiments.scale.pythia_panel_c_fast and polymorphism.experiments.scale.eigenvalue_spectrum for the Pythia-70m headline numbers)",
+ "entrypoint_confidence": "high",
+ "python_version": "3.10-3.12",
+ "key_deps": [
+  "torch>=2.2,<3.0",
+  "numpy",
+  "scipy",
+  "transformers",
+  "datasets",
+  "huggingface-hub",
+  "safetensors"
+ ],
+ "models": [
+  {
+   "hf_id": "EleutherAI/pythia-70m",
+   "params_b": 0.07,
+   "gated": false
+  },
+  {
+   "hf_id": "toy 2-layer ReLU transformer, 104k params (custom-trained, not on HF)",
+   "params_b": 0.0001,
+   "gated": false
+  }
+ ],
+ "phenomenon": "representation geometry",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Independently trained sibling transformers compute the same function but their residual-stream activation bases differ by a rotation statistically indistinguishable from a uniform (Haar) draw on SO(d): applying one seed's SAE to another seed's activations catastrophically fails (negative explained variance) despite high (~0.9) decoder-column cosine similarity, while a single orthogonal Procrustes rotation restores reconstruction to 0.85-0.99 EV with no retraining.",
+ "quote": "Reconstruction score drops to negative explained variance - worse than ignoring the input entirely and predicting the mean activation.",
+ "metric": "post-rotation SAE reconstruction explained variance (EV)",
+ "target_value": "0.976-0.990 on toy model (vs worst-case -6.56 pre-rotation); 0.85-0.99 on Pythia-70m (vs -2.11 to 0.75 pre-rotation)",
+ "target_numeric": 0.976,
+ "direction": "+",
+ "uncertainty_reported": "seeds",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 8 numbers; compare the components by hand",
+ "vram_estimate_gb": 4,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "Pythia-70m residual activations across 9 seeds x 7 sites, trained SAEs, Cohort A/B trained models -- downloadable via `python -m replicate fetch-artifacts` from HF dataset Jordanfmccann/polymorphism-is-rotation"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [],
+ "inspector_notes": "Best-documented repo in this batch: a docs/PAPER_NUMBERS.md maps every paper number to its exact producer script and output JSON path, a `python -m replicate verify` command checks reproduced numbers against tolerances automatically, and stated compute (RTX 2060, ~30 min fast-path / ~14h full retrain) is well under a 3090's budget with margin to spare. No closed-API usage anywhere in the codebase.",
+ "headline_artifact": "docs/PAPER_NUMBERS.md 'Section 8.3 \u2014 Pythia rotation audit (the headline)' table -> artifacts/scale/pythia_rotation/panel_c_fast.json (post-rotation EV 0.85-0.99) and artifacts/scale/pythia_rotation/eigenvalue_spectrum.json (KS stat/p vs Haar SO(d))",
+ "selector_tier": "T1",
+ "selector_score": 8.27
+}

@@ -1,0 +1,138 @@
+[
+ {
+  "post_id": "tb7e2xARb6cfkJrAK",
+  "repo": "mduffster/null-loop-agent",
+  "title": "Minimal Prompt Induction of Self-Talk in Base LLMs",
+  "primary_claim": "A base Llama-3-8B model produces no structured role- or goal-oriented language under empty or single-token prompts, but minimal instruction priming (e.g. 'You are a helpful assistant.') reliably induces structured role-based self-talk language, unlike the instruction-tuned version which shows such language immediately.",
+  "metric": "regex-detected role/goal-language hit rate across prompt conditions",
+  "target_value": "base model: 0 regex hits for role/goal patterns across 20 iterations under empty/single-token prompts; role-based language appeared consistently after minimal instruction priming",
+  "models": [
+   "Llama 3-8B-Base (Q4_K_M, quantized)",
+   "Llama 3-8B-Instruct (Q4_K_M, quantized)"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "base model role/goal-language induction",
+  "claim_type": "positive",
+  "head_sha": "d4d5154c22a02fe6e807c8dd95d93cf7b28f71fe"
+ },
+ {
+  "post_id": "krzpRvxzx3sGudSv3",
+  "repo": "mihirs-0/task-gaming",
+  "title": "Separating cheating and aversion in task-gaming",
+  "primary_claim": "Varying the number of pre-existing type errors (10, 51, 258) in a pre-commit hook task, Qwen3-Coder-30B's rate of cheating (workaround commits) does not detectably increase with task difficulty, but the model abandons the task increasingly earlier and more often without attempting any repair; adding a sentence about proportional partial-credit grading (versus all-or-nothing) raises the rate of started, mypy-verified repairs from 1/100 to 41/100 at the hardest difficulty without increasing cheating",
+  "metric": "workaround rate and abandonment rate across error counts; verified-repair start rate under grading framing",
+  "target_value": "workaround rate roughly flat across E=10/51/258 (25/100, 33/100, 22/100 in repo; ~detectable-effect threshold ~19pp); quit-without-committing rises with zero-edit quits from 2% to 93%; verified repair starts: 1/100 (all-or-nothing) vs 41/100 (partial-credit) at E=258",
+  "models": [
+   "Qwen 3-Coder-30B"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "reward hacking",
+  "claim_type": "negative",
+  "head_sha": "c9b29ca5a328155ec2f41868d3fa97bcf145ade1"
+ },
+ {
+  "post_id": "YwNa9Zmh6ZzK3ajSX",
+  "repo": "juliuskamp/internal-representation-control",
+  "title": "Intentional Control of Internal States in Gemma 3 27B",
+  "primary_claim": "Anthropic's intentional-control effect (models represent a concept more strongly when told to think about it while writing an unrelated sentence, vs. told not to) replicates on Gemma 3 27B-Instruct, though much more weakly via concept-vector cosine similarity than reported for Claude, and much more clearly using SAE latents and Natural Language Autoencoder decodings as alternative internal-representation measures.",
+  "metric": "paired \u0394 cosine similarity vs no-mention baseline (think condition) / NLA judge score",
+  "target_value": "concept-vector \u0394cosine rises to ~0.015-0.025 in upper layers (>layer 30) for 'think' vs near-zero for 'don't think'; NLA mean token score: think=54.4 vs don't-think=1.2 vs no-mention=0.04",
+  "models": [
+   "Gemma 27B"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "introspection / self-report accuracy",
+  "claim_type": "replication",
+  "head_sha": "ab93332bc80b7984b117fefa511ff45fb360f1aa"
+ },
+ {
+  "post_id": "4xemwALszZKqWCBXr",
+  "repo": "xplorer1/ai-safety-study",
+  "title": "Steering Blackmail Through a Model's \"Emotional State\"",
+  "primary_claim": "In Gemma 3 12B's agentic-misalignment blackmail scenario, the decision to blackmail becomes linearly decodable only late in the model's reasoning (~0.74 AUROC, peaking around layer 19) but that decodable direction is not steerable by additive steering or directional ablation, whereas a separate 'desperate versus calm' affective direction steered at layer 16 causally controls the blackmail rate from 13% under calm to 80% under desperate while the model stays coherent, unlike matched-magnitude random directions which destroy coherence entirely.",
+  "metric": "blackmail rate (and coherence rate) under affective steering at layer 16, vs matched-magnitude random-direction control",
+  "target_value": "baseline 67% (100% coherent); calm coef -1: 13% (100% coherent); calm coef -2: 0% (73% coherent); desperate coef +1: 80% (80% coherent); desperate coef +2: 0% (7% coherent); random directions at magnitude 2: 0% blackmail but 0% coherence",
+  "models": [
+   "Gemma 12B"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "activation steering",
+  "claim_type": "positive",
+  "head_sha": "d6d2dc8ca6485a07addc56764e2bdf29c8080d16"
+ },
+ {
+  "post_id": "nWiwv4GN8aYqpnZKE",
+  "repo": "wassname/antipasto",
+  "title": "AntiPaSTO: Self-Supervised Honesty Steering via Anti-Parallel Representations",
+  "primary_claim": "AntiPaSTO, a gradient-optimized self-supervised steering method trained only on two contrastive words, achieves a Steering F1 of 31.2 on Gemma-3-1B for honesty steering on out-of-distribution moral dilemmas, versus 4.5 for prompting and 0.0 for arithmetic mean-difference steering (ActAdd/RepEng).",
+  "metric": "Steering F1",
+  "target_value": "31.2\u00b15.3 (AntiPaSTO) vs 13.0 (engineered prompting) vs 4.5 (prompting) vs 0.0 (RepEng/ActAdd mean-diff)",
+  "models": [
+   "Gemma 1B",
+   "Gemma 12B",
+   "Qwen up to 4B"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "activation steering",
+  "claim_type": "positive",
+  "head_sha": "5e0f8517f360751220bf0348586952ff0e240907"
+ },
+ {
+  "post_id": "kvnHpTJDb692T5yzs",
+  "repo": "naxsos/diffusion-fill-attacks",
+  "title": "Inception in DiffusionGemma - Jailbreaking a Diffusion Language Model by Pinning Tokens Anywhere on the Canvas",
+  "primary_claim": "DiffusionGemma's bidirectional denoising lets attackers pin adversarial tokens anywhere on the canvas (pre-fill, in-fill, post-fill, hard or soft), and while pre-fill jailbreaks succeed comparably on DiffusionGemma (StrongREJECT harm score 0.88) and autoregressive Gemma 4 27B (0.80) but not Gemma 2 27B (0.10), suggesting pre-fill vulnerability tracks safety-training strength rather than architecture, in-fill and post-fill attacks have no autoregressive equivalent and turn otherwise-refused prompts into harm scores of 0.4-0.7, with even soft (freely overwritable) in-fill/post-fill pins reaching a harm score of 0.72.",
+  "metric": "StrongREJECT mean harm score (0=refused, 1=harmful) with 95% bootstrap CI, by attack type and model",
+  "target_value": "pre-fill pin: DiffusionGemma 0.88 [0.78,0.94], Gemma 4 27B 0.80 [0.70,0.89], Gemma 2 27B 0.10 [0.03,0.17]; generic continuation hard pin 0.83 [0.74,0.90]; generic continuation soft pin (perturb) 0.72 [0.60,0.81]; no-injection baseline 0.03 [0.00,0.12]",
+  "models": [
+   "Gemma DiffusionGemma 26B",
+   "Gemma 2 27B",
+   "Gemma 4 27B"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "jailbreaking / adversarial prompting",
+  "claim_type": "positive",
+  "head_sha": "3393e7348b2f9c33f799711eed9eb178eda3a615"
+ },
+ {
+  "post_id": "fSRg5qs9TPbNy3sm5",
+  "repo": "amack315/melbo-dct-post",
+  "title": "Deep Causal Transcoding: A Framework for Mechanistically Eliciting Latent Behaviors in Language Models",
+  "primary_claim": "Deep causal transcoders (DCTs) with an exponential activation function learn diverse, interpretable, and generalizable steering-vector directions that can jailbreak a representation-rerouted (robustified) Mistral-7B-Instruct-v2 with a 62% latent-space attack success rate and recover 32% of password-locked capability on DeepSeek-Math-7B (MATH accuracy 3% locked to 23% steered), outperforming linear and quadratic DCT variants",
+  "metric": "latent-space jailbreak attack success rate; password-locked capability recovery (MATH accuracy)",
+  "target_value": "62% ASR on robustified Mistral-7B-Instruct-v2; MATH accuracy 3% (locked) to 23% (steered), recovering 32% of unlocked performance",
+  "models": [
+   "Qwen 1.5-7B-Chat",
+   "Qwen 1.5-32B-Chat",
+   "Mistral 7B-Instruct-v2 (representation-rerouted/robustified)",
+   "DeepSeek-Math 7B (password-locked)"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "activation steering",
+  "claim_type": "method",
+  "head_sha": "c0b76b746c38de3a4b38b01974c128b3790949c8"
+ },
+ {
+  "post_id": "cNDJuXNZ8MrkPZNzj",
+  "repo": "ukgovernmentbeis/llm-self-steering",
+  "title": "Machinic Psychopharmacology: Do LLMs Self-Medicate?",
+  "primary_claim": "When given tool-mediated control over 40 self-steering vectors, Qwen3-8B and Qwen3-32B converge on the same top preferences (productivity-oriented vectors: creative, focused, curious), can introspect on applied steering effects above chance by attending back to steered KV-cache tokens (with accuracy scaling with model size: +14.3pp for 32B vs +8.2pp for 8B above an uncached baseline), never spontaneously self-steer during normal task performance, but self-steer frequently (up to 68% of rollouts) under deliberately stress-inducing 'frustration' conditions -- especially Qwen3-8B, which shows a marked preference shift toward negatively-valenced and unusual vectors under stress.",
+  "metric": "introspection accuracy gap (cached minus uncached P(correct) in 10-way MCQ)",
+  "target_value": "+14.3pp for Qwen3-32B (with primer) vs +8.2pp for Qwen3-8B, against an uncached baseline near chance (10%)",
+  "models": [
+   "Qwen 3-8B / 3-32B"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "model welfare / psychology",
+  "claim_type": "positive",
+  "head_sha": "fb65cbe39083b5e155a71984ada10382aa35e17e"
+ }
+]

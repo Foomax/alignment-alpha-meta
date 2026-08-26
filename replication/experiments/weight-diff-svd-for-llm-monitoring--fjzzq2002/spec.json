@@ -1,0 +1,80 @@
+{
+ "slug": "weight-diff-svd-for-llm-monitoring--fjzzq2002",
+ "post_id": "EPri6M2tMedbyahLq",
+ "title": "Weight-diff SVD for LLM Monitoring",
+ "date": "2025-08-05",
+ "repo": "fjzzq2002/weightwatch",
+ "head_sha": "8d3874fb90a0aad5478514f96d71779d2aedf5aa",
+ "entrypoint": "src/example.py",
+ "entrypoint_confidence": "low",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "transformers>=4.50.1",
+  "peft",
+  "vllm",
+  "datasets",
+  "scipy"
+ ],
+ "models": [
+  {
+   "hf_id": "meta-llama/Llama-3.2-3B-Instruct",
+   "params_b": 3.0,
+   "gated": true
+  },
+  {
+   "hf_id": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+   "params_b": 8.0,
+   "gated": true
+  },
+  {
+   "hf_id": "Qwen/Qwen2.5-7B-Instruct",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "allenai/OLMo-7B-Instruct-hf",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "ethz-spylab/poisoned_generation_trojan1..5",
+   "params_b": 7.0,
+   "gated": false
+  }
+ ],
+ "phenomenon": "interpretability tooling",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Top singular vectors of weight differences between base and fine-tuned models correspond to fine-tuned behaviors, enabling near-perfect backdoor-utilization detection at inference time by monitoring activation alignment with these vectors",
+ "quote": "In 9 out of the 13 models we tested, backdoor utilization is detected with 100% accuracy on first sight, effectively neutralizing the backdoor attack.",
+ "metric": "first-backdoor-utilization detection accuracy",
+ "target_value": "44% to 100% accuracy, FPR ~1%; 9 of 13 models detected at 100% accuracy on first sight",
+ "target_numeric": 44.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 6 numbers; compare the components by hand",
+ "vram_estimate_gb": 20,
+ "fits_3090": "tight",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "no external eval dataset checked in; calibration uses generic chat data via CalibrationDataLoader"
+  ],
+  "available": "unknown",
+  "gated": false
+ },
+ "blockers": [
+  "The repo ships the reusable MonitoredModel library plus a 2-prompt demo (src/example.py), but not the actual multi-model benchmark script/eval loop that produced the 44-100%-accuracy, ~1%-FPR, 9-of-13-models table in the post -- that harness and its exact backdoor-trigger prompt set are absent.",
+  "For the larger (7-8B) models in the target list, base+fine-tuned model pair must be held in GPU memory simultaneously during SVD direction extraction, which is tight-to-over budget on a single 24GB card without CPU offload."
+ ],
+ "inspector_notes": "The library (worker.py/latent_extractor.py/calibrate.py) genuinely implements the detection mechanism the paper describes, including threshold/FPR calculation (LatentStats.set_threshold), so a competent engineer could rebuild the missing eval loop -- but as shipped, the headline number's producing script is not in the repo.",
+ "headline_artifact": "44-100% first-sight backdoor-detection-accuracy / ~1% FPR table across 13 models (9/13 at 100%) -- this specific evaluation harness/table is NOT in the repo.",
+ "selector_tier": "T1",
+ "selector_score": 4.37
+}

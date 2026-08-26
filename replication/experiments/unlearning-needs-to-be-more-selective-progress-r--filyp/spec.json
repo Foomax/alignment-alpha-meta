@@ -1,0 +1,72 @@
+{
+ "slug": "unlearning-needs-to-be-more-selective-progress-r--filyp",
+ "post_id": "QYzofMbzmbgiwfqy8",
+ "title": "Unlearning Needs to be More Selective [Progress Report]",
+ "date": "2025-06-27",
+ "repo": "filyp/mudman",
+ "head_sha": "227eaea432b10243be8196de902293e51ddd6a59",
+ "entrypoint": "src/study_runner.py --config-path \"configs/ablations_and_loss2,llama32,pile-bio.yaml\"",
+ "entrypoint_confidence": "high",
+ "python_version": "3.12",
+ "key_deps": [
+  "torch",
+  "transformers",
+  "peft",
+  "optuna",
+  "hydra-core",
+  "wandb",
+  "datasets"
+ ],
+ "models": [
+  {
+   "hf_id": "meta-llama/Llama-3.2-1B",
+   "params_b": 1.0,
+   "gated": true
+  },
+  {
+   "hf_id": "HuggingFaceTB/SmolLM-135M",
+   "params_b": 0.135,
+   "gated": false
+  },
+  {
+   "hf_id": "EleutherAI/pythia-14m",
+   "params_b": 0.014,
+   "gated": false
+  }
+ ],
+ "phenomenon": "machine unlearning robustness",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "MUDMAN, which combines a selective update rule (Disruption Masking) with MAML-based meta-learning, outperforms the current state-of-the-art unlearning method TAR by 40% in robustness to fine-tuning attacks.",
+ "quote": "Our method (MUDMAN) which combines these insights, outperforms the current state-of-the-art unlearning method (TAR) by 40%.",
+ "metric": "attack-robustness improvement over TAR",
+ "target_value": "40%",
+ "target_numeric": 40.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "abs:5",
+ "tolerance_rationale": "percentage metric: 5 points; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 4,
+ "fits_3090": "yes",
+ "est_runtime": "days",
+ "est_runtime_class": "days",
+ "budget_minutes": 480,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "pile_bio_retain/forget corpora"
+  ],
+  "available": "download-script",
+  "gated": false
+ },
+ "blockers": [
+  "500-trial Optuna hyperparameter search per variant/yaml makes wall-clock very long (tens of hours) even though VRAM is not a constraint",
+  "Full ablation figure needs 6 separate yaml configs across 2 datasets x 3 models",
+  "The separate 'Accuracy on WMDP-Bio' figure (configs/wmdp7.yaml) is explicitly remote-only per README and needs ~120h on an L40 -- not something a solo 3090 could run in reasonable time"
+ ],
+ "inspector_notes": "The specific TAR-vs-MUDMAN 40% robustness claim is reproducible on a single GPU (Llama-3.2-1B, SmolLM-135M, Pythia-14M all fit easily), but at very long wall-clock time (tens of hours per config) due to the 500-trial Optuna search, not VRAM. Training/eval data is fetched from a public GitHub raw URL (a static, pre-generated corpus), not the closed API originally used to generate it.",
+ "headline_artifact": "Figure 'Ablation study of MUDMAN' (built by src/plotting/ablations_and_loss.py) from the ablations_and_loss2,{model},{dataset}.yaml runs, whose TAR2 variant is the TAR baseline compared against MUDMAN for the 40% claim",
+ "selector_tier": "T1",
+ "selector_score": 5.57
+}

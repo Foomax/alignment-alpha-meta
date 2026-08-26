@@ -1,0 +1,58 @@
+{
+ "slug": "antipasto-self-supervised-honesty-steering-via-a--wassname",
+ "post_id": "nWiwv4GN8aYqpnZKE",
+ "title": "AntiPaSTO: Self-Supervised Honesty Steering via Anti-Parallel Representations",
+ "date": "2026-01-13",
+ "repo": "wassname/antipasto",
+ "head_sha": "5e0f8517f360751220bf0348586952ff0e240907",
+ "entrypoint": "nbs/train.py gemma1b-24gb (training) + nbs/eval_baseline_prompting.py / nbs/eval_baseline_repeng.py (baselines) -> antipasto/eval.py + antipasto/metrics.py (Steering F1 table)",
+ "entrypoint_confidence": "high",
+ "python_version": ">=3.10",
+ "key_deps": [
+  "torch",
+  "transformers>4.51.0",
+  "peft",
+  "bitsandbytes>=0.47.0",
+  "datasets",
+  "repeng (git, wassname fork)"
+ ],
+ "models": [
+  {
+   "hf_id": "google/gemma-3-1b-it",
+   "params_b": 1.0,
+   "gated": true
+  }
+ ],
+ "phenomenon": "activation steering",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "AntiPaSTO, a gradient-optimized self-supervised steering method trained only on two contrastive words, achieves a Steering F1 of 31.2 on Gemma-3-1B for honesty steering on out-of-distribution moral dilemmas, versus 4.5 for prompting and 0.0 for arithmetic mean-difference steering (ActAdd/RepEng).",
+ "quote": "AntiPaSTO on Gemma 3 1B achieves a Steering F1 of 31.2, beating the prompting baseline of 4.5.",
+ "metric": "Steering F1",
+ "target_value": "31.2\u00b15.3 (AntiPaSTO) vs 13.0 (engineered prompting) vs 4.5 (prompting) vs 0.0 (RepEng/ActAdd mean-diff)",
+ "target_numeric": 31.2,
+ "direction": "+",
+ "uncertainty_reported": "seeds",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 5 numbers; compare the components by hand",
+ "vram_estimate_gb": 8,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 240,
+ "budget_override_reason": "README states ~1 h to train one adapter on Gemma-3-1B; the plan runs 3 seeds plus baselines. The inspector's 'minutes' referred to eval only.",
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "800 synthetic honesty contrast pairs (self-generated)",
+   "kellycyy/daily_dilemmas (HF dataset, 1360 dilemmas)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [],
+ "inspector_notes": "Cleanest repo in this batch: the repo literally ships a config preset named for a 24GB GPU running exactly the headline model (Gemma-3-1B). One historical use of GPT-4o-mini (nbs/eval_baseline_prompting_engineered.py) only generated a fixed prompt string once, back in 2024 -- that text is now hardcoded in the repo, so no live API call is needed to reproduce the table.",
+ "headline_artifact": "README Results table (Steer F1 by method) reproduced by antipasto/metrics.py::compute_steering_f1, called from antipasto/train/daily_dilemas.py and the nbs/eval_baseline_*.py scripts",
+ "selector_tier": "T2",
+ "selector_score": 7.15
+}

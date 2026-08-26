@@ -1,0 +1,82 @@
+{
+ "slug": "linear-probes-tell-you-where-quantization-will-h--itsme-aniketghos",
+ "post_id": "oJJyYDgPD95jEfvQx",
+ "title": "Linear probes tell you where quantization will hurt",
+ "date": "2026-07-25",
+ "repo": "itsme-aniketghosh/probe-guided-quantization",
+ "head_sha": "457ecfa2a5025310fe64e5ecc975d43d211011fc",
+ "entrypoint": "05_transfer.ipynb",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformers",
+  "datasets",
+  "scikit-learn",
+  "torch",
+  "seaborn"
+ ],
+ "models": [
+  {
+   "hf_id": "bert-base-uncased",
+   "params_b": 0.11,
+   "gated": false
+  },
+  {
+   "hf_id": "bert-large-uncased",
+   "params_b": 0.34,
+   "gated": false
+  },
+  {
+   "hf_id": "roberta-base",
+   "params_b": 0.125,
+   "gated": false
+  },
+  {
+   "hf_id": "distilbert-base-uncased",
+   "params_b": 0.066,
+   "gated": false
+  },
+  {
+   "hf_id": "Qwen/Qwen2.5-3B-Instruct",
+   "params_b": 3.0,
+   "gated": false
+  }
+ ],
+ "phenomenon": "linear probe detection",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "A per-layer linear-probe map of where a syntactic/semantic signal (POS, NER, chunking) is built in BERT-family encoders predicts where quantization damage lands, and using this map to guide per-layer bit allocation preserves 99-100% of full-precision accuracy at a 5-bit average budget on three datasets never used to build the map, versus 16-41% for uniform quantization and 2-41% for anti/opposite-layer allocation, with the same pattern replicating on a decoder LLM (Qwen2.5-3B), where the guided split preserves F1 down to about 3 bits per layer on average versus uniform needing about 8.",
+ "quote": "a map built once on CoNLL news keeps 99\u2013100% of full-precision accuracy at a 5-bit average on three unseen datasets, whereas Uniform kept 16\u201341% and opposite/anti layers kept 2\u201341%.",
+ "metric": "accuracy retained at a 5-bit average budget on unseen datasets, guided vs uniform vs anti/opposite layer allocation",
+ "target_value": "guided: 99-100% (100% web-text POS, 99% tweet NER, 100% WSJ chunks); uniform: 16-41%; anti/opposite: 2-41%; on Qwen2.5-3B, guided split preserves F1 down to ~3 bits/layer average vs uniform needing ~8 bits",
+ "target_numeric": 99.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 14 numbers; compare the components by hand",
+ "vram_estimate_gb": 6,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "CoNLL-2003 (build the map)",
+   "WNUT-17 (NER transfer)",
+   "Universal Dependencies EWT (POS transfer)",
+   "CoNLL-2000 (chunk transfer)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "notebooks call google.colab.drive.mount(...) for caching \u2014 needs a one-line swap to a local path to run outside Colab",
+  "no pinned dependency versions anywhere (only an inline 'pip install -q' with no version constraints)"
+ ],
+ "inspector_notes": "Best-documented repo in this batch: README prose walks through every headline number, all data is public HF datasets, and every model (BERT-family + Qwen2.5-3B) is small. Only friction is Colab-specific Drive-mount caching code.",
+ "headline_artifact": "05_transfer.ipynb's fig_transfer.png (100% web-text POS, 99% tweet NER, 100% WSJ chunks guided vs 16-41% uniform vs 2-41% anti/opposite); 06_decoder.ipynb's fig_decoder_recipe.png for the Qwen2.5-3B guided-vs-uniform bit budget",
+ "selector_tier": "T1",
+ "selector_score": 6.63
+}

@@ -1,0 +1,56 @@
+{
+ "slug": "developmental-stages-in-multi-problem-grokking--james-sullivan",
+ "post_id": "ronAKFdTDE7tiZk2c",
+ "title": "Developmental Stages in Multi-Problem Grokking",
+ "date": "2024-09-29",
+ "repo": "james-sullivan/arithmetictransformer",
+ "head_sha": "4a10f5e13b56222a028bb0c2bc1e96af452203f0",
+ "entrypoint": "src/EstimateLLC.ipynb",
+ "entrypoint_confidence": "high",
+ "python_version": "3.12",
+ "key_deps": [
+  "transformer_lens",
+  "devinterp",
+  "torch",
+  "wandb",
+  "einops"
+ ],
+ "models": [
+  {
+   "hf_id": null,
+   "params_b": 0.0002,
+   "gated": false
+  }
+ ],
+ "phenomenon": "training dynamics",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "Varying the ratio of addition to multiplication problems in training data shifts the timing of grokking (local learning coefficient decline) toward whichever operation dominates, but does not produce separate, distinct developmental stages in the LLC curve for each operation, contrary to the author's hypothesis.",
+ "quote": "the LLC curves did not reveal separate, distinct stages for learning addition versus multiplication, contrary to the initial hypothesis.",
+ "metric": "local learning coefficient (LLC) curve shape / stage separation across addition:multiplication training ratios",
+ "target_value": "no distinct additional developmental stages observed; a single LLC decline across all ratios tested (30-70% addition), though the decline's onset timing shifted earlier for more uneven ratios",
+ "target_numeric": 30.0,
+ "direction": "0",
+ "uncertainty_reported": "none",
+ "tolerance": "rel:0.15",
+ "tolerance_rationale": "other scalar metric: 15% relative; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 1,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "modular addition/multiplication dataset (generated in-notebook via create_dataset(), max_nums=130, mod_value=113)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [],
+ "inspector_notes": "The two notebooks (train, then estimate LLC) are the full pipeline and are self-contained; pretrained checkpoints are optionally hosted on Google Drive but are not required since training from scratch is trivial and fast.",
+ "headline_artifact": "graphs/llc_during_training_all.png and per-ratio loss_llc_training_*.png (LLC-vs-checkpoint curves across addition fractions)",
+ "selector_tier": "T?",
+ "selector_score": 6.6
+}

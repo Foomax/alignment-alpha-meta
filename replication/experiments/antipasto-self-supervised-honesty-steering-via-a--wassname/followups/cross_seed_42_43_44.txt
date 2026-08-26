@@ -1,0 +1,27 @@
+
+=== 20260826_061947_g1b-antisym-r64  vs  20260826_070756_g1b-antisym-r64-seed43 ===
+same adapter modules: True | same loss layers: True
+SVD bases identical: True (126 tensors)
+theta_v cos-sim:   mean +0.781  median +0.772  min +0.591  max +0.925
+delta_s cos-sim:   mean +0.777  median +0.801  min +0.393  max +0.961
+(R-I) cos-sim:     mean +0.784  median +0.775  min +0.593  max +0.926
+theta_v norms A/B: 1.295 / 1.290
+reference: unrelated random 64x64 matrices give |cos| ~ 0.016
+
+=== 20260826_061947_g1b-antisym-r64  vs  20260826_080947_g1b-antisym-r64-seed44 ===
+same adapter modules: True | same loss layers: True
+SVD bases identical: True (126 tensors)
+theta_v cos-sim:   mean +0.871  median +0.874  min +0.760  max +0.927
+delta_s cos-sim:   mean +0.864  median +0.888  min +0.660  max +0.943
+(R-I) cos-sim:     mean +0.877  median +0.879  min +0.765  max +0.930
+theta_v norms A/B: 1.295 / 1.302
+reference: unrelated random 64x64 matrices give |cos| ~ 0.016
+
+=== 20260826_070756_g1b-antisym-r64-seed43  vs  20260826_080947_g1b-antisym-r64-seed44 ===
+same adapter modules: True | same loss layers: True
+SVD bases identical: True (126 tensors)
+theta_v cos-sim:   mean +0.682  median +0.687  min +0.471  max +0.820
+delta_s cos-sim:   mean +0.679  median +0.690  min +0.289  max +0.878
+(R-I) cos-sim:     mean +0.692  median +0.695  min +0.480  max +0.828
+theta_v norms A/B: 1.290 / 1.302
+reference: unrelated random 64x64 matrices give |cos| ~ 0.016

@@ -1,0 +1,62 @@
+{
+ "slug": "distillation-robustifies-unlearning--addiefoote",
+ "post_id": "anX4QrNjhJqGFvrBr",
+ "title": "Distillation Robustifies Unlearning",
+ "date": "2025-06-13",
+ "repo": "addiefoote/distillation-robustify-unlearning",
+ "head_sha": "edbf11189155c6bae81f5942df928c6ec2c5ac34",
+ "entrypoint": "Language/arithmetic (fits): run_pretrain_language.py -> run_unlearn_language.py -> run_partial_distill_language.py -> run_relearn_language.py (README's 'Quick Start'). WMDP (does not fit / data missing): run_unlearn_wmdp.py -> run_partial_distill_wmdp.py -> run_relearn_wmdp.py",
+ "entrypoint_confidence": "high",
+ "python_version": ">=3.10 (pyproject.toml; README separately says 'Python 3.8+')",
+ "key_deps": [
+  "torch>=2.6.0",
+  "transformers>=4.48.2",
+  "accelerate>=1.3.0",
+  "bitsandbytes>=0.45.2",
+  "peft>=0.14.0",
+  "lm-eval>=0.4.7"
+ ],
+ "models": [
+  {
+   "hf_id": "google/gemma-2-2b",
+   "params_b": 2.61,
+   "gated": true
+  }
+ ],
+ "phenomenon": "machine unlearning robustness",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Distilling a conventionally unlearned model into a randomly initialized student model (Unlearn-and-Distill) produces a model that is robust to relearning attacks, unlike standard unlearning which only suppresses the behavior; a generalized, compute-efficient version (UNDO: Unlearn-Noise-Distill-on-Outputs) dominates other unlearning methods on the retain/forget Pareto frontier and approaches gold-standard data-filtering robustness at a fraction of the compute, including on the WMDP Proxy benchmark with Gemma-2-2B.",
+ "quote": "Distilling a conventionally unlearned model into a randomly initialized model creates a student that is robustly incapable of the forget capability.",
+ "metric": "resistance to relearning attacks (forget-performance recovery after finetuning attack) on the retain/forget Pareto frontier",
+ "target_value": "Unlearn-and-Distill more resistant to relearning than unlearned-only baseline across 3 unlearning methods (GradDiff, Maxent, RMU) in language and arithmetic settings, sometimes near gold-standard data-filtering robustness; UNDO dominates other methods on the Pareto frontier after moderate (40-step) and extensive (500-step) relearning, and increases resilience to relearning on WMDP with Gemma-2-2B",
+ "target_numeric": 3.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 5 numbers; compare the components by hand",
+ "vram_estimate_gb": 28,
+ "fits_3090": "tight",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "Korean/English pretraining corpora and arithmetic data (auto-downloaded via src/prepare_data/download_datasets.py, download_arithmetic.py)",
+   "WMDP bio/cyber question-answer datasets \u2014 NOT shipped; README: 'Contact us for the WMDP question-answer datasets that were generated via wmdp_question_extraction.py'"
+  ],
+  "available": "download-script",
+  "gated": false
+ },
+ "blockers": [
+  "The WMDP bio/cyber QA dataset is not in the repo and must be requested from the authors directly \u2014 the one headline number that names Gemma-2-2B explicitly (WMDP Proxy resilience) can't be reproduced without it",
+  "The WMDP setting's full fine-tune of real gemma-2-2b (unlike the tiny custom models used for language/arithmetic) uses plain AdamW with a frozen bf16 reference copy and no memory-saving optimizer, likely exceeding 24GB",
+  "README states hyperparameters were tuned for H200 GPUs (140GB) and only vaguely suggests reducing batch size / raising grad-accum for smaller cards"
+ ],
+ "inspector_notes": "The paper's core Pareto-frontier claim (Unlearn-and-Distill / UNDO dominance) is demonstrated mainly on tiny (0.1-0.9B) synthetic language/arithmetic models that trivially fit a 3090 and have their data auto-downloaded; only the WMDP corroboration point needs the real 2B model, gated weights, and withheld data.",
+ "headline_artifact": "Retain/forget Pareto-frontier plots after 40-step and 500-step relearning attacks (language/arithmetic run_relearn_*.py outputs); the WMDP Pareto point specifically needs the withheld dataset.",
+ "selector_tier": "T1",
+ "selector_score": 6.83
+}

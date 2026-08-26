@@ -1,0 +1,69 @@
+{
+ "slug": "the-ai-safety-puzzle-everyone-avoids-how-to-meas--patrickod32",
+ "post_id": "3KTgeXBfhvRKfL5kf",
+ "title": "The AI Safety Puzzle Everyone Avoids: How To Measure Impact, Not Intent.",
+ "date": "2025-07-22",
+ "repo": "patrickod32/landed_writes",
+ "head_sha": "a3bc2a852cc701b0ab6467bd6c168ddaebfa384e",
+ "entrypoint": "Llama-3.1-8B-Instruct_scaling.ipynb",
+ "entrypoint_confidence": "medium",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformers==4.50.3",
+  "torch",
+  "matplotlib",
+  "scikit-learn",
+  "datasets"
+ ],
+ "models": [
+  {
+   "hf_id": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+   "params_b": 8.0,
+   "gated": true
+  },
+  {
+   "hf_id": "meta-llama/Llama-3.2-1B-Instruct",
+   "params_b": 1.0,
+   "gated": true
+  },
+  {
+   "hf_id": "mistralai/Mistral-7B-Instruct-v0.2",
+   "params_b": 7.0,
+   "gated": true
+  }
+ ],
+ "phenomenon": "interpretability tooling",
+ "contested": true,
+ "claim_type": "method",
+ "primary_claim": "A new interpretability attribution method ('landed writes') that measures RMSNorm-scaled, post-normalization contributions of neurons and attention heads to the residual stream shows that early-layer writes are amplified by up to 176x while late-layer writes are compressed, and that logit predictions in LLaMA-3.1-8B and Mistral-7B rely on a sparse set of just 11-90 coordinates.",
+ "quote": "Experiments show that 98.8% of all writes get amplified by more than 2\u00d7, with 81.2% amplified by more than 10\u00d7.",
+ "metric": "RMSNorm write-scaling amplification factor by layer depth; sparsity of coordinates driving logit predictions",
+ "target_value": "early layers amplify writes up to 176x (Mistral) / 10-16x (Llama); late layers compress to 0.55-6.8x; 98.8% of writes amplified >2x, 81.2% amplified >10x; logit predictions rely on just 11-90 coordinates out of thousands",
+ "target_numeric": 176.0,
+ "direction": "na",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 11 numbers; compare the components by hand",
+ "vram_estimate_gb": 32,
+ "fits_3090": "probably",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "small hand-written prompt lists (in-notebook, not a formal dataset)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "No README, no requirements.txt/pyproject/environment file -- dependencies inferred only from notebook pip-install cells.",
+  "Default fp32 model loading as literally written won't fit 24GB for the 8B models unless the engineer adds a dtype argument (trivial fix, noted above)."
+ ],
+ "inspector_notes": "4 independent, single-purpose notebooks (no shared entrypoint script); the post's numbers are split across the *_scaling notebooks (amplification factors) and the *_logit_sparsity notebook (coordinate count). No stated compute anywhere in the repo -- had to infer VRAM purely from model sizes and default HF loading behavior.",
+ "headline_artifact": "Per-layer amplification-factor tables/plots (Llama-3.1-8B and Mistral-7B *_scaling.ipynb) and the logit-sparsity coordinate-count analysis (Llama-3.1-8B-Instruct_logit_sparsity.ipynb).",
+ "selector_tier": "T1",
+ "selector_score": 4.95
+}

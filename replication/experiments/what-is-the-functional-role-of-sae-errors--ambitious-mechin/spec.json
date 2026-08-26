@@ -1,0 +1,60 @@
+{
+ "slug": "what-is-the-functional-role-of-sae-errors--ambitious-mechin",
+ "post_id": "WzHPpMz2kRongsA7q",
+ "title": "What is the functional role of SAE errors?",
+ "date": "2025-06-20",
+ "repo": "ambitious-mechinterp/sfc-errors",
+ "head_sha": "38b10a17077c99dadac190ae9120c052d9ed8a8b",
+ "entrypoint": "notebooks/main/compute_mean_activations.ipynb -> notebooks/main/ablation_restoration_main.ipynb (evaluate_circuit_faithfulness.ipynb validates against the original SFC paper first)",
+ "entrypoint_confidence": "high",
+ "python_version": "3.10",
+ "key_deps": [
+  "transformer-lens==2.9.0",
+  "sae_lens",
+  "nnsight",
+  "torch",
+  "transformers",
+  "accelerate"
+ ],
+ "models": [
+  {
+   "hf_id": "google/gemma-2-2b",
+   "params_b": 2.61,
+   "gated": true
+  }
+ ],
+ "phenomenon": "superposition",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "In a sparse feature circuit for subject-verb agreement in Gemma-2 2B, ablating residual SAE error nodes destroys circuit faithfulness (down to 0.13), but this effect can be completely mitigated by restoring a narrow group (as few as 3, up to ~25) of late-mid-layer (16-21) SAE features, consistent with the hypothesis that SAE error terms partly encode intermediate feature representations arising from cross-layer superposition, though this does not explain all error-node functionality.",
+ "quote": "we found that this effect can be completely mitigated by restoring a narrow group of late-mid SAE features.",
+ "metric": "faithfulness score (circuit performance recovery relative to full model)",
+ "target_value": "ablating all residual error nodes: faithfulness 0.13; restoring top-25 features from layers 18-19: faithfulness 0.6-0.9; restoring as few as 3 features from layers 16-21: faithfulness fully restored (up to ~1.0 under zero ablation)",
+ "target_numeric": 0.13,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 10 numbers; compare the components by hand",
+ "vram_estimate_gb": 10,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "data/rc_test_confident_model.json, rc_train_processed.csv, rc_test_processed.csv (all shipped in-repo)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "gemma-2-2b and Gemma-Scope SAEs are gated on HF Hub (license acceptance required)",
+  "Notebooks hardcode multi-GPU device indices from the authors' workstation (caching_device='cuda:2', GPU_TO_USE=3) \u2014 a trivial one-line edit for a single-GPU 3090, not a real blocker"
+ ],
+ "inspector_notes": "The best-documented repo in this batch: explicit reproduction order in the README, all data shipped in-repo, exact model size/dtype stated in every notebook. Only friction is hardcoded multi-GPU indices left over from the original setup.",
+ "headline_artifact": "faithfulness curves from ablation_restoration_main.ipynb (residual-error-node ablation vs. top-K SAE-feature restoration by layer), replicating Figure-3-style faithfulness plots",
+ "selector_tier": "T1",
+ "selector_score": 6.85
+}

@@ -1,0 +1,130 @@
+[
+ {
+  "post_id": "nLRKKCTtwQgvozLTN",
+  "repo": "kxcloud/gradient-routing",
+  "title": "Gradient Routing: Masking Gradients to Localize Computation in Neural Networks",
+  "primary_claim": "Gradient routing (masking gradients to localize computation, e.g. via the Expand-Route-Ablate scheme) enables more robust removal of capabilities under partial/imperfect data labels than data filtering, RMU, or DEMix baselines, and provides scalable oversight by localizing then activating desired sub-policies.",
+  "metric": "CE loss increase (nats) after retraining on forget data",
+  "target_value": "0.18-nat increase in virology CE loss vs 0.03-nat increase in non-virology CE loss",
+  "models": [
+   "nanoGPT (custom-trained) 0.7B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "machine unlearning robustness",
+  "claim_type": "positive",
+  "head_sha": "896dba321abac612d6a4592af0112ce90769c442"
+ },
+ {
+  "post_id": "wASHN8guJag7NhhJJ",
+  "repo": "ratnaditya-j/sieve-audit",
+  "title": "Probing is not enough; a validity audit for any probe",
+  "primary_claim": "A monitoring-awareness probe achieving AUROC 1.00 collapsed to 0.50 when a single leakage-inducing prompt tag was removed (versus only 0.88 for a random-span-removal control), showing the probe was reading a surface-level cue rather than internal model state; motivated by this and similar cases, the author builds SIEVE, a framework that audits any probe for decodability, necessity (ablation), and causal sufficiency (steering) before it can be trusted as a safety signal.",
+  "metric": "AUROC of a monitoring-awareness probe under targeted vs random text removal",
+  "target_value": "AUROC 1.00 -> 0.50 when the <is_free_tier_user> tag is removed; AUROC only drops to 0.88 when a random span of equal length is removed",
+  "models": [
+   "Qwen 2.5-1.5B-Instruct"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "linear probe detection",
+  "claim_type": "method",
+  "head_sha": "23ba7f5b53b3274bb84f9a6f364dc1217e78efc3"
+ },
+ {
+  "post_id": "LzeZW9PvR6Njc9ngr",
+  "repo": "star2vec/whackamole",
+  "title": "Whack-a-mole with a broken hammer: does a model internally track its automaton state?",
+  "primary_claim": "A linear probe on Qwen2.5-1.5B activations reads a small model's internal, never-transcribed automaton state (a 6-state login DFA) correctly 88.6% of the time and outperforms order-blind baselines on order-ambiguous positions (80.8% vs 60.4% max), but the model cannot represent the count needed to distinguish 'two failures' from 'locked' (chance-level, ~50%, at every layer, even when the three-strikes rule is stated), and split-half probe testing confirms these are genuine model limitations rather than probe artifacts (only 33.8% agreement between two independently trained probes on the original probe's errors)",
+  "metric": "linear probe classification accuracy on internal automaton state",
+  "target_value": "88.6% overall (vs 76.9% transcript-only, 20% majority baseline); 80.8% on order-ambiguous positions (vs 60.4% max for order-blind methods); 50.8% on the 'two failures' vs 'locked' distinction (chance)",
+  "models": [
+   "Qwen 2.5-1.5B"
+  ],
+  "workload": "aux-train",
+  "tier": "T1",
+  "phenomenon": "probe generalisation",
+  "claim_type": "positive",
+  "head_sha": "290dd72e94179cd793d85d3e7ba33dd4780afce3"
+ },
+ {
+  "post_id": "LLebzjrxuRzji6zhk",
+  "repo": "fathmamehnoor/unlearning-recovery-probes",
+  "title": "Probing Knowledge Recovery in Unlearned Models",
+  "primary_claim": "Across six WMDP-Bio-unlearned Llama-3-8B-Instruct checkpoints (RMU, ILU-RMU, NPO, GradDiff, NPO-ILU, IDK-AP), forget-set representation-targeted direction ablation and unrelated fine-tuning on GSM8K each recover substantial WMDP-Bio accuracy for several methods (up to 64% gap recovered and +41.4 accuracy points respectively), while refusal-direction ablation recovers no knowledge in the one checkpoint (ILU-RMU) where a clean refusal direction could be extracted, and qualitative inspection shows only 40-47% of 'recovered' answers reflect genuinely correct reasoning rather than contradictory or degenerate generations, showing that WMDP forced-choice accuracy alone overstates genuine knowledge recovery.",
+  "metric": "WMDP-Bio forced-choice accuracy recovery via different probes",
+  "target_value": "forget-set representation ablation: 57-64% gap recovered for RMU/ILU-RMU/NPO, 19% for IDK-AP; unrelated GSM8K fine-tuning: +41.4pp (RMU), +23.8pp (ILU-RMU), +22.5pp (NPO) with MMLU flat; refusal-direction ablation: no recovery (95% CI excluded improvements >1.4pp) in ILU-RMU; only 40-47% of recovered answers showed genuine correct reasoning on qualitative review",
+  "models": [
+   "Llama 8B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "machine unlearning robustness",
+  "claim_type": "positive",
+  "head_sha": "bc10cf3e745a8e5aa6936490a9bbf0e76ac2906c"
+ },
+ {
+  "post_id": "4tEnmAwFNtz9zJ6cz",
+  "repo": "evan-lloyd/mechinterp-experiments",
+  "title": "You don't need error nodes, you need better features",
+  "primary_claim": "Replacement-aware SAE training, combined with a LISTA-based encoder and KL fine-tuning, greatly reduces the KL divergence of a full SAE-replacement model from the base Gemma-2-2B model (validation KL 0.379-0.535 vs 1.006 for standard SAE training, vs 1.669 for Gemma Scope), producing replacement models that remain fluent and capable enough to give valid multiple-choice answers, whereas standard-trained replacement models are largely incoherent.",
+  "metric": "Validation KL divergence from base model (nats)",
+  "target_value": "0.379-0.535 (replacement-aware + LISTA (+fine-tune)) vs 1.006 (standard) vs 1.669 (Gemma Scope)",
+  "models": [
+   "Gemma 2B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "sparse autoencoder quality",
+  "claim_type": "method",
+  "head_sha": "d563cf5840546944441f3538a9cdb07327b92b50"
+ },
+ {
+  "post_id": "hxxramAB82tjtpiQu",
+  "repo": "annasoligo/tiny-sleepers",
+  "title": "[Replication] Crosscoder-based Stage-Wise Model Diffing",
+  "primary_claim": "Anthropic's Stage-Wise Model Diffing technique replicates on a much smaller TinyStories-33M sleeper-agent model using single-model all-layer crosscoders instead of SAEs: despite a strict automated relevance-labeling rule, 71% of active features in the 'bottom left quadrant' (those most changed by both model and data fine-tuning) are relevant to sleeper-agent behaviour in at least one of the two crosscoders.",
+  "metric": "% of active bottom-left-quadrant features relevant to sleeper-agent behaviour (in at least one of the MF/DF crosscoders)",
+  "target_value": "71%",
+  "models": [
+   "TinyStories 33M"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "crosscoder / model diffing",
+  "claim_type": "replication",
+  "head_sha": "6fc1221e97ad30c5cabb171d66c27de08ff3ff3b"
+ },
+ {
+  "post_id": "zmfXZEsiycGLP9YZW",
+  "repo": "saketh11111/rwku",
+  "title": "Machine Unlearning in Large Language Models: A Comprehensive Survey with Empirical Insights from the Qwen 1.5 1.8B Model",
+  "primary_claim": "In an empirical case study applying Gradient Ascent and DPO unlearning to Qwen 1.5 1.8B on the RWKU benchmark, both methods erased targeted ('Mia') knowledge (e.g. raising forget loss to -2.807 vs -2.547 retain) but caused catastrophic collateral damage to general capabilities (TriviaQA EM collapsed to 0.0 from 0.61; BBH EM dropped to 0.037 from 0.45), while residual knowledge traces remained detectable via mink++ distance metrics, undermining claims of complete/GDPR-compliant erasure.",
+  "metric": "TriviaQA EM / BBH EM / forget-retain loss and mink++ gap",
+  "target_value": "GA: Forget loss -2.807 vs Retain -2.547; TriviaQA EM 0.0 (forget) vs 0.61 (retain); BBH EM 0.037 (forget) vs 0.45 (retain); mink++_1.0 -0.033 (forget) vs -0.019 (retain); DPO: BBH EM 0.037 down from 0.45 baseline",
+  "models": [
+   "Qwen 1.5 1.8B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "machine unlearning robustness",
+  "claim_type": "negative",
+  "head_sha": "8400ae02b25735ab6c3a274fd4611f21fba4ca5b"
+ },
+ {
+  "post_id": "ATsvzF77ZsfWzyTak",
+  "repo": "seonglae/sae-hands-on",
+  "title": "SAE Training Dataset Influence in Feature Matching and a Hypothesis on Position Features",
+  "primary_claim": "Across 73 SAEs trained on GPT2-small under varying seeds, datasets, architectures, sparsity, and dictionary sizes, the training dataset has the largest effect on decoder-weight feature matching ratios (as low as 6.21% between TinyStories and RedPajama, up to 29.48% between Pile and RedPajama), substantially more than seed differences (55-85% matching), architecture, or sparsity differences (40-60%), and feature activations show evidence of a distinct 'position feature' set emerging in early layers, visible as a doubled activation frequency along token position that vanishes when positional embeddings are ablated or shuffled.",
+  "metric": "feature matching ratio (cosine similarity threshold 0.7) across SAEs trained on different datasets vs different seeds",
+  "target_value": "dataset difference: 6.21%-29.48% matching; seed difference: 55%-85% matching; architecture difference: 40-60%; sparsity difference: 40-55%",
+  "models": [
+   "GPT-2 small"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "sparse autoencoder quality",
+  "claim_type": "positive",
+  "head_sha": "723c5d1d5383aed642bb522611e8cccd503317a4"
+ }
+]

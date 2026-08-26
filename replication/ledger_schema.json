@@ -1,0 +1,29 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "Replication ledger entry (readme.md R5)",
+ "type": "object",
+ "required": ["post_id", "repo", "head_sha", "attempted_at", "machine", "installs", "runs",
+              "claim_located", "claim_reproduced", "blocking_reason", "wallclock_minutes"],
+ "properties": {
+  "post_id": {"type": "string"},
+  "repo": {"type": "string"},
+  "head_sha": {"type": "string"},
+  "attempted_at": {"type": "string", "description": "ISO date"},
+  "machine": {"type": "string", "description": "e.g. RTX 3090 24GB / 31GB RAM / driver+CUDA versions"},
+  "installs": {"type": "boolean"},
+  "runs": {"type": "boolean"},
+  "claim_located": {"type": "boolean"},
+  "claim_reproduced": {"type": ["boolean", "null"], "description": "null when claim not located"},
+  "claimed_value": {"type": ["string", "null"]},
+  "observed_value": {"type": ["string", "null"]},
+  "delta": {"type": ["number", "string", "null"], "description": "observed - claimed in the metric's units, or a string when not scalar"},
+  "tolerance_used": {"type": ["string", "null"]},
+  "blocking_reason": {"enum": ["env", "data", "model-access", "vram", "runtime", "code-bug", "api-key", "unclear-entrypoint", "none"]},
+  "env_fixes": {"type": "array", "items": {"type": "string"}, "description": "every deviation from the repo's own instructions, one per line"},
+  "wallclock_minutes": {"type": "number"},
+  "peak_vram_gb": {"type": ["number", "null"]},
+  "seeds_run": {"type": ["integer", "null"]},
+  "notes": {"type": "string"},
+  "artifact_paths": {"type": "array", "items": {"type": "string"}}
+ }
+}

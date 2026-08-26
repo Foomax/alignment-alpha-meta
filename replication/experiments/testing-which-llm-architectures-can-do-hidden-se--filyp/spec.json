@@ -1,0 +1,71 @@
+{
+ "slug": "testing-which-llm-architectures-can-do-hidden-se--filyp",
+ "post_id": "ZB6guMhHH3NEyxA2k",
+ "title": "Testing which LLM architectures can do hidden serial reasoning",
+ "date": "2024-12-16",
+ "repo": "filyp/sneaky-mamba",
+ "head_sha": "b44a1d34d055c2c97a9def073f520806582b24f7",
+ "entrypoint": "sneaky_mamba/doublethink_train.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformers==4.45.2",
+  "torch",
+  "mamba-ssm",
+  "causal-conv1d",
+  "sentence-transformers==3.1.1",
+  "wandb",
+  "accelerate"
+ ],
+ "models": [
+  {
+   "hf_id": "state-spaces/mamba-130m (stripped to 6 layers, ~30M effective)",
+   "params_b": 0.03,
+   "gated": false
+  },
+  {
+   "hf_id": "state-spaces/mamba-370m (Switcher variant)",
+   "params_b": 0.37,
+   "gated": false
+  },
+  {
+   "hf_id": "gpt2 (stripped to 1-5 layers)",
+   "params_b": 0.124,
+   "gated": false
+  }
+ ],
+ "phenomenon": "hidden serial reasoning",
+ "contested": false,
+ "claim_type": "negative",
+ "primary_claim": "Contrary to the hypothesis that recurrence itself would let Mamba outperform Transformers at a toy hidden-serial-reasoning task, standard Mamba (whose SSM recurrence transforms each channel independently) cannot solve the hidden task at all, while a modified Mamba SSM enabling cross-channel communication can; non-linearity is not required for hidden reasoning; and Transformers need roughly 3 extra layers to gain 1 extra unit of serial computation depth.",
+ "quote": "Not every recurrence though - connections between channels are needed. Notably Mamba architecture isn't capable of hidden reasoning.",
+ "metric": "max hidden-task sequence length solved",
+ "target_value": "standard Mamba fails to solve the hidden task; a modified Mamba with cross-channel SSM communication solves it; Transformers require about +3 layers per +1 unit of solvable task length",
+ "target_numeric": 3.0,
+ "direction": "-",
+ "uncertainty_reported": "none",
+ "tolerance": "rel:0.15",
+ "tolerance_rationale": "other scalar metric: 15% relative; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 2,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "synthetic 'doublethink'/hidden-serial-reasoning task generated in utils/generation.py"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "mamba-ssm and causal-conv1d require CUDA compilation at install time -- environment setup friction, not a compute blocker.",
+  "wandb.login() is called unconditionally; requires either a wandb account or setting WANDB_MODE=offline (trivial workaround, not a hard blocker)."
+ ],
+ "inspector_notes": "Cleanest 'no' surprise in the batch in reverse: this is by far the cheapest repo to reproduce -- toy models, toy task, single GPU, no external data or API dependency, matching the post's own framing as a small mechanistic toy experiment.",
+ "headline_artifact": "Per-architecture curriculum accuracy bars / max solved task length printed during training (architecture switch in doublethink_train.py covers mamba/switcher(modified mamba)/transformer in one script) plus switcher_direct_train.py for the direct (non-curriculum) comparison.",
+ "selector_tier": "T1",
+ "selector_score": 4.49
+}

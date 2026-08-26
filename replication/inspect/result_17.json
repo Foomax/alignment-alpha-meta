@@ -1,0 +1,289 @@
+[
+  {
+    "post_id": "ronAKFdTDE7tiZk2c",
+    "repo": "james-sullivan/arithmetictransformer",
+    "head_sha": "4a10f5e13b56222a028bb0c2bc1e96af452203f0",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "src/EstimateLLC.ipynb",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": "3.12",
+      "key_deps": ["transformer_lens", "devinterp", "torch", "wandb", "einops"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": null, "params_b": 0.0002, "gated": false}
+    ],
+    "vram_estimate_gb": 1,
+    "vram_basis": "1-layer transformer, d_model=128, d_head=32, d_mlp=512, 4 heads (~0.2M params); full-batch training on ~17k modular-arithmetic examples plus SGLD LLC sampling (3 chains x 150 draws) via devinterp — negligible VRAM even in fp32.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["modular addition/multiplication dataset (generated in-notebook via create_dataset(), max_nums=130, mod_value=113)"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "minutes",
+    "est_runtime_basis": "6000-epoch full-batch training of a ~0.2M-param 1-layer transformer, repeated across ~9 addition:multiplication ratios (0.3-0.7), plus SGLD LLC estimation (3 chains, 150 draws, 50 burn-in) per saved checkpoint — each stage is CPU-feasible in minutes, near-instant on a 3090.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "graphs/llc_during_training_all.png and per-ratio loss_llc_training_*.png (LLC-vs-checkpoint curves across addition fractions)",
+    "blockers": [],
+    "notes": "The two notebooks (train, then estimate LLC) are the full pipeline and are self-contained; pretrained checkpoints are optionally hosted on Google Drive but are not required since training from scratch is trivial and fast."
+  },
+  {
+    "post_id": "rwu73dCE3uWjieijK",
+    "repo": "uchicago-xlab/superposition-replication",
+    "head_sha": "d4aa6b7c2c2b5242e30b429d992fa2afc98b2fc7",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "synth/run.py",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": "3.11",
+      "key_deps": ["torch", "numpy", "matplotlib"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": null, "params_b": 0.00003, "gated": false}
+    ],
+    "vram_estimate_gb": 1,
+    "vram_basis": "Two-layer linear bottleneck classifier (d<=90, m<=30, k<=90 in the largest swept config); parameter count in the low thousands. Config default device is 'cpu'; on GPU this is far under 1GB.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": [],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "minutes",
+    "est_runtime_basis": "Each config trains 20,000 steps of a tiny linear bottleneck net with no dataloader overhead; the full `python -m synth.run all` pipeline sweeps ~2-10 seeds across 8 experiment scripts (h1,h2,h3,pairpred,pairangle,ssweep,normeps,coupling) — order minutes to tens of minutes total on CPU alone, let alone a 3090.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "results/h1_alignment.json (PGD-vs-optimal cosine similarity), results/h2_control.json (robust accuracy vs k/m), results/h3_transfer.json (geometry-transfer correlation), assembled into report.html",
+    "blockers": [],
+    "notes": "Fully self-contained toy replication with one CLI entrypoint that runs every sub-experiment and builds the comparison report; the repo's own README already documents an instability in the paper's own H3 seed-sampling result (N=10 seeds) as a finding, not a repro blocker."
+  },
+  {
+    "post_id": "WvRQ9NoWKhBTansAy",
+    "repo": "kameronton/sudoku-residual",
+    "head_sha": "a9b206955bfd1089a7253511fa9371066ecca570",
+    "status": "ok",
+    "language": "mixed",
+    "entrypoint": "scripts/run_training.py -> scripts/collect_activations.py -> scripts/run_probes.py -> plots/scripts/fig_structure_probe_transfer.py",
+    "entrypoint_confidence": "medium",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": "3.13",
+      "key_deps": ["flax", "jax", "optax", "orbax-checkpoint", "scikit-learn"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": null, "params_b": 0.043, "gated": false}
+    ],
+    "vram_estimate_gb": 8,
+    "vram_basis": "8-layer, d_model=576, d_ff=3456 causal Flax transformer (~43M non-embed params, vocab 734), bf16, batch_size=512 with packed sequences (pack_len=300 in the real 'headline' config) — plausible on 24GB, but JAX/Flax activation and optimizer-state memory are not pinned down by the repo, so this is an estimate.",
+    "fits_3090": "unknown",
+    "data": {
+      "needed": ["bt_traces_3m.npz (backtracking-format Sudoku solver traces)", "released checkpoint + activations.npz for the '3M-backtracking-packing' run (optional, avoids retraining)"],
+      "available": "missing",
+      "gated": false
+    },
+    "est_runtime": "hours",
+    "est_runtime_basis": "If the data were available: training-loop.ipynb's real config trains num_tokens=6*198,253,000~=1.19B tokens, batch_size 512, on the ~43M-param 8-layer/576-d model. FLOPs-estimated at low tens of PFLOPs, plausibly hours on one 3090; the repo itself states no wall-clock figure.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "plots/figures/fig_structure_probe_transfer_auc.pdf / fig_structure_probe_transfer_mse.pdf (linear probe AUC/MSE for the 27 row/column/box substructures)",
+    "blockers": [
+      "bt_traces_3m.npz is not included and not linked for public download; training-loop.ipynb expects it already present at the author's personal /content/drive/MyDrive/bt_traces_3m.npz. The repo provides no generator for backtracking-format traces (sudoku/data_bt.py only converts an already-existing data/all_traces.bin, itself produced by an external, not-included 'C solver').",
+      "The 'released artifacts' path in the README (results/3M-backtracking-packing/{config.json,train_log.json,checkpoint,activations.npz}) is described but not shipped and no download link is given."
+    ],
+    "notes": "Code for training, activation collection, and structure probing all looks complete and runnable, but the specific backtracking-trace dataset and released checkpoint behind the headline 8-layer/576-d 'substructure' result are personal-Drive artifacts never published with the repo. This is a data blocker, not a compute one."
+  },
+  {
+    "post_id": "zbebxYCqsryPALh8C",
+    "repo": "noanabeshima/matryoshka-saes",
+    "head_sha": "7b80f5fe36598f43f3181c5466a0365c7ce07807",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "train_saes_on_toy.ipynb",
+    "entrypoint_confidence": "medium",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["torch", "numpy", "scipy", "plotly"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": null, "params_b": 0.00002, "gated": false}
+    ],
+    "vram_estimate_gb": 1,
+    "vram_basis": "Toy Matryoshka/vanilla SAE trained on synthetic tree-structured features (D_MODEL = tree.n_features, small); negligible GPU memory footprint.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["tree.json synthetic feature-tree definition (in-repo)", "TinyStories-trained 4-layer LM, its activations, and a small reference SAE (not in repo)"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "minutes",
+    "est_runtime_basis": "train_saes_on_toy.ipynb trains a vanilla and a Matryoshka SAE side-by-side on a small synthetic tree-feature dataset; comparable toy SAE setups of this size train in well under an hour, CPU-feasible.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "figures/matryoshka_decoder_gt_cosine.png / vanilla_decoder_gt_cosine.png (toy-model cosine-similarity heatmaps showing presence/absence of feature-absorption holes)",
+    "blockers": [
+      "No code in this repo trains or evaluates SAEs on the 4-layer TinyStories LM, computes Mean Max Correlation against a 'small reference SAE', or computes Fraction of Variance Unexplained on real LM activations. The entire second half of the primary claim (the TinyStories comparison, which is where the quantitative MMC/FVU headline numbers come from) has no entrypoint anywhere in the repo."
+    ],
+    "notes": "The repo fully supports reproducing the toy-model half of the claim (no feature-absorption holes) via train_saes_on_toy.ipynb; the TinyStories LM / reference-SAE comparisons that back the MMC and FVU headline numbers have no corresponding code, data, or checkpoints here."
+  },
+  {
+    "post_id": "x2ZdCoqAaLedpjDk3",
+    "repo": "ameya-bit/quotesbyniche",
+    "head_sha": "135fa8933d67af546aec18f045831cb300fbdc73",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "interp/niche_attention_analysis.ipynb",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": null,
+      "key_deps": ["torch"],
+      "stated_compute": "Training runs on CUDA -> MPS -> CPU (whichever is available)... On Apple Silicon (MPS) ~1000 steps takes ~2-2.5 minutes. (this describes the training notebook, not the interp entrypoint, which explicitly hardcodes device='cpu')"
+    },
+    "models_needed": [
+      {"hf_id": null, "params_b": 0.0049, "gated": false}
+    ],
+    "vram_estimate_gb": 1,
+    "vram_basis": "4.9M-param, 6-layer/4-head/d_model-256 char-level transformer; the interp notebook explicitly sets device='cpu' and only does forward passes + eigen-decompositions on a committed checkpoint. Negligible memory, no GPU required at all.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["niche_model.pt (committed checkpoint, needed and included)", "Nietzsche corpus from Project Gutenberg (only needed to retrain from scratch, not to reproduce the interp analysis)"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "minutes",
+    "est_runtime_basis": "Notebook loads one small committed checkpoint and computes OV-circuit eigen-copying scores over 6x4=24 heads plus a handful of hand-written bracket-nesting test prompts on CPU — seconds to low minutes.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "interp/evidence.md (per-head copying scores, OV bracket-completion logit deltas) and interp/figures/fig2_spike_copying_score.*, fig1_make_ov_diagonal.*",
+    "blockers": [],
+    "notes": "Cleanest repo of the batch: the exact weights the writeup analyzes are committed (training is stochastic so a retrain would not reproduce the per-head findings), and the interp notebook is self-contained, CPU-only, with no external data downloads or API calls needed."
+  },
+  {
+    "post_id": "fsG4m6sRMpomd7Rk6",
+    "repo": "alignment-research-center/mlp_cumulant_propagation",
+    "head_sha": "93d091a4c26c042bfffa28f2e76a81bc0aba94bb",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "scripts/kprop_by_width.py",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": "3.12",
+      "key_deps": ["torch", "quimb", "numpy", "mpi4py", "einops"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": null, "params_b": 0.001, "gated": false}
+    ],
+    "vram_estimate_gb": 18,
+    "vram_basis": "kprop_by_width.py hardcodes SAMPLES=2**34 (~17B) and BATCH_SIZE=2**19 for its Monte Carlo ground-truth baseline; at width n=256 the returned (pre, act) tensors are each shaped (524288, num_layers, 256) float32, ~8.6GB apiece (~17GB combined) for a single minibatch of the ground-truth sampling step alone. Tight against a 24GB card, though batch_size is a tunable knob that trades VRAM for more (still cheap) minibatches.",
+    "fits_3090": "tight",
+    "data": {
+      "needed": [],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "days",
+    "est_runtime_basis": "SAMPLES=2**34 Monte Carlo ground-truth samples per (width, trial, config); the default sweep is ALL_WIDTHS=(8..256) x trials=5 x 4 augment/avg_metric combos x k_maxs=range(5), repeated per nonlinearity (relu/sigmoid/gelu/tanh + critical variants). The comparison is against sampling specifically because sampling is expensive by design, so generating the ground-truth baseline used for the headline plots is the actual heavy cost; the kprop estimator itself is cheap.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "plots/mse_vs_flops_main_relu.pdf (MSE vs FLOPs, kprop vs Monte Carlo sampling)",
+    "blockers": [
+      "Reproducing the full 7-orders-of-magnitude FLOP-budget comparison at the repo's hardcoded SAMPLES=2**34 ground-truth scale, across the full width/trial/nonlinearity sweep, is a multi-day job on one GPU. A reduced-scale run (fewer widths, smaller SAMPLES, single trial) would validate the algorithm's qualitative behavior but would not reproduce the exact headline MSE/FLOPs numbers."
+    ],
+    "notes": "The mechanistic estimator (mlp_kprop) itself is cheap and the model is tiny; nearly all runtime and VRAM pressure comes from generating a sufficiently low-variance Monte Carlo ground truth to compare against, which the default experiment configs bake in at very large sample counts."
+  },
+  {
+    "post_id": "fbw3PcLTGn53fxCM7",
+    "repo": "aristizabal95/procgen-tools",
+    "head_sha": "49d4759a90b7d8d38ea03beb621f1ef501a7854a",
+    "status": "ok",
+    "language": "mixed",
+    "entrypoint": "experiments/probing_main.py",
+    "entrypoint_confidence": "medium",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": null,
+      "key_deps": ["torch", "procgen", "gym", "circrl"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": null, "params_b": 0.0006, "gated": false}
+    ],
+    "vram_estimate_gb": 2,
+    "vram_basis": "Small IMPALA-CNN procgen maze policy (order 10^6 params) plus forward-pass activation caching (via circrl hooks) over a batch of collected maze observations for probe fitting — negligible relative to 24GB; the probes themselves are sklearn/CPU.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["pretrained IMPALA maze policies (maze_I/*.pth) from Langosco et al., public Google Drive link in README", "rollout/observation datasets for probing, generated on the fly via env simulation (gatherdata_*.py / probing_gather.py), not shipped as static files"],
+      "available": "download-script",
+      "gated": false
+    },
+    "est_runtime": "hours",
+    "est_runtime_basis": "No stated runtime in the repo. Probe-dataset collection (probing_gather.py, gatherdata_vfields.py) requires simulating potentially thousands of maze episodes through the CPU-bound procgen environment before any GPU work happens, which is the likely bottleneck rather than the small CNN's forward passes.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "experiments/probing_main.py/.ipynb per-layer linear probe accuracy table/plot for cheese-presence detection",
+    "blockers": [
+      "Pinned dependencies are old (torch==1.13.1, gym==0.21.0, procgen==0.10.7); procgen wheels are not reliably available for modern Python/OS combos, so environment setup (not compute) is the main practical friction and likely needs an older Python (3.8/3.9) environment.",
+      "Multiple overlapping probing scripts/notebooks exist (experiments/probing_main.py, experiments/probing_gather.py+probing_postproc.py, playground/action_probing*.py, playground/goal_probing*.py) without one clearly-marked canonical entrypoint for the exact headline number."
+    ],
+    "notes": "Compute is trivial (small CNN, arguably CPU-feasible even); the realistic friction is installing a multi-year-old procgen/gym/torch stack and picking the correct one of several overlapping probing scripts. Pretrained models are public (Google Drive, not gated)."
+  },
+  {
+    "post_id": "r6QoJ29asCsuGyXAD",
+    "repo": "karinelevonyan/bluedot_puzzle_levonyan2026",
+    "head_sha": "d81f63296f615074e9dfc1b8a8f9dd8a6b2e4c47",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": null,
+    "entrypoint_confidence": "low",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["torch", "scikit-learn", "matplotlib", "numpy"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "sentence-transformers/all-MiniLM-L6-v2", "params_b": 0.022, "gated": false}
+    ],
+    "vram_estimate_gb": 1,
+    "vram_basis": "The only code present (weirder/weirder.py) is a 5-layer MLP head (384->64x4->8) trained on frozen, precomputed MiniLM embeddings already shipped as .npy files (the encoder itself is never run). Trivial memory for what's included; the actual headline experiment's code is not in this repo so its compute profile cannot be assessed.",
+    "fits_3090": "unknown",
+    "data": {
+      "needed": [
+        "The full puzzle-solving codebase and report referenced as '../bluedot-tais-puzzle/report.html' by weirder/README.md -- this sibling directory is NOT part of this repository and is what actually produces the country-XOR / DAS / velocity-ring headline numbers.",
+        "data/train.jsonl, data/test.jsonl, embeds_train.npy, embeds_test.npy, model.pt (all present, but only support the downstream 'weirder' follow-up extension, not the headline claim)"
+      ],
+      "available": "missing",
+      "gated": false
+    },
+    "est_runtime": "unknown",
+    "est_runtime_basis": "Cannot estimate: the code that generates the primary claim's numbers (linear/non-linear/DAS probes at h2, the velocity-ring construction from inter-layer velocity h3-h2) is not present in this repository at this head_sha.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": null,
+    "blockers": [
+      "This repo (at the given head_sha) contains only a 'weirder' follow-up-experiment subfolder. Its own README states the base results being extended live in '../bluedot-tais-puzzle/report.html, Tasks 1-2' -- a sibling directory that is not part of this repository, has no submodule entry, and is not linked anywhere reachable. None of the DAS probe, velocity-ring construction, or XOR-collapse analysis code/data that produces the primary claim's numbers is present."
+    ],
+    "notes": "Clear case of the headline-producing code not existing in the given repo: only a downstream extension (Models C and X, deliberately harder-to-recover variants built on top of the puzzle model) is included, and it explicitly cites an unshipped sibling project as its actual source of truth."
+  }
+]

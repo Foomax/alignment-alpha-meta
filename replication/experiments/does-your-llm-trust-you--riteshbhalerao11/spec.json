@@ -1,0 +1,64 @@
+{
+ "slug": "does-your-llm-trust-you--riteshbhalerao11",
+ "post_id": "AExopgZ9Yj6qzTrxb",
+ "title": "Does Your LLM Trust You?",
+ "date": "2026-08-04",
+ "repo": "riteshbhalerao11/mats-summer-app",
+ "head_sha": "582db85327d9b4c18f654cc87c5c2c781475f26e",
+ "entrypoint": "src/steering/steer_model.py -> src/evaluation/judge_outputs.py -> src/evaluation/visualize_judgments.py",
+ "entrypoint_confidence": "medium",
+ "python_version": "3.11",
+ "key_deps": [
+  "nnsight",
+  "transformers",
+  "torch",
+  "openai (AsyncOpenAI client pointed at OpenRouter)"
+ ],
+ "models": [
+  {
+   "hf_id": "meta-llama/Llama-3.2-3B-Instruct",
+   "params_b": 3,
+   "gated": true
+  },
+  {
+   "hf_id": "meta-llama/Llama-3.1-8B-Instruct",
+   "params_b": 8,
+   "gated": true
+  }
+ ],
+ "phenomenon": "activation steering",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "A linear 'Trustworthiness' direction extracted from Llama-3.2-3B-Instruct and Llama-3.1-8B-Instruct activations causally overrides safety guardrails when added via steering, reducing refusal on harmful prompts even more than Arditi et al.'s compliance/refusal direction, remains highly effective after orthogonalizing out the compliance-vector component, and (unlike steering against the compliance vector) does not cause excessive refusal on benign adversarial prompts.",
+ "quote": "All of the trust vectors are very effective in reducing refusal on harmful prompts (even more than the compliance vector).",
+ "metric": "compliance rate on harmful prompts under steering",
+ "target_value": "all trust vectors (including orthogonalized) reduce refusal on harmful prompts more than the compliance vector; trust-vector steering does not increase refusal on benign WildJailBreak prompts, unlike negative-compliance steering",
+ "target_numeric": null,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is not a single scalar; judge by hand",
+ "vram_estimate_gb": 18,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "JailbreakBench-derived harmful/xstest/wildjb_benign/user_description prompt sets",
+   "synthetic conversation datasets (trust-level scenarios)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "No requirements.txt or pyproject.toml anywhere in the repo (only an unrelated crosscoder_learning/requirements.txt); environment must be reconstructed from imports",
+  "The actually-used LLM judge (openai/gpt-oss-120b, per outputs/judge_outputs/) and the dataset-generation model (qwen/qwen3-235b-a22b-thinking-2507, per code default) are both open-weight but far too large to self-host on a single 3090, so re-running those two steps from scratch needs an OpenRouter API key/credits even though neither is a 'closed' proprietary model"
+ ],
+ "inspector_notes": "The causal steering experiment itself (trust-vector extraction, orthogonalization, steering) runs entirely on local Llama-3B/8B and fits a 3090 comfortably. Judge outputs (outputs/judge_outputs/) and generated conversation datasets (data/datasets/*.parquet) are already committed to the repo, so the compliance-rate plots can likely be regenerated from committed artifacts without new API calls; only a from-scratch redo of judging/data-gen would hit the OpenRouter dependency. CLI docstrings also show 'anthropic/claude-3.5-sonnet' as an example judge/generator model, but the artifacts actually checked into the repo used the open-weight gpt-oss-120b judge instead.",
+ "headline_artifact": "outputs/judge_outputs/openai_gpt-oss-120b/{llama,llama_8b}/... judged compliance counts, aggregated/plotted by src/evaluation/visualize_judgments.py -- the compliance-rate-under-steering comparison across trust/compliance/orthogonalized vectors",
+ "selector_tier": "T1",
+ "selector_score": 5.53
+}

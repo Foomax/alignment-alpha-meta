@@ -1,0 +1,130 @@
+[
+ {
+  "post_id": "kcKnKHTHycHeRhcHF",
+  "repo": "jacobdunefsky/one-shot-steering-misalignment",
+  "title": "One-shot steering vectors cause emergent misalignment, too",
+  "primary_claim": "A steering vector optimized to make a model output a single piece of harmful code on a single training example, when applied to unrelated open-ended questions, increases the probability of harmful/misaligned outputs \u2014 i.e. one-shot steering vectors induce emergent misalignment.",
+  "metric": "expected alignment score (0-100) of steered vs. unsteered generations; harmful-string occurrence counts",
+  "target_value": "harmful-code steering vectors substantially reduce expected alignment score relative to unsteered and anti-refusal-only baselines; harmful strings (e.g. 'surveil', 'suppress', 'Hitler') appear in up to 33/100 steered generations vs. ~0/100 unsteered",
+  "models": [
+   "Qwen 2.5-Coder-14B-Instruct"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "emergent misalignment",
+  "claim_type": "positive",
+  "head_sha": "b8c00be9da32789164e85c457bf1ce4674ac2a52"
+ },
+ {
+  "post_id": "d8xDGzCEYE639qqEv",
+  "repo": "role-confusion/prompt-injection-as-role-confusion",
+  "title": "A Mechanistic Explanation of Prompt Injection (and why you should study roles)",
+  "primary_claim": "Prompt injection succeeds because LLMs infer a token's role (e.g. <user> vs <tool>) from surface writing style rather than its actual role tag; role probes show spoofed reasoning tokens register the same high 'CoTness' as genuine <think> tokens even when stripped of tags or wrapped in <user> tags, and exploiting this with a new attack (CoT Forgery) raises jailbreak attack success rates from near-zero to ~60%, generalizing across every LLM tested.",
+  "metric": "jailbreak attack success rate with CoT Forgery vs baseline",
+  "target_value": "near-zero to ~60% (destyling the spoofed reasoning drops it from 61% to 10%)",
+  "models": [
+   "gpt-oss 20b"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "prompt injection",
+  "claim_type": "positive",
+  "head_sha": "ec333c40fd43fe991e1ebf66765051b6d7e35784"
+ },
+ {
+  "post_id": "uvgw5FTS2RXgFFFii",
+  "repo": "e-m-garcia/j-lens-verbalized-awareness",
+  "title": "When (and when not) LLMs can verbalize awareness of J-Space concept injections - Initial results",
+  "primary_claim": "Verbal reports of J-Space concept injections in Qwen3.6-27B are highly dependent on response protocol: exact target reports occurred 322/1560 times when the model answered before reporting, but zero times when it reported before answering, even though the injected concept steered the factual answer at similar rates (450 vs 454) in both orders",
+  "metric": "exact target report count / target answer count out of 1560 positive-strength trials per order",
+  "target_value": "task-then-report: 450 steered / 322 reported; report-then-task: 454 steered / 0 reported",
+  "models": [
+   "Qwen 3.6-27B"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "introspection / self-report accuracy",
+  "claim_type": "positive",
+  "head_sha": "95d3d84e8815178990620285a75fcd7d8d86fe9b"
+ },
+ {
+  "post_id": "3HXAQEK86Bsbvh4ne",
+  "repo": "victorgodet/llm-experiments",
+  "title": "Introspection via localization",
+  "primary_claim": "Small and even tiny open-weight LLMs (introspective ability emerging around 1B parameters and improving with scale) can localize where a steering-vector-injected 'thought' occurs among several sentences at above-chance accuracy, demonstrating introspection via a new single-forward-pass localization protocol",
+  "metric": "accuracy at localizing injected thought (chance = 20%)",
+  "target_value": "gemma3-27b-it reaches 98% accuracy when injected at layer 18 of 62 (18th layer, out of 62)",
+  "models": [
+   "Gemma 3-27b-it"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "introspection / self-report accuracy",
+  "claim_type": "positive",
+  "head_sha": "950bb30a37e6c71909ccb60a4347d78567516d55"
+ },
+ {
+  "post_id": "umYzsh7SGHHKsRCaA",
+  "repo": "clarifying-em/model-organisms-for-em",
+  "title": "Convergent Linear Representations of Emergent Misalignment",
+  "primary_claim": "A single linear 'misalignment direction' extracted from an emergently-misaligned Qwen2.5-14B fine-tune can be added to the aligned chat model to induce misaligned responses (up to 50%) or ablated from EM models to reduce misalignment (e.g. 11.25% to 0% with layer-wise ablation), and this direction transfers across different fine-tuning datasets and higher-rank LoRA setups (ablating with a vector from a 9-adapter medical fine-tune reduces misalignment in a 336-adapter extreme-sports fine-tune from 20.2% to 4.5%), indicating a convergent representation of misalignment; probing further shows a subset of LoRA adapters specialize for narrow (medical) misalignment while others mediate general misalignment.",
+  "metric": "emergently-misaligned (EM) response rate (%) under steering/ablation",
+  "target_value": "steering up to 50% EM responses at central layers; layer-wise ablation reduces EM 11.25% to 0%; single-direction ablation to 1%; transfer ablation (medical-derived direction applied to extreme-sports fine-tune) reduces EM 20.2% to 4.5%",
+  "models": [
+   "Qwen 2.5-14B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T2",
+  "phenomenon": "emergent misalignment",
+  "claim_type": "positive",
+  "head_sha": "8460e4e426d3a89e8ed51aac0eadcdf7ac10469d"
+ },
+ {
+  "post_id": "aWYQHh2pEFCLYh85C",
+  "repo": "syvb/natural_language_autoencoders",
+  "title": "Matryoshka NLAs: training activation verbalizers to frontload reconstruction-relevant information",
+  "primary_claim": "A 'matryoshka' Natural Language Autoencoder, trained by randomly truncating verbalizer explanations during RL, frontloads reconstruction-relevant information relative to a standard NLA (captures most of its fraction-of-variance-explained in the first few bullet lines, and better predicts held-out suffix text under short truncations), and reveals higher-strength concurrently-applied steering vectors earlier in its explanation list, though there is no strong evidence it is significantly more useful than standard NLAs overall.",
+  "metric": "fraction of variance explained (FVE) vs. truncation length; suffix-prediction accuracy",
+  "target_value": "matryoshka NLA captures most FVE within the first few bullet lines (marginal FVE decays roughly exponentially, negligible past line 3); outperforms standard NLA on suffix prediction under short (<16 token) truncations, roughly matches it for longer truncations",
+  "models": [
+   "Qwen 27B (3.6)"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "interpretability tooling",
+  "claim_type": "method",
+  "head_sha": "85399df1cb1340875e45036e6a5432a029cfe07a"
+ },
+ {
+  "post_id": "GZCMmCHZiF8vhsczr",
+  "repo": "melchior-de-polignac/topic-detector-not-lie-detector",
+  "title": "A Topic Detector, Not a Lie Detector: what J-space monitoring actually tracks",
+  "primary_claim": "A J-lens-based 'conflict signal' C discriminates prompts where DeepSeek-R1-Distill-Qwen-14B conceals guideline-violating knowledge from matched controls with AUC 0.97 on proper-noun tokens (vs 0.72 for logit-lens), but this signal tracks topic/territory rather than concealment itself (benign China-related control prompts already show 89% of the signal, with AUCs of 0.51-0.58 on individual place-name tokens against benign controls), and belief-injection fine-tuning to make the model genuinely hold the compliant belief did not lower C as pre-registered -- C instead rose to 130% of baseline on relevant tokens and 115% on irrelevant tokens, even though the fine-tune succeeded behaviorally (93.5% compliant outputs, 87% after abliteration).",
+  "metric": "J-lens conflict signal (C) AUC discriminating concealment prompts from controls; C change after belief-injection fine-tuning",
+  "target_value": "AUC 0.97 on proper-noun tokens (logit-lens 0.72), only 0.55 pooling all token classes; benign China-related controls show 89% of the signal; after belief-injection, C rose to 130% (relevant tokens) and 115% (irrelevant tokens) of baseline, contrary to the pre-registered drop hypothesis",
+  "models": [
+   "DeepSeek R1-Distill-Qwen-14B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T2",
+  "phenomenon": "interpretability tooling",
+  "claim_type": "negative",
+  "head_sha": "1e6959efa72964c0acd353611c1a1c2d8e0e7879"
+ },
+ {
+  "post_id": "Eft6ehAcvR8MxFbsR",
+  "repo": "jeffreywilliamportfolio/jlens-basin-swaps",
+  "title": "Banana in, Bostrom out: paperclip maximization is one token-direction swap away (in Qwen 3.6-27B)",
+  "primary_claim": "In Qwen3.6-27B under greedy decoding, swapping the J-lens 'peace' token direction to 'banana' (or 'triangle') across layers 18-63 reliably changes a superintelligence-description completion from 'help humanity achieve a state of lasting peace' to 'maximize the number of paperclips produced' (3/3 per batch), while ablating a single 'China'-labeled token direction changes the same baseline completion to 'bring about the end of the world' (3/3); both effects are greedy-argmax phenomena that largely disappear by temperature 0.4.",
+  "metric": "reproducibility of swapped/ablated completion across independent batches; exact-string rate across a temperature sweep",
+  "target_value": "paperclip swap 3/3 per batch; doom ablation 3/3; doom string appears 20/20 at temp 0.1, 8/20 at 0.2, 5/20 at 0.3, 0/20 from 0.4 up",
+  "models": [
+   "Qwen 27B"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "activation steering",
+  "claim_type": "positive",
+  "head_sha": "1f68458b9dfc131d10a0e660ad0ad065b2628a75"
+ }
+]

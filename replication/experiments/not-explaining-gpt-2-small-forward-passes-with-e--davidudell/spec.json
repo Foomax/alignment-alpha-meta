@@ -1,0 +1,62 @@
+{
+ "slug": "not-explaining-gpt-2-small-forward-passes-with-e--davidudell",
+ "post_id": "2CoLkSdwirr2WnNH6",
+ "title": "(Not) Explaining GPT-2-Small Forward Passes with Edge-Level Autoencoder Circuits",
+ "date": "2025-07-22",
+ "repo": "davidudell/sparse_circuit_discovery",
+ "head_sha": "85114b1e6a1e2607c66d566e761c01c0c532b1b6",
+ "entrypoint": "sparse_coding/fast.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformer-lens==2.15.0",
+  "transformers==4.49.0",
+  "torch==2.6.0",
+  "nnsight==0.4.5",
+  "wandb==0.19.8",
+  "pygraphviz==1.14"
+ ],
+ "models": [
+  {
+   "hf_id": "openai-community/gpt2",
+   "params_b": 0.124,
+   "gated": false
+  }
+ ],
+ "phenomenon": "circuit discovery",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "A replication of a gradient-based unsupervised sparse-autoencoder circuit discovery algorithm in GPT-2-small produced a negative result: only 2 of 5 top proximal-cause SAE features correctly predicted the model's actual top next token, and the upstream edges/nodes feeding into them remained largely uninterpretable, so localistic SAE circuits could not be strung together into fully explanatory circuits.",
+ "quote": "A replication of an unsupervised circuit discovery algorithm in GPT-2-small, with a negative result.",
+ "metric": "fraction of top proximal-cause SAE features correctly predicting the model's actual top next-token completion, across 5 example prompts",
+ "target_value": "2 of 5",
+ "target_numeric": 2.0,
+ "direction": "-",
+ "uncertainty_reported": "none",
+ "tolerance": "rel:0.15",
+ "tolerance_rationale": "other scalar metric: 15% relative; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 9,
+ "fits_3090": "yes",
+ "est_runtime": "unknown",
+ "est_runtime_class": "unknown",
+ "budget_minutes": 90,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "jbloom/GPT2-Small-OAI-v5-128k-resid-post-SAEs",
+   "jbloom/GPT2-Small-OAI-v5-128k-attn-out-SAEs",
+   "jbloom/GPT2-Small-OAI-v5-128k-mlp-out-SAEs (all via hf_hub_download)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "reproducing across the full 12-layer model (slice '0:12') exceeds a single 3090's VRAM per the repo's own benchmark; must restrict to narrower layer slices (author explicitly suggests halving) to fit",
+  "the post's '5 example prompts' evaluation isn't a single scripted entrypoint \u2014 PROMPT is one string in central_config.yaml, so covering 5 prompts means manually rerunning fast.py 5 times and manually checking predictions"
+ ],
+ "inspector_notes": "Unusually transparent repo: it measures its own VRAM via pynvml at startup and will refuse/downsize a run it judges too large for the available GPU, printing a suggested narrower layer slice instead of just OOM-ing.",
+ "headline_artifact": "grads_graph.svg/.dot edge-level cognition graph from fast.py; the post's '2 of 5' figure comes from manually checking whether each graph's top proximal-cause features predict the model's actual top next token, across 5 separately-run prompts",
+ "selector_tier": "T1",
+ "selector_score": 7.56
+}

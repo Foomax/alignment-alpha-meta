@@ -1,0 +1,59 @@
+{
+ "slug": "exploring-shard-like-behavior-empirical-insights--aristizabal95",
+ "post_id": "fbw3PcLTGn53fxCM7",
+ "title": "Exploring Shard-like Behavior: Empirical Insights into Contextual Decision-Making in RL Agents",
+ "date": "2024-09-29",
+ "repo": "aristizabal95/procgen-tools",
+ "head_sha": "49d4759a90b7d8d38ea03beb621f1ef501a7854a",
+ "entrypoint": "experiments/probing_main.py",
+ "entrypoint_confidence": "medium",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "procgen",
+  "gym",
+  "circrl"
+ ],
+ "models": [
+  {
+   "hf_id": null,
+   "params_b": 0.0006,
+   "gated": false
+  }
+ ],
+ "phenomenon": "linear probe detection",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Cheese-seeking behavior in a maze-solving RL policy is spatially localized around the cheese's position, even though the presence of cheese is linearly decodable at near-perfect accuracy from activations at nearly every layer of the network; sensitivity of activations to cheese proximity is concentrated in later layers, especially the fully-connected layer preceding the value head.",
+ "quote": "Our findings suggest that while all network layers consistently encode the presence of cheese, the effect of this information on the agent's behavior is spatially localized within the maze environment.",
+ "metric": "linear probe accuracy for cheese-presence detection across network layers",
+ "target_value": "near-perfect accuracy in most layers, dropping to 90% at the policy head",
+ "target_numeric": 90.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "abs:5",
+ "tolerance_rationale": "percentage metric: 5 points; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 2,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "pretrained IMPALA maze policies (maze_I/*.pth) from Langosco et al., public Google Drive link in README",
+   "rollout/observation datasets for probing, generated on the fly via env simulation (gatherdata_*.py / probing_gather.py), not shipped as static files"
+  ],
+  "available": "download-script",
+  "gated": false
+ },
+ "blockers": [
+  "Pinned dependencies are old (torch==1.13.1, gym==0.21.0, procgen==0.10.7); procgen wheels are not reliably available for modern Python/OS combos, so environment setup (not compute) is the main practical friction and likely needs an older Python (3.8/3.9) environment.",
+  "Multiple overlapping probing scripts/notebooks exist (experiments/probing_main.py, experiments/probing_gather.py+probing_postproc.py, playground/action_probing*.py, playground/goal_probing*.py) without one clearly-marked canonical entrypoint for the exact headline number."
+ ],
+ "inspector_notes": "Compute is trivial (small CNN, arguably CPU-feasible even); the realistic friction is installing a multi-year-old procgen/gym/torch stack and picking the correct one of several overlapping probing scripts. Pretrained models are public (Google Drive, not gated).",
+ "headline_artifact": "experiments/probing_main.py/.ipynb per-layer linear probe accuracy table/plot for cheese-presence detection",
+ "selector_tier": "T?",
+ "selector_score": 5.65
+}

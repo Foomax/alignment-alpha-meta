@@ -1,0 +1,88 @@
+{
+ "slug": "evidence-for-feature-specific-error-correction-i--franciscohs",
+ "post_id": "uDrsffSLzWD6cDnTt",
+ "title": "Evidence for feature-specific error correction in LLMs",
+ "date": "2026-07-14",
+ "repo": "franciscohs/fsec-paper",
+ "head_sha": "32f4f12b4ce95b424fa475234c9db8566556c20f",
+ "entrypoint": "python scripts/sweep_2d.py --target <model> --layer <L> (per-model/layer 2D iso-response sweep) -> python scripts/refit_thrfixed_all.py --exact (fit superellipse exponents) -> render_figures.sh (plots); figure-only reproduction from the bundled results/ cache needs no GPU at all",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "transformers",
+  "accelerate",
+  "numpy",
+  "scipy",
+  "matplotlib",
+  "datasets",
+  "huggingface_hub"
+ ],
+ "models": [
+  {
+   "hf_id": "google/gemma-2-9b",
+   "params_b": 9.2,
+   "gated": true
+  },
+  {
+   "hf_id": "Qwen/Qwen3-1.7B",
+   "params_b": 1.7,
+   "gated": false
+  },
+  {
+   "hf_id": "meta-llama/Llama-3.1-8B",
+   "params_b": 8.0,
+   "gated": true
+  },
+  {
+   "hf_id": "mistralai/Mistral-7B-v0.3",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "CohereForAI/aya-expanse-8b",
+   "params_b": 8.0,
+   "gated": false
+  },
+  {
+   "hf_id": "01-ai/Yi-1.5-9B",
+   "params_b": 9.0,
+   "gated": false
+  }
+ ],
+ "phenomenon": "superposition",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "LLMs exhibit feature-specific error correction (FSEC): perturbing residual-stream activations along candidate feature directions (contrastive, MELBO, top-activating SAE latents) produces a stronger downstream response than perturbing along mixtures of those directions, measured as a superellipse exponent p>2 (mean ~2.3 for contrastive, ~2.2 for MELBO/SAE), while non-feature baseline directions (PCA, random, random-difference) give p~2; this replicates across six LLM families and a toy model with ground-truth features (where p=3-3.4), providing the first empirical evidence for computation-in-superposition's predicted error-correction mechanism.",
+ "quote": "We measure $p \\approx 2.3$ for contrastive directions and $p \\approx 2.2$ for MELBO and SAE directions, against $p \\approx 2$ for PCA, random, and random-difference controls.",
+ "metric": "superellipse exponent p for candidate feature directions vs non-feature baselines",
+ "target_value": "contrastive directions: mean p=2.42, 95% CI [2.29, 2.62]; MELBO: mean p=2.21, 95% CI [2.01, 2.42]; top-activating SAE latents: mean p=2.28, 95% CI [2.14, 2.47]; PCA baseline: mean p=2.03, 95% CI [1.94, 2.12]; random-difference baseline: mean p=2.05, 95% CI [2.00, 2.10]; random baseline: mean p=2.03, 95% CI [2.00, 2.07]; toy model with ground-truth features: p=3-3.4",
+ "target_numeric": 2.42,
+ "direction": "+",
+ "uncertainty_reported": "ci",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 26 numbers; compare the components by hand",
+ "vram_estimate_gb": 20,
+ "fits_3090": "probably",
+ "est_runtime": "days",
+ "est_runtime_class": "days",
+ "budget_minutes": 480,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "data/*.py contrastive prompt sets (14 semantic concepts, 10 languages, 9 programming languages)",
+   "FineWeb (anchor activations)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "Full ablation-grid reproduction (36h on an H100) is a multi-day undertaking on a single 3090; the repo itself flags this as the slow path.",
+  "Gemma and Llama checkpoints are gated -- need a HUGGINGFACE_HUB_TOKEN with license acceptance (not a hard blocker, just friction)."
+ ],
+ "inspector_notes": "Exceptionally reproducibility-conscious repo: ships ~1.6GB of cached intermediate results (results/sweeps_2d/, ~13k files) so every paper figure regenerates in about a minute with no GPU at all, and separately documents exact wallclock cost to regenerate from raw model weights. The three-tier reproduction path (figures-only / refit-from-cache / full re-sweep) is the clearest compute-tiering seen across this batch.",
+ "headline_artifact": "results/fits/fits_<target>_L<layer>*.pkl (per-condition fitted superellipse exponents p), aggregated into the paper's Fig 4/6 direction-family beeswarm plots via scripts/plotting/",
+ "selector_tier": "T1",
+ "selector_score": 8.09
+}

@@ -1,0 +1,59 @@
+{
+ "slug": "sae-regularization-produces-more-interpretable-m--peterlai",
+ "post_id": "sYFNGRdDQYQrSJAd8",
+ "title": "SAE regularization produces more interpretable models",
+ "date": "2025-01-28",
+ "repo": "peterlai/gpt-circuits",
+ "head_sha": "1cf99ec0580f33e19c37099b02d37a01b284ba5f",
+ "entrypoint": "experiments/regularization/train.py (steps 0-4, e.g. `python -m experiments.regularization.train --setup=all-layers --step=0..4`)",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "numpy",
+  "scipy",
+  "datasets",
+  "tiktoken",
+  "safetensors",
+  "plotly",
+  "gpustat"
+ ],
+ "models": [
+  {
+   "hf_id": null,
+   "params_b": 0.001,
+   "gated": false
+  }
+ ],
+ "phenomenon": "dictionary learning method",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Adding an SAE loss term as a regularizer during LLM training (jointly training SAE layers alongside model weights) improves downstream SAE feature sparsity/reconstruction quality on nearly all layers of a small character-level GPT-2 model, without apparently harming overall model performance.",
+ "quote": "We find that SAE regularization improves SAE performance on all layers and does not seem to impact the model's overall performance.",
+ "metric": "cross-entropy loss increase at fixed SAE sparsity (L0~50)",
+ "target_value": "SAE regularization reliably yields better (lower) cross-entropy loss increase on most layers; less dependable on some layers (e.g. layer 3); regularized models also reach slightly lower overall cross-entropy loss",
+ "target_numeric": 3.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "rel:0.15",
+ "tolerance_rationale": "other scalar metric: 15% relative; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 1,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "tiny-shakespeare (in-repo: data/shakespeare/input.txt, ASCII/character tokenizer)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [],
+ "inspector_notes": "Fully self-contained toy reproduction: tiny in-repo data, no external model downloads, no gating. The five-step pipeline (train base GPT, train SAE-regularized GPT, sweep SAE loss coefficients on both, export results) is explicit in experiments/regularization/train.py and setup.py.",
+ "headline_artifact": "experiments/regularization/results.sweep.json and results.sums.json (regularized vs. normal cross-entropy-loss-increase-at-fixed-L0 per layer), exported by train.py --step=4",
+ "selector_tier": "T1",
+ "selector_score": 7.03
+}

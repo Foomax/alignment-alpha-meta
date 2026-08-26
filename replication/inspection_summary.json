@@ -1,0 +1,60 @@
+{
+ "inspected": 142,
+ "fits": {
+  "yes": 82,
+  "no": 25,
+  "probably": 11,
+  "tight": 15,
+  "unknown": 9
+ },
+ "needs_closed_api": 28,
+ "no_entrypoint": 12,
+ "no_headline_artifact": 12,
+ "data_missing": 14,
+ "language": {
+  "python": 82,
+  "notebook": 26,
+  "mixed": 33,
+  "other": 1
+ },
+ "has_requirements": 87,
+ "pinned_versions": 53,
+ "stated_compute": 56,
+ "closed_api_used_for": {
+  "judge/grader": 25,
+  "data generation": 3
+ },
+ "blocker_taxonomy": {
+  "other": 49,
+  "stated->24gb": 22,
+  "hardcoded-result": 21,
+  "pretraining-from-scratch": 21,
+  "fp32-default-load": 14,
+  "data-private": 13,
+  "multi-gpu-assumed": 10,
+  "experiment-not-in-repo": 8
+ },
+ "fit_by_selector_tier": {
+  "T1": {
+   "n": 105,
+   "yes": 64,
+   "no": 13,
+   "probably": 9,
+   "tight": 12,
+   "unknown": 7
+  },
+  "T2": {
+   "n": 21,
+   "no": 12,
+   "tight": 2,
+   "yes": 5,
+   "probably": 2
+  },
+  "T?": {
+   "n": 16,
+   "yes": 13,
+   "unknown": 2,
+   "tight": 1
+  }
+ }
+}

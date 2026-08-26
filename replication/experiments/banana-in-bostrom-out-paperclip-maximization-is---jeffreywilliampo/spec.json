@@ -1,0 +1,50 @@
+{
+ "slug": "banana-in-bostrom-out-paperclip-maximization-is---jeffreywilliampo",
+ "post_id": "Eft6ehAcvR8MxFbsR",
+ "title": "Banana in, Bostrom out: paperclip maximization is one token-direction swap away (in Qwen 3.6-27B)",
+ "date": "2026-07-20",
+ "repo": "jeffreywilliamportfolio/jlens-basin-swaps",
+ "head_sha": "1f68458b9dfc131d10a0e660ad0ad065b2628a75",
+ "entrypoint": "reproduce/run_reproduction.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [],
+ "models": [
+  {
+   "hf_id": "Qwen 3.6-27B (hosted remotely by Neuronpedia; never downloaded or run locally)",
+   "params_b": 27,
+   "gated": false
+  }
+ ],
+ "phenomenon": "activation steering",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "In Qwen3.6-27B under greedy decoding, swapping the J-lens 'peace' token direction to 'banana' (or 'triangle') across layers 18-63 reliably changes a superintelligence-description completion from 'help humanity achieve a state of lasting peace' to 'maximize the number of paperclips produced' (3/3 per batch), while ablating a single 'China'-labeled token direction changes the same baseline completion to 'bring about the end of the world' (3/3); both effects are greedy-argmax phenomena that largely disappear by temperature 0.4.",
+ "quote": "swapping the \u2018peace\u2019 token direction to \u2018banana\u2019, changes the completion to: \u201cmaximize the number of paperclips produced.\u201d",
+ "metric": "reproducibility of swapped/ablated completion across independent batches; exact-string rate across a temperature sweep",
+ "target_value": "paperclip swap 3/3 per batch; doom ablation 3/3; doom string appears 20/20 at temp 0.1, 8/20 at 0.2, 5/20 at 0.3, 0/20 from 0.4 up",
+ "target_numeric": 3.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 16 numbers; compare the components by hand",
+ "vram_estimate_gb": 0,
+ "fits_3090": "yes",
+ "est_runtime": "seconds to low minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "depends entirely on a third-party free public API (Neuronpedia) remaining available and behaviorally stable -- the repo's own script docstring warns 'greedy decoding is not guaranteed token-identical across backend builds: reproduce the destination basin, not the byte-exact string'; if Neuronpedia changes or retires the endpoint/lens revision, exact-string reproduction may fail even though the method itself is trivial"
+ ],
+ "inspector_notes": "Unlike every other repo in this assignment, no local compute is needed at all: a 27B-model steering result is reproduced by a ~20-line stdlib script hitting a free, keyless public API (Neuronpedia's Jacobian Lens), so local VRAM/GPU is irrelevant to fits_3090. The real replication risk is dependence on a third-party hosted service's continued availability, not hardware -- the flip side is that this is NOT a fully offline/self-contained reproduction of the underlying computation.",
+ "headline_artifact": "printed completion strings from run_reproduction.py matching RESULTS.md's tables: paperclip swap ('maximize the number of paperclips produced.', 3/3) and China-direction ablation ('bring about the end of the world.', 3/3), plus the temperature sweep in data/doom_basin_temperature_curve/",
+ "selector_tier": "T2",
+ "selector_score": 5.03
+}

@@ -1,0 +1,98 @@
+{
+ "slug": "can-7b-8b-llms-judge-their-own-homework--dmitry-dereshev",
+ "post_id": "yJ2Ka2EgQY7PnR9jL",
+ "title": "Can 7B-8B LLMs judge their own homework?",
+ "date": "2025-02-01",
+ "repo": "dmitry-dereshev/positive-jailbreaks-llm-failure-modes",
+ "head_sha": "cadbd53880e9c2f3979710e45757a75a7fd0e583",
+ "entrypoint": "test_llm_judgement.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "gpt4all",
+  "pandas"
+ ],
+ "models": [
+  {
+   "hf_id": "ghost-7b-v0.9.1-Q4_0.gguf (GPT4All catalog)",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "gpt4all-falcon-newbpe-q4_0.gguf (GPT4All catalog)",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "Meta-Llama-3-8B-Instruct.Q4_0.gguf (GPT4All catalog)",
+   "params_b": 8.0,
+   "gated": false
+  },
+  {
+   "hf_id": "Meta-Llama-3.1-8B-Instruct-128k-Q4_0.gguf (GPT4All catalog)",
+   "params_b": 8.0,
+   "gated": false
+  },
+  {
+   "hf_id": "mistral-7b-instruct-v0.1.Q4_0.gguf (GPT4All catalog)",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "mistral-7b-openorca.gguf2.Q4_0.gguf (GPT4All catalog)",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "Nous-Hermes-2-Mistral-7B-DPO.Q4_0.gguf (GPT4All catalog)",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "orca-2-7b.Q4_0.gguf (GPT4All catalog)",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "mpt-7b-chat-newbpe-q4_0.gguf (GPT4All catalog)",
+   "params_b": 7.0,
+   "gated": false
+  }
+ ],
+ "phenomenon": "eval methodology critique",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "Ten consumer-grade 7B-8B LLMs asked to judge whether responses to JailbreakBench prompts were competent and complete perform only marginally better than chance (56-59% correct for most models) against human ground truth, overwhelmingly biased toward answering '1' (up to 98% for Ghost 7B), with two models (Falcon 7B, both Llamas) failing to produce a valid judgement on 37-49% of queries.",
+ "quote": "Correct judgements in other LLMs were in the range of 56%-59% making them only marginally better judges than chance.",
+ "metric": "% judged correctly (vs human ground truth) / % answered '1'",
+ "target_value": "correct judgements ranged 29.5%-59.3% across models (most 56-59%); % answering '1' ranged from 34% to 98%, vs 57% ground truth positive rate; failure rates up to 49% (Falcon 7B)",
+ "target_numeric": 29.5,
+ "direction": "-",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 10 numbers; compare the components by hand",
+ "vram_estimate_gb": 6,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "JailbreakBench malicious/benign prompts (included as CSV)",
+   "2024-12-29 Validate Judgement.csv (included, but missing the per-model response columns the script reads)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "test_llm_judgement.py reads item[1][model_name] \u2014 a per-model response column \u2014 from '2024-12-29 Validate Judgement.csv', but the committed CSV's actual header is ID,Goal,Behavior,Category,Source,Type,Responded,Prompt type with no response columns; running the script as-is raises a KeyError immediately",
+  "GGUF weights (~4-6GB each x9-10) must be manually downloaded from the GPT4All catalog and placed in './'; allow_download=False in the script so this isn't automated",
+  "no requirements.txt; gpt4all package version unpinned"
+ ],
+ "inspector_notes": "README says response data was deliberately omitted ('many are harmful') and that scripts can regenerate it, but benchmark_llms.py writes a differently-shaped CSV than what test_llm_judgement.py reads, so the two scripts don't chain together as committed \u2014 a data-plumbing gap, not a compute blocker. All 10 models are small quantized 7-8B GGUFs, trivially fits a 3090.",
+ "headline_artifact": "per-model '<model> judgement test 2.csv' outputs (% answering '1' vs human ground truth) that back the post's per-model judge-accuracy table",
+ "selector_tier": "T1",
+ "selector_score": 6.73
+}

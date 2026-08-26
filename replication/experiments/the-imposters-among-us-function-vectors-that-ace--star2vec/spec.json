@@ -1,0 +1,55 @@
+{
+ "slug": "the-imposters-among-us-function-vectors-that-ace--star2vec",
+ "post_id": "aFyir2PaoCHK5prAu",
+ "title": "The imposters among us: function vectors that ace every check and do the wrong task (in search of circularity)",
+ "date": "2026-08-21",
+ "repo": "star2vec/tarcle",
+ "head_sha": "37831a330ec5d4339d6946c1a2e51732ce8fce00",
+ "entrypoint": "tarcle/extract.py (Stage 1, GPU: causal-head identification + FV extraction) then python -m tarcle.stage2 / floors / measure_corr / margin_split / offset_audit / support_gate (Stage 2, numpy-only, reads results/ artifacts)",
+ "entrypoint_confidence": "high",
+ "python_version": ">=3.10",
+ "key_deps": [
+  "torch>=2.2",
+  "transformers>=4.45,<5",
+  "numpy>=1.26",
+  "matplotlib>=3.8"
+ ],
+ "models": [
+  {
+   "hf_id": "meta-llama/Llama-3.2-3B",
+   "params_b": 3.2,
+   "gated": true
+  }
+ ],
+ "phenomenon": "activation steering",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "Shift-by-k-months function vectors extracted from low-diversity few-shot prompts (Llama-3.2-3B) pass all three classic validation checks (behavioral gate, stability, causal effect) yet encode a completely different task (outputting an adjacent month, ignoring k), with margin scores as low as -1.000 in the most extreme case, and lower example diversity simultaneously makes the checks look better (few-shot accuracy 0.38 to 0.83) while making the vector's true identity worse",
+ "quote": "The culprit is the number of distinct example inputs. Lower diversity makes the model perform the few-shot task better (from 0.38 to 0.83) even though the function vector changes identity, so the checks actually favor the imposters.",
+ "metric": "margin (correct shift-by-k occurrences minus neighbor-task occurrences, among cases where they differ) across month-diversity sets",
+ "target_value": "margin +0.35 (12 months) and +0.34 (9 months) down to -0.31, -0.46, -0.70, -0.94 (6- and 4-month range sets), with -1.000 for the September-December subset; behavioral gate rises from 0.38 to 0.83 as diversity drops",
+ "target_numeric": 0.35,
+ "direction": "-",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 13 numbers; compare the components by hand",
+ "vram_estimate_gb": 8,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "synthetic month/day few-shot prompts generated in-code (tarcle/prompts.py) -- no external dataset"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [],
+ "inspector_notes": "The most reproducibility-forward repo in the batch: 'every number in the post regenerates from results/ without a GPU' via the committed artifacts, so the headline claim can be independently checked with zero compute at all, and full Stage-1 re-extraction is explicitly documented as designed to fit an 8GB card. Preregistration docs (docs/preregistration*.md) and an append-only decision log (docs/decisions.md) are committed alongside the code, which is unusual rigor for a solo LessWrong-style project.",
+ "headline_artifact": "results/fv/*.npz (extracted function vectors) + committed stage-2 artifacts consumed by tarcle/margin_split.py and tarcle/support_gate.py, which reproduce the reported margins (+0.35 down to -1.000) and the 0.38->0.83 behavioral-gate accuracy shift",
+ "selector_tier": "T1",
+ "selector_score": 7.69
+}

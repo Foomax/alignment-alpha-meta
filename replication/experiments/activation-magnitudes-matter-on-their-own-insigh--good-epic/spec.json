@@ -1,0 +1,84 @@
+{
+ "slug": "activation-magnitudes-matter-on-their-own-insigh--good-epic",
+ "post_id": "6PCjTM55jdYBgHNyp",
+ "title": "Activation Magnitudes Matter On Their Own: Insights from Language Model Distributional Analysis",
+ "date": "2025-01-10",
+ "repo": "good-epic/activation-tails",
+ "head_sha": "cd30fc5feb6c60afb72eb450a3ce84d7b28b2c29",
+ "entrypoint": "kde_predict_main.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "transformer_lens",
+  "pandas",
+  "seaborn",
+  "scipy",
+  "scikit-learn"
+ ],
+ "models": [
+  {
+   "hf_id": "gpt2",
+   "params_b": 0.124,
+   "gated": false
+  },
+  {
+   "hf_id": "gpt2-medium",
+   "params_b": 0.355,
+   "gated": false
+  },
+  {
+   "hf_id": "gpt2-large",
+   "params_b": 0.774,
+   "gated": false
+  },
+  {
+   "hf_id": "EleutherAI/pythia-160m-deduped",
+   "params_b": 0.16,
+   "gated": false
+  },
+  {
+   "hf_id": "EleutherAI/pythia-410m-deduped",
+   "params_b": 0.41,
+   "gated": false
+  },
+  {
+   "hf_id": "EleutherAI/pythia-1b-deduped",
+   "params_b": 1.0,
+   "gated": false
+  }
+ ],
+ "phenomenon": "representation geometry",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Restricting analysis to only the extreme 'tail' values of transformer residual-stream activation distributions (rather than using all activation values) improves prediction of input-text properties (subject/attribute) via empirical log-likelihood classification: for GPT2-Small, GPT2-Medium, GPT2-Large, and Pythia-1B, tails-only analysis improved average F1 by 0.03 for subject prediction and 0.06 for attribute prediction versus using all activation values, though it failed almost entirely for the two smaller Pythia models (160M, 410M).",
+ "quote": "the tails only analysis improved the average F1 score for prediction of sentence subject by 0.03 and for sentence attribute by 0.06",
+ "metric": "F1 score, tails-only vs all-points activation-distribution analysis",
+ "target_value": "tails-only analysis improved average F1 by 0.03 (subject) and 0.06 (attribute) for GPT2-Small/Medium/Large and Pythia-1B; failed almost entirely for Pythia-160M and Pythia-410M",
+ "target_numeric": 1.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 7 numbers; compare the components by hand",
+ "vram_estimate_gb": 2,
+ "fits_3090": "yes",
+ "est_runtime": "minutes to low hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "data_in/*.json bundled sentence datasets (economics, poetry, one-level categories), plus a bundled train/test split JSON"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "No requirements/pin file at all \u2014 versions of torch, transformer_lens, scikit-learn, and scipy are entirely unconstrained."
+ ],
+ "inspector_notes": "Simplest and most directly reproducible repo of the batch: exact README-given commands map onto the paper's headline result, every model is <=1B, and all data is bundled in-repo.",
+ "headline_artifact": "F1 scores from `kde_predict_main.py --detect-tails` (tails-only) vs. the full-activation-distribution run, aggregated/visualized in results_analysis.ipynb.",
+ "selector_tier": "T1",
+ "selector_score": 5.84
+}

@@ -1,0 +1,76 @@
+{
+ "slug": "deep-causal-transcoding-a-framework-for-mechanis--amack315",
+ "post_id": "fSRg5qs9TPbNy3sm5",
+ "title": "Deep Causal Transcoding: A Framework for Mechanistically Eliciting Latent Behaviors in Language Models",
+ "date": "2024-12-03",
+ "repo": "amack315/melbo-dct-post",
+ "head_sha": "c0b76b746c38de3a4b38b01974c128b3790949c8",
+ "entrypoint": "runs/train_mistral_rr.ipynb + runs/eval_mistral_rr.ipynb (jailbreak ASR); runs/train_deepseek.ipynb + runs/score_deepseek.py (MATH recovery)",
+ "entrypoint_confidence": "medium",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformers==4.46.3",
+  "torch>=2.2.1",
+  "scipy (root_scalar in src/dct.py)"
+ ],
+ "models": [
+  {
+   "hf_id": "GraySwanAI/Mistral-7B-Instruct-RR",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "redwoodresearch/math_pwd_lock_deepseek_math7b_on_weak_pythia1b",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "deepseek-ai/deepseek-math-7b-instruct",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "cais/HarmBench-Mistral-7b-val-cls",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "Qwen/Qwen1.5-7B-Chat",
+   "params_b": 7.0,
+   "gated": false
+  }
+ ],
+ "phenomenon": "activation steering",
+ "contested": true,
+ "claim_type": "method",
+ "primary_claim": "Deep causal transcoders (DCTs) with an exponential activation function learn diverse, interpretable, and generalizable steering-vector directions that can jailbreak a representation-rerouted (robustified) Mistral-7B-Instruct-v2 with a 62% latent-space attack success rate and recover 32% of password-locked capability on DeepSeek-Math-7B (MATH accuracy 3% locked to 23% steered), outperforming linear and quadratic DCT variants",
+ "quote": "I use exponential DCTs to jailbreak a [representation-rerouted](https://arxiv.org/abs/2406.04313) version of Mistral-7B-Instruct-v2, achieving a latent-space attack success rate of $62\\%$.",
+ "metric": "latent-space jailbreak attack success rate; password-locked capability recovery (MATH accuracy)",
+ "target_value": "62% ASR on robustified Mistral-7B-Instruct-v2; MATH accuracy 3% (locked) to 23% (steered), recovering 32% of unlocked performance",
+ "target_numeric": 62.0,
+ "direction": "+",
+ "uncertainty_reported": "seeds",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 6 numbers; compare the components by hand",
+ "vram_estimate_gb": 16,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "hendrycks/competition_math (HF dataset, for the MATH recovery eval)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "No README/requirements.txt; procedure has to be reconstructed from bare notebooks and scripts (a demo_32b.ipynb exists for a separate Qwen1.5-32B cross-model demo not needed for the two headline numbers, which are both 7B-scale)"
+ ],
+ "inspector_notes": "Fully local and reproducible on a single 3090: jailbreak ASR is graded by a local HarmBench classifier model (cais/HarmBench-Mistral-7b-val-cls), not an LLM API, and MATH correctness is checked by string/regex matching against hendrycks/competition_math. Lack of any README/docs is the main friction, not compute.",
+ "headline_artifact": "runs/eval_mistral_rr.ipynb (ASR computed locally via cais/HarmBench-Mistral-7b-val-cls) and runs/score_deepseek.py / deepseek_eval_*.csv (MATH accuracy with vs without password)",
+ "selector_tier": "T2",
+ "selector_score": 6.87
+}

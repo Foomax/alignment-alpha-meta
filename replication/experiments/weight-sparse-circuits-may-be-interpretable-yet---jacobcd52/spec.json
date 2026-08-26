@@ -1,0 +1,60 @@
+{
+ "slug": "weight-sparse-circuits-may-be-interpretable-yet---jacobcd52",
+ "post_id": "sHpZZnRDLg7ccX9aF",
+ "title": "Weight-Sparse Circuits May Be Interpretable Yet Unfaithful",
+ "date": "2026-02-09",
+ "repo": "jacobcd52/sparse_pretrain_public",
+ "head_sha": "1c1da8695552ee8015f9ca4b96a3ccfd793a2d74",
+ "entrypoint": "src/pruning/run_pruning.py --model <HF repo, e.g. jacobcd52/ss_bridges_d1024_f0.015625> --task dummy_pronoun_iswhen (or similar nonsense/pronoun task variants under scripts/)",
+ "entrypoint_confidence": "medium",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "transformers",
+  "datasets",
+  "jaxtyping",
+  "einops"
+ ],
+ "models": [
+  {
+   "hf_id": "jacobcd52/ss_d128_f1 and related jacobcd52/ss_bridges_* checkpoints referenced in configs_bridges/",
+   "params_b": 0.4,
+   "gated": false
+  }
+ ],
+ "phenomenon": "circuit discovery",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "Pruned circuits extracted from weight-sparse transformers via Gao et al's method can be small and appear interpretable while being unfaithful to the model's true computation, e.g. achieving low loss on a nonsense task, missing important attention patterns, repurposing nodes, and failing to generalize like the original model.",
+ "quote": "Overall, these results suggest that circuits extracted from weight-sparse models, even when interpretable, should be scrutinized for faithfulness.",
+ "metric": "task CE loss / circuit node count",
+ "target_value": "~30 nodes achieve task loss < 0.05 on a nonsense task; ordinary pronoun task needs ~10 nodes for similar loss",
+ "target_numeric": 30.0,
+ "direction": "-",
+ "uncertainty_reported": "none",
+ "tolerance": "rel:0.15",
+ "tolerance_rationale": "other scalar metric: 15% relative; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 4,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "SimpleStories pretraining data (HF hub: jacobcd52/simplestories-tokenized or SimpleStories/SimpleStories)",
+   "synthetic pronoun/nonsense task prompts generated in code (src/pruning/tasks.py)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "No single canonical script maps directly onto the post's specific 'nonsense task ~30 nodes vs. pronoun task ~10 nodes' comparison -- would require identifying the right task name(s)/config among ~15 near-duplicate run_*.py scripts",
+  "If the specific pretrained checkpoint used in the post isn't the one hosted on HF, pretraining a sparse model from scratch is a 2B-token run per configs_bridges/ss128/*.yaml -- a much larger compute ask than the pruning step itself"
+ ],
+ "inspector_notes": "The underlying model and pruning method are tiny and clearly fit a 3090 with room to spare; the main friction is repo sprawl (~50 near-duplicate scripts) rather than compute. Whether the exact headline node counts require a specific pretrained checkpoint or a fresh 2B-token pretrain is not resolvable from the README alone.",
+ "headline_artifact": "Node-count vs. task cross-entropy-loss curves per task (nonsense/pronoun), produced by src/pruning/run_pruning.py and aggregated by scripts like scripts/regenerate_pareto_plots.py",
+ "selector_tier": "T?",
+ "selector_score": 7.14
+}

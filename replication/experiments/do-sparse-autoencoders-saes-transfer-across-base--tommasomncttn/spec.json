@@ -1,0 +1,77 @@
+{
+ "slug": "do-sparse-autoencoders-saes-transfer-across-base--tommasomncttn",
+ "post_id": "bsXPTiAhhwt5nwBW3",
+ "title": "Do Sparse Autoencoders (SAEs) transfer across base and finetuned language models?",
+ "date": "2024-09-29",
+ "repo": "tommasomncttn/sae-transferability",
+ "head_sha": "0bdb3c4cfdc8056a203ab3a48c32d105c197ff62",
+ "entrypoint": "notebooks/4_sae_eval.ipynb",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "sae-lens",
+  "transformer-lens",
+  "numpy",
+  "plotly",
+  "pandas",
+  "einops"
+ ],
+ "models": [
+  {
+   "hf_id": "google/gemma-2b",
+   "params_b": 2.0,
+   "gated": true
+  },
+  {
+   "hf_id": "mistral-7b (mistralai/Mistral-7B-v0.1, via TransformerLens name)",
+   "params_b": 7.0,
+   "gated": true
+  },
+  {
+   "hf_id": "shahdishank/gemma-2b-it-finetune-python-codes",
+   "params_b": 2.0,
+   "gated": false
+  },
+  {
+   "hf_id": "meta-math/MetaMath-Mistral-7B",
+   "params_b": 7.0,
+   "gated": false
+  }
+ ],
+ "phenomenon": "sparse autoencoder quality",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "SAE transferability from base to finetuned models is highly model-dependent: an SAE trained on Gemma-2b degrades drastically on a Python-code finetune while an SAE trained on Mistral-7B transfers well to a MetaMath finetune, and residual-activation similarity (cosine/Euclidean distance) between base and finetuned models anecdotally predicts this transferability.",
+ "quote": "We got drastically different results for our Gemma-2b-python-codes and Mistral-7B-MetaMath finetunes.",
+ "metric": "Reconstruction CE Loss Delta / R^2 variance explained, base vs finetuned model with same SAE",
+ "target_value": "Gemma-2b: loss delta 0.51 -> 4.21, R^2 0.97 -> -10.27; Mistral-7B: loss delta 0.15 -> 0.16, R^2 0.68 -> 0.58",
+ "target_numeric": -2.0,
+ "direction": "na",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 12 numbers; compare the components by hand",
+ "vram_estimate_gb": 15,
+ "fits_3090": "yes",
+ "est_runtime": "minutes to hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "ctigges/openwebtext-gemma-1024-cl or the SAE's own training dataset (loaded automatically by SAELens' ActivationsStore)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "requires downloading a public gemma-2b/it-finetune and a public MetaMath-Mistral-7B finetune from the HF Hub, and a residual-stream outlier-filtering config (outlier_cfg.json, included in repo root)",
+  "notebooks assume identical base/finetune tokenizer vocabularies and are written for Google Colab + Google Drive paths, needing light local adaptation",
+  "no version pins in requirements.txt (bare package names only)"
+ ],
+ "inspector_notes": "Best-documented repo of this batch: a clear README walks through the exact config (BASE_MODEL/FINETUNE_MODEL/RELEASE/hook_part/layer_num) needed to reproduce each of the two headline model pairs, all using public SAELens-hosted SAEs and public HF checkpoints. Both target models are far smaller than the T4/L4 Colab GPUs the authors used, so a 3090 has ample headroom.",
+ "headline_artifact": "4_sae_eval.ipynb output tables (Reconstruction CE Loss Delta, R^2 variance explained) comparing base vs finetuned model with the same pretrained SAE, for both Gemma-2b/python-finetune and Mistral-7B/MetaMath pairs.",
+ "selector_tier": "T1",
+ "selector_score": 5.12
+}

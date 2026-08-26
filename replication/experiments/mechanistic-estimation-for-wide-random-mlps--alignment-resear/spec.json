@@ -1,0 +1,56 @@
+{
+ "slug": "mechanistic-estimation-for-wide-random-mlps--alignment-resear",
+ "post_id": "fsG4m6sRMpomd7Rk6",
+ "title": "Mechanistic estimation for wide random MLPs",
+ "date": "2026-05-07",
+ "repo": "alignment-research-center/mlp_cumulant_propagation",
+ "head_sha": "93d091a4c26c042bfffa28f2e76a81bc0aba94bb",
+ "entrypoint": "scripts/kprop_by_width.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.12",
+ "key_deps": [
+  "torch",
+  "quimb",
+  "numpy",
+  "mpi4py",
+  "einops"
+ ],
+ "models": [
+  {
+   "hf_id": null,
+   "params_b": 0.001,
+   "gated": false
+  }
+ ],
+ "phenomenon": "interpretability tooling",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "A new mechanistic ('cumulant propagation') algorithm for estimating the expected output of wide random-initialization MLPs under Gaussian input outperforms Monte Carlo sampling both in theory (mean squared error O(epsilon^2) in time O(n/epsilon^2) vs. Theta(n^2/epsilon^2) for sampling) and in practice, achieving equal MSE with under 1/100th the FLOPs on 4-hidden-layer width-256 ReLU MLPs, and extends to low-probability estimation and a proof-of-concept 'mechanistic distillation' training loss.",
+ "quote": "For ReLU MLPs with 4 hidden layers and width 256, our best algorithms outperform Monte Carlo sampling at FLOP budgets spanning 7 orders of magnitude, in some cases achieving the same mean squared error using fewer than 1/100 as many FLOPs.",
+ "metric": "mean squared error vs. FLOPs for estimating expected output; relative error at low probability",
+ "target_value": "outperforms Monte Carlo sampling across 7 orders of magnitude of FLOP budget, in some cases matching MSE with <1/100 the FLOPs; achieves under 30% relative error for probabilities 100x lower than 1/N using similar FLOPs to N-sample Monte Carlo",
+ "target_numeric": 7.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 6 numbers; compare the components by hand",
+ "vram_estimate_gb": 18,
+ "fits_3090": "tight",
+ "est_runtime": "days",
+ "est_runtime_class": "days",
+ "budget_minutes": 480,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "Reproducing the full 7-orders-of-magnitude FLOP-budget comparison at the repo's hardcoded SAMPLES=2**34 ground-truth scale, across the full width/trial/nonlinearity sweep, is a multi-day job on one GPU. A reduced-scale run (fewer widths, smaller SAMPLES, single trial) would validate the algorithm's qualitative behavior but would not reproduce the exact headline MSE/FLOPs numbers."
+ ],
+ "inspector_notes": "The mechanistic estimator (mlp_kprop) itself is cheap and the model is tiny; nearly all runtime and VRAM pressure comes from generating a sufficiently low-variance Monte Carlo ground truth to compare against, which the default experiment configs bake in at very large sample counts.",
+ "headline_artifact": "plots/mse_vs_flops_main_relu.pdf (MSE vs FLOPs, kprop vs Monte Carlo sampling)",
+ "selector_tier": "T?",
+ "selector_score": 5.98
+}

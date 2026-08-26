@@ -1,0 +1,9 @@
+__pycache__/
+.numbers_from_union.json
+# replication runner outputs — cloned repos, venvs, logs are per-machine
+replication/experiments/*/src/
+replication/experiments/*/.venv/
+replication/experiments/*/run.log
+replication/experiments/*/vram.log
+replication/experiments/*/executed.ipynb
+replication/experiments/*/.vram.pid

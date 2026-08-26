@@ -1,0 +1,138 @@
+[
+ {
+  "post_id": "nKfmimhTKCsDM2Hwh",
+  "repo": "harmfulness-exploration/harmfulness_direction_entanglement",
+  "title": "Harmfulness Directions in OLMo",
+  "primary_claim": "Across 39 OLMo-3-7B training checkpoints, harmfulness subcategories do not converge into a single unified direction but occupy a structured, entangled geometric space that forms mostly early in training; in-distribution AUROC for linear harmfulness probes is often misleadingly high (even near initialization) due to superficial lexical and structural cues rather than learned semantic structure; and directions only become stable, transferable, and effective as steering vectors from mid-to-late pretraining onward, with post-training checkpoints steering the Instruct model far more effectively than pretraining-derived directions.",
+  "metric": "AUROC of general-harmfulness direction under a random-label control (20 repeated label-randomizations)",
+  "target_value": "mean AUROC 0.5120 (chance level)",
+  "models": [
+   "OLMo 3-7B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "training dynamics",
+  "claim_type": "positive",
+  "head_sha": "9bb700e7a9df67ca94cd8bfa8732aafe5b874ed1"
+ },
+ {
+  "post_id": "jkEnRkokmzvvKNzzB",
+  "repo": "fodenthal/residual-geometry-experiment",
+  "title": "Most of the residual stream forgets within a token. A compact subspace doesn't.",
+  "primary_claim": "In layer 12 of Gemma-2-2B, most residual-stream directions lose predictive signal within a single token, but a compact ~31-dimensional subspace has much longer autocorrelation timescales (90th percentile 17 tokens vs 1 for random/PCA directions); this slow subspace accounts for essentially all cross-token persistence (projecting it out collapses held-out timescale to near-null), depends on sequential token order rather than token composition alone, and aligns with attention-output geometry more than chance.",
+  "metric": "90th-percentile within-document autocorrelation timescale (tokens, 1/e crossing)",
+  "target_value": "17 tokens for time-lagged probes vs 1 token for random/PCA directions",
+  "models": [
+   "Gemma 2-2b"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "representation geometry",
+  "claim_type": "positive",
+  "head_sha": "2529e3257e0453c806fb65764c0225b7ca4f75e3"
+ },
+ {
+  "post_id": "uDrsffSLzWD6cDnTt",
+  "repo": "franciscohs/fsec-paper",
+  "title": "Evidence for feature-specific error correction in LLMs",
+  "primary_claim": "LLMs exhibit feature-specific error correction (FSEC): perturbing residual-stream activations along candidate feature directions (contrastive, MELBO, top-activating SAE latents) produces a stronger downstream response than perturbing along mixtures of those directions, measured as a superellipse exponent p>2 (mean ~2.3 for contrastive, ~2.2 for MELBO/SAE), while non-feature baseline directions (PCA, random, random-difference) give p~2; this replicates across six LLM families and a toy model with ground-truth features (where p=3-3.4), providing the first empirical evidence for computation-in-superposition's predicted error-correction mechanism.",
+  "metric": "superellipse exponent p for candidate feature directions vs non-feature baselines",
+  "target_value": "contrastive directions: mean p=2.42, 95% CI [2.29, 2.62]; MELBO: mean p=2.21, 95% CI [2.01, 2.42]; top-activating SAE latents: mean p=2.28, 95% CI [2.14, 2.47]; PCA baseline: mean p=2.03, 95% CI [1.94, 2.12]; random-difference baseline: mean p=2.05, 95% CI [2.00, 2.10]; random baseline: mean p=2.03, 95% CI [2.00, 2.07]; toy model with ground-truth features: p=3-3.4",
+  "models": [
+   "Gemma 2-9B",
+   "Qwen 3-1.7B",
+   "Llama 3.1-8B",
+   "Mistral 7B-v0.3",
+   "Aya Expanse-8B",
+   "Yi 1.5-9B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "superposition",
+  "claim_type": "positive",
+  "head_sha": "32f4f12b4ce95b424fa475234c9db8566556c20f"
+ },
+ {
+  "post_id": "xmpauEXEerzYcJKNm",
+  "repo": "science-of-finetuning/diffing-toolkit",
+  "title": "What We Learned Trying to Diff Base and Chat Models (And Why It Matters)",
+  "primary_claim": "Standard L1-trained crosscoders hallucinate most of their apparent 'chat-only' latents due to shrinkage and latent-decoupling artifacts; switching to BatchTopK crosscoders and, further, diff-SAEs trained on chat-base activation differences recover far more of the true behavioral difference between base and chat models (88% of the KL gap for diff-SAEs vs 60% for crosscoders).",
+  "metric": "% of behavioral KL gap recovered",
+  "target_value": "60% (crosscoder reconstruction) vs 88% (diff-SAE reconstruction)",
+  "models": [
+   "Gemma 2 2B"
+  ],
+  "workload": "aux-train",
+  "tier": "T1",
+  "phenomenon": "crosscoder / model diffing",
+  "claim_type": "negative",
+  "head_sha": "e0b84a591f5184d69a65082e4366ccfe36f47661"
+ },
+ {
+  "post_id": "jZfNX4GJPdptxSxt4",
+  "repo": "lovkush-a/arena-sandbagging-mi",
+  "title": "Adding noise to a sandbagging model can reveal its true capabilities",
+  "primary_claim": "Adding noise to the weights of a sandbagging Qwen2.5-1.5B-Instruct model can increase its GSM8k performance (revealing hidden capability), replicating the main effect from 'Noise Injection Reveals Hidden Capabilities of Sandbagging Language Models' with a different model and dataset.",
+  "metric": "accuracy on 350 GSM8k questions vs weight noise level",
+  "target_value": "for some seeds, accuracy of the sandbagging-prompted model increases as noise is added, while the normal-prompted model's accuracy decreases with noise",
+  "models": [
+   "Qwen 1.5B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "sandbagging",
+  "claim_type": "replication",
+  "head_sha": "d801cd70a6945d42e14370465da13b86815c376f"
+ },
+ {
+  "post_id": "frvmrrND28SxZnkEy",
+  "repo": "model-organisms-for-real/model-organism-lottery",
+  "title": "The Model Organism Lottery: Model Organism Interpretability Strongly Depends on Training Methodology",
+  "primary_claim": "Across 54 model organisms trained to exhibit three quirks via seven training methodologies, interpretability as measured by activation oracles, activation difference steering, logit lens, and sparse autoencoders depends strongly and unpredictably on train-time choices even after controlling for behavioural quirk expression rate, and the authors' novel integrated-DPO training method (which folds quirk data into the original post-training phase) fairly often yields less interpretable model organisms than post-hoc fine-tuning methods do.",
+  "metric": "interpretability score (AO accuracy, steering HRS, logit-lens MCP, SAE quirk-feature fraction) across training methods within a quirk family, at matched quirk expression rate",
+  "target_value": "interpretability varies widely among variants within each quirk family with inconsistent rankings across families; integrated DPO yields the lowest or second-lowest AO and steering interpretability in every family; unlike Minder et al. (2025), mixing benign data does not consistently decrease interpretability despite a far more aggressive 1:1 mixing ratio",
+  "models": [
+   "OLMo 2-1B",
+   "Gemma 3-1B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "eval methodology critique",
+  "claim_type": "positive",
+  "head_sha": "9384b9231580f43c77a5f9bf7a7339750b15ab5c"
+ },
+ {
+  "post_id": "4EvWpvFvHzmPvuiF5",
+  "repo": "ankitsanjyal/cot_faithfulness",
+  "title": "Necessity Protects Chain of Thought Monitoring by Prevention, Not Disclosure",
+  "primary_claim": "Across Qwen3-4B, DeepSeek-R1-Distill-8B, and Gemma-3-4B, a misleading authority cue almost never flips the answer when reasoning is necessary (GSM8K capture near-zero: 0.4%, 2.2%, 0.0%) but flips it substantially when reasoning is optional (propensity tasks MMLU/CommonsenseQA: 4-41% capture, all contrasts p<1e-5), and when a cue does land, the chain-of-thought almost never discloses it (Gemma discloses only 1 of 489 captured traces despite being captured most often), showing necessity protects CoT monitoring by preventing manipulation rather than by producing more honest disclosure when manipulation succeeds.",
+  "metric": "capture rate (cue flips answer) on necessity (GSM8K) vs pooled propensity (MMLU+CommonsenseQA) arms; disclosure rate on captured propensity traces",
+  "target_value": "capture: Qwen 0.4% vs 4.4%; DeepSeek 2.2% vs 17.5%; Gemma 0.0% vs 40.8% (all p<1e-5); disclosure on captured propensity traces: Qwen 50.9%, DeepSeek 51.4%, Gemma 0.2% (1/489)",
+  "models": [
+   "Qwen 3-4B",
+   "DeepSeek R1-Distill-8B",
+   "Gemma 3-4B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "chain-of-thought faithfulness",
+  "claim_type": "positive",
+  "head_sha": "24202170dc7c6ceb323c5c5cb5e5e2b97da9d898"
+ },
+ {
+  "post_id": "aFyir2PaoCHK5prAu",
+  "repo": "star2vec/tarcle",
+  "title": "The imposters among us: function vectors that ace every check and do the wrong task (in search of circularity)",
+  "primary_claim": "Shift-by-k-months function vectors extracted from low-diversity few-shot prompts (Llama-3.2-3B) pass all three classic validation checks (behavioral gate, stability, causal effect) yet encode a completely different task (outputting an adjacent month, ignoring k), with margin scores as low as -1.000 in the most extreme case, and lower example diversity simultaneously makes the checks look better (few-shot accuracy 0.38 to 0.83) while making the vector's true identity worse",
+  "metric": "margin (correct shift-by-k occurrences minus neighbor-task occurrences, among cases where they differ) across month-diversity sets",
+  "target_value": "margin +0.35 (12 months) and +0.34 (9 months) down to -0.31, -0.46, -0.70, -0.94 (6- and 4-month range sets), with -1.000 for the September-December subset; behavioral gate rises from 0.38 to 0.83 as diversity drops",
+  "models": [
+   "Llama 3.2-3B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "activation steering",
+  "claim_type": "negative",
+  "head_sha": "37831a330ec5d4339d6946c1a2e51732ce8fce00"
+ }
+]

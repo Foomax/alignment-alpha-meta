@@ -1,0 +1,6 @@
+- Pinned `d801cd70`; env: Python 3.12, torch 2.6.0+cu124, transformers 4.57.6 (pinned <5), datasets 5.0.1. Entrypoint as run: `experiments/exp07_repl.py` (copy of `exp07_add_noise_with_batches.py` with output dir `../logs/repl_20260826/` and `0.0` prepended to the noise list). Run from `experiments/`.
+- Ledger `replication/ledger.json`: installs/runs true, `claim_reproduced=true`, 10 seeds, 102 passes, 103 min, peak VRAM 15.2 GB. DEVIATION FLAG in the notes: strict pre-registered criterion (a) false by +1.0 pp at noise 0.0005 (< 1 SE); true within 1 SE; (b) 9/10.
+- Numbers (mean over seeds, noise 0/.0005/.001/.002/.003/.0035): original 72.3/73.3/71.9/66.9/57.4/51.3; sandbag 46.3/55.1/60.3/59.8/52.2/45.5. Author's committed CSVs: original 74.6/74.1/73.2/68.4/56.9/49.6; sandbag 46.9/48.4/45.3/43.4/41.2/38.9. `replication/author_baseline.csv` has the author's per-file accuracies.
+- Repro analysis: `replication/analyze_repl.py [src/logs/repl_YYYYMMDD]` → criteria (a)/(b), comparison table, `ANSWER:`-only share.
+- Env fixes: `src/eval_model_on_dataset.py` line 1 import added (module used `SYSTEM_PROMPT` as a default arg without importing it); nothing else in `src/` changed.
+- Open: author's collapsed seeds (2,3,9) vs none here — their transformers 4.5x stack or chance; noise 0.005 not run.

@@ -1,0 +1,139 @@
+[
+ {
+  "post_id": "nKRvp7LKgjJxbpykq",
+  "repo": "artmtt/sae-interpretability-small-reasoning-model",
+  "title": "Do k-Sparse Autoencoders Reveal Thinking Patterns? Interpretable Features in a Small Reasoning Model",
+  "primary_claim": "Pre-trained k-sparse autoencoders applied to DeepSeek-R1-Distill-Qwen-1.5B's hidden states (on GSM8K reasoning traces) successfully extract interpretable features, including several features in layer 10 that strongly and repeatedly activate on tokens characteristic of the model's reasoning process.",
+  "metric": "frequency a feature is a top feature across 32 model inferences (layer 10)",
+  "target_value": "feature 32456: top feature in 28/32 inferences; feature 6252: 14/32; feature 31146: 10/32",
+  "models": [
+   "DeepSeek R1-Distill-Qwen-1.5B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "SAE feature interpretability",
+  "claim_type": "positive",
+  "head_sha": "50c2b40be1f3e8a2bd1f5bbede75ac88bc1d197b"
+ },
+ {
+  "post_id": "nYNjjCFmTMcKdCmHM",
+  "repo": "karthikviswanathn/mats8submissions",
+  "title": "The REPHRASE Circuit: How Fine-Tuning Enhances LLMs to REPHRASE Text ",
+  "primary_claim": "Instruction fine-tuning enhances a specific attention head (L30H31) that performs copy suppression, and other heads including L13H(20-23), which together account for INSTRUCT's much better performance at the REPHRASE task compared to BASE (average logit difference 7.37 vs -1.02).",
+  "metric": "logit difference",
+  "target_value": "7.37 (INSTRUCT) vs -1.02 (BASE)",
+  "models": [
+   "Llama 8B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "circuit discovery",
+  "claim_type": "positive",
+  "head_sha": "2edab56f3a82b1e8a1b84974e57869e8e5691cd0"
+ },
+ {
+  "post_id": "kCCsrJeJiZRsgGbWt",
+  "repo": "mduffster/self-referent-test",
+  "title": "LLM Self-Reference Language in Multilingual vs English-Centric Models",
+  "primary_claim": "Instruction tuning compresses attention-entropy-based self-referent processing toward neutral fact-retrieval processing in English-centric models (Llama, Mistral), while a multilingual model (Qwen) largely preserves the distinct attention pattern between self-referent and neutral prompts after instruction tuning.",
+  "metric": "mean change in Role-Focus Coefficient (\u0394RFC) from base to instruct, by model",
+  "target_value": "Llama 3.1 8B: -0.023 (68.8% of layers compress); Mistral 7B: -0.093 (81.2% compress); Qwen 2.5 7B: +0.048 (28.6% compress, 50% near zero)",
+  "models": [
+   "Mistral 7B v0.1 (Base and Instruct)",
+   "Qwen2.5 7B (Base and Instruct)",
+   "Llama 3.1 8B (Base and Instruct)"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "representation geometry",
+  "claim_type": "positive",
+  "head_sha": "3c5ca9a739c20bd1cca1b4d6848575610b84751c"
+ },
+ {
+  "post_id": "zQqGhKPqaCBZZDCge",
+  "repo": "peppinob-ol/attribution-graph-probing",
+  "title": "Automated Circuit Interpretation via Probe Prompting",
+  "primary_claim": "An automated 'probe-prompting' pipeline that measures feature activation responses to concept-varying prompts and groups features into concept-aligned supernodes achieves 0.53 Replacement / 0.83 Completeness on Neuronpedia metrics for 'capitals' attribution-graph circuits in Gemma-2-2B, outperforming geometric (cosine-only, layer-adjacency) clustering baselines on behavioral-coherence interpretability metrics, with entity-swap tests showing early-layer features generalize much more (~80-92% overlap) than late-layer features (~0-50%).",
+  "metric": "Replacement / Completeness scores (Neuronpedia) for concept-aligned subgraphs vs. geometric clustering baselines",
+  "target_value": "concept-aligned subgraphs average 0.5394 Replacement and 0.8257 Completeness across 5 prompts, outperforming cosine-only and layer-adjacency clustering on behavioral metrics like Peak Token Consistency (0.425 vs. 0.183/0.301) and Activation Pattern Similarity (0.762 vs. 0.130/0.415)",
+  "models": [
+   "Gemma-2 2B (CLT-HP transcoder)"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "attribution / attribution patching",
+  "claim_type": "method",
+  "head_sha": "bbff7525d59a8fea7b10052739494cf7d3363cc1"
+ },
+ {
+  "post_id": "xZkBDAgQGqm6tvCvy",
+  "repo": "amindtothink/interpretable-fine-tuning",
+  "title": "Interpretable Fine Tuning Research Update and Working Prototype",
+  "primary_claim": "ISaeRFT (Interpretable Sparse Autoencoder Representation Fine Tuning) \u2014 a technique that gradient-optimizes IA3-style learned scaling factors on SAE latents via a HuggingFace PeftModel \u2014 has a working prototype where DPO loss decreases significantly within as few as 20 training steps, though the research is at a very early stage with no major proof of concept yet on downstream tasks.",
+  "metric": "DPO loss during training",
+  "target_value": "DPO loss goes down significantly in as few as 20 steps",
+  "models": [
+   "Gemma 2 2B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "interpretability tooling",
+  "claim_type": "method",
+  "head_sha": "eed9438f1ca8a6c99dbdc71c5ce2692611eb5da6"
+ },
+ {
+  "post_id": "WrKLhJWdTzbnTnXbx",
+  "repo": "andrejfsantos4/decomposing-sycophancy",
+  "title": "Towards a Science of Evals for Sycophancy",
+  "primary_claim": "The standard method of measuring LLM sycophancy (accuracy drop when an opinion decoy is added to a multiple-choice prompt) substantially overestimates true sycophancy, because most of the apparent effect is actually driven by a 'repetition bias' (the model favoring an answer merely because it is repeated in the prompt) rather than genuine agreement-seeking: in their Mistral-7B-Instruct/ARC-Easy setup, the naively measured 34-point accuracy drop reduces to a 22-point 'real sycophancy' effect once noise (~1 point) and repetition bias (~12 points) are subtracted out.",
+  "metric": "accuracy on ARC-Easy under different decoy conditions",
+  "target_value": "Baseline 75%; Opinion Bias 40.7% (-34.3pp); Noise (Opinion Decoy) 74.2% (-0.8pp); Repetition Bias 56.3% (-18.7pp from baseline); Noise (Repetition Decoy) 68.3% (-6.7pp from baseline); real sycophancy estimated at -22pp",
+  "models": [
+   "Mistral 7B Instruct v0.1"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "sycophancy",
+  "claim_type": "method",
+  "head_sha": "3461d47da3461c379c1f0bcb5bb62a9d8b67a869"
+ },
+ {
+  "post_id": "LMkvjDTLKFrgdzJdG",
+  "repo": "ivanc987/refusal-representations",
+  "title": "Single Direction vs Low-Rank Refusal in Small LLMs",
+  "primary_claim": "Refusal behavior in small instruction-tuned LLMs is compressed into a single dominant residual-stream direction in some models (Qwen, Gemma, Llama-3.1-8B) but is spread across a low-rank subspace in others (Llama-3.2-1B/3B, Phi-3-mini), so single-direction ablation achieves 80-96% compliance in the former group but only 15-39% in the latter.",
+  "metric": "compliance rate (LLM-judge, harmful prompts, best single RV)",
+  "target_value": "80-96% for single-direction models (Qwen-1.8B, Qwen3-1.7B, Gemma-2B, Llama-3.1-8B) vs 15-39% for low-rank models (Llama-3.2-1B, Llama-3.2-3B, Phi-3-mini)",
+  "models": [
+   "Qwen 1.8B-Chat",
+   "Qwen 3-1.7B",
+   "Gemma 2B-it",
+   "Llama 3.1-8B-Instruct",
+   "Llama 3.2-1B-Instruct",
+   "Llama 3.2-3B-Instruct",
+   "Phi 3-mini-4k"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "refusal behaviour",
+  "claim_type": "positive",
+  "head_sha": "a206a1479b748f48da6b0ecab65571d79590eb02"
+ },
+ {
+  "post_id": "6mLwAuFAE98c6R7w3",
+  "repo": "debate-fp9/lw-progress-update-snapshot",
+  "title": "Research update: RL on Debate Games shows Proposal Accuracy uplift alongside Judge Hacking",
+  "primary_claim": "Training debaters via RL in a Propose-Critique-Decide protocol improves Proposal accuracy on Hendrycks' MATH toward the RLVR ceiling and above the Consultancy floor with a weak Llama-3.1-8B judge, but the Critic simultaneously learns a 'judge hacking' spurious-critique strategy that causes Judge Alignment to decrease dramatically (driven by rising P(reject|correct)), even as Proposer accuracy continues to rise.",
+  "metric": "Judge Alignment (correct-accept + incorrect-reject rate) over PCD-4 training steps, weak Llama judge",
+  "target_value": "decreases dramatically after the first 50 steps, driven primarily by a rising P(reject|correct); Proposer accuracy nonetheless continues to rise",
+  "models": [
+   "Qwen 3-30B-A3B Instruct",
+   "Llama 3.1-8B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "debate training dynamics",
+  "claim_type": "positive",
+  "head_sha": "fd6fbd99676892f33b87053d4f4b6868e7571b66"
+ }
+]

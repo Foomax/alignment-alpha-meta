@@ -1,0 +1,527 @@
+[
+ {
+  "n": 1,
+  "slug": "gpt-2-s-ioi-behavior-is-defined-where-the-paper---fractalmachinist",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 2,
+  "tol": "manual",
+  "target": 0.23,
+  "blockers": [],
+  "gated": [],
+  "api": 0,
+  "entry": "experiments.ipynb",
+  "run_sh": 1
+ },
+ {
+  "n": 2,
+  "slug": "features-of-saes-are-universal-but-only-up-to-an--jordanmccann",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 4,
+  "tol": "manual",
+  "target": 0.976,
+  "blockers": [],
+  "gated": [],
+  "api": 0,
+  "entry": "python -m replicate run-fast (replicate/run_fast.py; e.g. po",
+  "run_sh": 1
+ },
+ {
+  "n": 3,
+  "slug": "investigating-sensitive-directions-in-gpt-2-an-i--dajale423",
+  "tier": "T1",
+  "conf": "medium",
+  "budget": 45,
+  "vram": 4,
+  "tol": "rel:0.15",
+  "target": 6.0,
+  "blockers": [
+   "the exact --direction_type/--subtraction flag combination that reproduces the post's 'cov-random-mixture' baseline isn't spelled out as a single ready-to-run command (run_sensitive_directions.sh only has one example, plus commented-out variants)",
+   "sensitive_direction.py hardcodes args.e2e = 'h9hrelni', so every run pulls a specific end-to-end SAE checkpoint from a wandb artifact path rather than a stable public registry"
+  ],
+  "gated": [],
+  "api": 1,
+  "entry": "scripts/sensitive_direction.py",
+  "run_sh": 1
+ },
+ {
+  "n": 4,
+  "slug": "saes-are-highly-dataset-dependent-a-case-study-o--ckkissane",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 3,
+  "tol": "manual",
+  "target": null,
+  "blockers": [
+   "no requirements.txt / pyproject.toml / setup.py anywhere in the repo, so exact sae_lens/transformer_lens/sae_dashboard versions are unstated and unpinned",
+   "the 4 pretrained SAEs are hosted only as wandb artifacts under specific project names (e.g. 'ckkissane/qwen-500M-chat-lmsys-1m-anthropic'), not a stable public model registry, so reproducing depends on those wandb projects staying public/reachable"
+  ],
+  "gated": [],
+  "api": 1,
+  "entry": "refusal_dir_recons_fidelity_evals.py",
+  "run_sh": 1
+ },
+ {
+  "n": 5,
+  "slug": "can-we-interpret-latent-reasoning-using-current---cywinski",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 4,
+  "tol": "abs:5",
+  "target": 20.0,
+  "blockers": [
+   "meta-llama/Llama-3.2-1B-Instruct is gated on HF and requires an accepted license plus HF_TOKEN (per .env.template)"
+  ],
+  "gated": [
+   "meta-llama/Llama-3.2-1B-Instruct"
+  ],
+  "api": 0,
+  "entry": "experiments/4_mean_latent_patching_same_vs_diff.py",
+  "run_sh": 1
+ },
+ {
+  "n": 6,
+  "slug": "unpacking-multimodal-data-leakage-broken-benchma--ai-forever",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 0,
+  "tol": "abs:5",
+  "target": 98.6,
+  "blockers": [],
+  "gated": [],
+  "api": 0,
+  "entry": "shift_detection/run_attack.py",
+  "run_sh": 1
+ },
+ {
+  "n": 8,
+  "slug": "activation-plateaus-where-and-how-they-emerge--mshinkle",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 3,
+  "tol": "manual",
+  "target": null,
+  "blockers": [],
+  "gated": [],
+  "api": 0,
+  "entry": "full_experiment.sh (runs scripts/interpolate_and_record_acti",
+  "run_sh": 1
+ },
+ {
+  "n": 9,
+  "slug": "comparing-the-effectiveness-of-top-down-and-bott--ak47na",
+  "tier": "T1",
+  "conf": "medium",
+  "budget": 45,
+  "vram": 4,
+  "tol": "manual",
+  "target": 93.0,
+  "blockers": [
+   "README's 'pip install -r requirements.txt' references a file that does not exist anywhere in the repo; dependencies must be inferred from imports (transformer_lens, sae_lens, wandb, einops, vllm)",
+   "evals.ipynb's early cells run '!git clone .../refusal_direction.git' then '%cd sae-dataset-dependence/refusal_direction' \u2014 a path that clone would not create \u2014 suggesting stale/copy-pasted cell paths from a sibling project that need manual fixing before the notebook runs",
+   "SAE is pulled from one specific W&B artifact version; requires a (free) W&B account and that artifact remaining available"
+  ],
+  "gated": [],
+  "api": 1,
+  "entry": "evals.ipynb",
+  "run_sh": 1
+ },
+ {
+  "n": 10,
+  "slug": "developmental-stages-in-multi-problem-grokking--james-sullivan",
+  "tier": "T?",
+  "conf": "high",
+  "budget": 45,
+  "vram": 1,
+  "tol": "rel:0.15",
+  "target": 30.0,
+  "blockers": [],
+  "gated": [],
+  "api": 0,
+  "entry": "src/EstimateLLC.ipynb",
+  "run_sh": 1
+ },
+ {
+  "n": 11,
+  "slug": "a-necessity-check-for-linear-safety-probes--vaiyr",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 0,
+  "tol": "rel:0.15",
+  "target": 17.0,
+  "blockers": [
+   "This CPU replay recomputes the decision rule over PRE-COMPUTED per-cell ablation results already checked into the repo; it is not a re-derivation from raw model weights.",
+   "Fully-from-scratch regeneration of those per-cell results (README Steps 3-4: freeze buffer -> base eval -> extract -> fit probes -> SFT rounds -> ablation battery) needs 1-2x H100 GPUs via Modal (not a single 3090) at ~$60-80/family and 12-24h wall-clock each, across 5 (model, feature) conditions.",
+   "From-scratch regeneration also needs an Anthropic API key (Claude Haiku for the refusal judge, Claude Sonnet for the sycophancy judge) -- a hard blocker under a no-closed-API-keys budget.",
+   "Llama-3-8B-Instruct, Gemma-2-9B-it, and Mistral-7B-Instruct-v0.3 are gated on HF (OLMo-2 and Qwen2.5 are not)."
+  ],
+  "gated": [],
+  "api": 1,
+  "entry": "scripts/run_autopicker_battery.py",
+  "run_sh": 1
+ },
+ {
+  "n": 12,
+  "slug": "tracing-typos-in-llms-my-attempt-at-understandin--idostik",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 4,
+  "tol": "rel:0.15",
+  "target": 0.0,
+  "blockers": [
+   "No requirements.txt/environment file -- dependency versions are entirely unpinned (%pip install with no version numbers); the notebook appears Colab-authored (login(\"Your hf token\") placeholder, inline package installs)."
+  ],
+  "gated": [
+   "meta-llama/Llama-3.2-1B"
+  ],
+  "api": 0,
+  "entry": "llm-typo-experiment.ipynb (per-head ablation loop / logit-di",
+  "run_sh": 1
+ },
+ {
+  "n": 13,
+  "slug": "the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 2,
+  "tol": "rel:0.15",
+  "target": 33.0,
+  "blockers": [],
+  "gated": [],
+  "api": 0,
+  "entry": "skew_analysis.py (symmetric/skew-symmetric decomposition of ",
+  "run_sh": 1
+ },
+ {
+  "n": 14,
+  "slug": "confirming-claims-of-superposition-and-adversari--uchicago-xlab",
+  "tier": "T?",
+  "conf": "high",
+  "budget": 45,
+  "vram": 1,
+  "tol": "manual",
+  "target": 1.0,
+  "blockers": [],
+  "gated": [],
+  "api": 0,
+  "entry": "synth/run.py",
+  "run_sh": 1
+ },
+ {
+  "n": 15,
+  "slug": "matryoshka-sparse-autoencoders--noanabeshima",
+  "tier": "T?",
+  "conf": "medium",
+  "budget": 45,
+  "vram": 1,
+  "tol": "abs:0.05",
+  "target": 0.0,
+  "blockers": [
+   "No code in this repo trains or evaluates SAEs on the 4-layer TinyStories LM, computes Mean Max Correlation against a 'small reference SAE', or computes Fraction of Variance Unexplained on real LM activations. The entire second half of the primary claim (the TinyStories comparison, which is where the quantitative MMC/FVU headline numbers come from) has no entrypoint anywhere in the repo."
+  ],
+  "gated": [],
+  "api": 0,
+  "entry": "train_saes_on_toy.ipynb",
+  "run_sh": 1
+ },
+ {
+  "n": 16,
+  "slug": "an-induction-head-in-disguise-chasing-grammar-in--ameya-bit",
+  "tier": "T?",
+  "conf": "high",
+  "budget": 45,
+  "vram": 1,
+  "tol": "manual",
+  "target": 5.0,
+  "blockers": [],
+  "gated": [],
+  "api": 0,
+  "entry": "interp/niche_attention_analysis.ipynb",
+  "run_sh": 1
+ },
+ {
+  "n": 17,
+  "slug": "a-black-box-made-less-opaque-part-2--thebuleganteng",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 1,
+  "tol": "abs:0.05",
+  "target": 0.13,
+  "blockers": [],
+  "gated": [],
+  "api": 0,
+  "entry": "notebooks/phase_2_semantics_vs_ideas_v2.ipynb",
+  "run_sh": 1
+ },
+ {
+  "n": 18,
+  "slug": "superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 4,
+  "tol": "manual",
+  "target": 17.4,
+  "blockers": [],
+  "gated": [],
+  "api": 0,
+  "entry": "07_compare_patch.py",
+  "run_sh": 1
+ },
+ {
+  "n": 19,
+  "slug": "mechanistic-interpretability-via-learning-differ--ayoakin",
+  "tier": "T1",
+  "conf": "medium",
+  "budget": 45,
+  "vram": 2,
+  "tol": "rel:0.15",
+  "target": 2.0,
+  "blockers": [
+   "subteams/LogitLens/ contains only a one-line empty README -- the logit-lens portion of the claim has no committed code",
+   "No single unified entrypoint; findings are spread across ~10 separate per-subteam notebooks (LLMProbing, SAEs, ActivationMaximization, SHAP) with only per-subteam requirements.txt files, no top-level one"
+  ],
+  "gated": [],
+  "api": 0,
+  "entry": "subteams/LLMProbing/experiments/run_experiment.py",
+  "run_sh": 1
+ },
+ {
+  "n": 20,
+  "slug": "matryoshka-nlas-training-activation-verbalizers---syvb",
+  "tier": "T2",
+  "conf": "high",
+  "budget": 45,
+  "vram": 15,
+  "tol": "rel:0.15",
+  "target": 3.0,
+  "blockers": [
+   "setup_box.sh downloads several 'syvb/...' checkpoints and the eval parquet using the repo author's own personal HF_TOKEN; it is unclear whether these specific repos (as opposed to the published 'kitft' control checkpoints) are actually public without requesting access",
+   "the RLed AR checkpoint's exported value_head.safetensors is documented as corrupt (~12% NaN weights) and requires a manual swap-in of a different checkpoint's clean head, per the README's own workaround"
+  ],
+  "gated": [],
+  "api": 0,
+  "entry": "experiments/qwen2.5-matryoshka-warmstart-sonnet46/fve_trunca",
+  "run_sh": 1
+ },
+ {
+  "n": 21,
+  "slug": "competitive-ai-safety-is-the-loss-function-to-ma--patrickod32",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 0,
+  "tol": "manual",
+  "target": 0.956,
+  "blockers": [],
+  "gated": [],
+  "api": 0,
+  "entry": "notebooks/02_evaluate_probe.ipynb",
+  "run_sh": 1
+ },
+ {
+  "n": 22,
+  "slug": "exploring-vocabulary-alignment-of-neurons-in-lla--coolvision",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 5,
+  "tol": "manual",
+  "target": null,
+  "blockers": [
+   "meta-llama/Llama-3.2-1B-Instruct is gated on HuggingFace \u2014 needs license acceptance",
+   "no requirements.txt/pyproject.toml \u2014 transformer_lens/transformers versions must be inferred"
+  ],
+  "gated": [
+   "meta-llama/Llama-3.2-1B-Instruct"
+  ],
+  "api": 0,
+  "entry": "LLaMA_jun_4_2025_neurons.ipynb",
+  "run_sh": 1
+ },
+ {
+  "n": 23,
+  "slug": "can-we-teach-a-model-to-encode-a-semantic-featur--phusroyal",
+  "tier": "T?",
+  "conf": "high",
+  "budget": 45,
+  "vram": 2,
+  "tol": "manual",
+  "target": 0.9996,
+  "blockers": [],
+  "gated": [],
+  "api": 0,
+  "entry": "src/predefined_manifold (run via `uv run python -m src.prede",
+  "run_sh": 1
+ },
+ {
+  "n": 24,
+  "slug": "investigating-echo-tasks-in-qwen-2-5-1-5b-instru--mild-rgb",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 6,
+  "tol": "rel:0.15",
+  "target": 2.0,
+  "blockers": [
+   "no requirements.txt \u2014 relies on inline !pip install transformer_lens / circuitsvis in Colab, versions unpinned",
+   "notebooks were authored for Google Colab and 'render weirdly outside of that environment' per the README, though the code itself has no Colab-specific dependencies beyond the install cell"
+  ],
+  "gated": [],
+  "api": 0,
+  "entry": "2_copy_circuit_survey.ipynb",
+  "run_sh": 1
+ },
+ {
+  "n": 25,
+  "slug": "jailbreak-patching-with-soo-style-conceptual-fus--shivasrightfoot",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 6,
+  "tol": "manual",
+  "target": 20.0,
+  "blockers": [
+   "XSTest is a gated HF dataset requiring a one-time click-through acceptance (not an API-key blocker, just a manual step)."
+  ],
+  "gated": [],
+  "api": 0,
+  "entry": "02_soo_conceptual_fusion_training.ipynb",
+  "run_sh": 1
+ },
+ {
+  "n": 26,
+  "slug": "banana-in-bostrom-out-paperclip-maximization-is---jeffreywilliampo",
+  "tier": "T2",
+  "conf": "high",
+  "budget": 45,
+  "vram": 0,
+  "tol": "manual",
+  "target": 3.0,
+  "blockers": [
+   "depends entirely on a third-party free public API (Neuronpedia) remaining available and behaviorally stable -- the repo's own script docstring warns 'greedy decoding is not guaranteed token-identical across backend builds: reproduce the destination basin, not the byte-exact string'; if Neuronpedia changes or retires the endpoint/lens revision, exact-string reproduction may fail even though the method itself is trivial"
+  ],
+  "gated": [],
+  "api": 0,
+  "entry": "reproduce/run_reproduction.py",
+  "run_sh": 1
+ },
+ {
+  "n": 27,
+  "slug": "enabling-new-applications-with-today-s-mechanist--ibm",
+  "tier": "T1",
+  "conf": "medium",
+  "budget": 45,
+  "vram": 2,
+  "tol": "rel:0.15",
+  "target": 0.001,
+  "blockers": [
+   "timing_tests.py hard-codes a local path/filename `gpt.top_k32.f0.pt` for the SAE checkpoint (`path = \"\" # need to set your path here`) instead of calling the repo's own `sparse_autoencoder.paths.v5_32k()` helper used elsewhere in steering_utils.py -- a competent engineer must either download+rename the OpenAI SAE weight file or swap in the proper helper call.",
+   "timing_tests.py also reads Storage/D_ref_embeds.csv, Storage/D_align_embeds.csv, and Storage/dref_latents_{layer_id}.csv, none of which are checked into the repo -- they are generated by running steering.py's generated_ouptuts()/process_D_ref() first (confirmed present in steering_utils.py), so this is a two-step reproduction, not a single script.",
+   "steering.py's generated_ouptuts() also references Storage/d_align_test_prompts.csv, which is NOT in the repo (only d_align_prompts.csv and d_ref_prompts.csv are) -- would need to be reconstructed or the missing-file path avoided."
+  ],
+  "gated": [],
+  "api": 1,
+  "entry": "timing_tests.py",
+  "run_sh": 1
+ },
+ {
+  "n": 28,
+  "slug": "exploring-how-othellogpt-computes-its-world-mode--jim-maar",
+  "tier": "T?",
+  "conf": "high",
+  "budget": 45,
+  "vram": 3,
+  "tol": "abs:0.05",
+  "target": 0.818,
+  "blockers": [
+   "board_seqs_int_small.npy / board_seqs_string_small.npy are not included in this repo; the `git clone https://github.com/likenneth/othello_world` line that would fetch them is commented out, so a re-runner must uncomment/run it manually (well-known public repo, low friction)",
+   "the competing-hypothesis ablation test appears to live in flipping_circuit/prove_flipped_circuit_2.py, which loads data/board_seqs_int_train.pth and data/board_seqs_int_valid.pth -- neither this data/ directory nor any script to produce those .pth files exists anywhere in the repo (unlike the othello_world .npy files, there is no documented source for these), and a code comment ('with 60 GB RAM I can do 20.000') suggests the default NUM_GAMES_TRAIN=10000 config is itself close to the 31GB RAM budget"
+  ],
+  "gated": [],
+  "api": 1,
+  "entry": "prove_circuits_last_flipped.py (equivalently prove_circuits_",
+  "run_sh": 1
+ },
+ {
+  "n": 29,
+  "slug": "latent-space-collapse-understanding-the-effects---tenseisoham",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 2,
+  "tol": "rel:0.15",
+  "target": 160.87,
+  "blockers": [],
+  "gated": [],
+  "api": 0,
+  "entry": "logit-lens-analysis.ipynb",
+  "run_sh": 1
+ },
+ {
+  "n": 30,
+  "slug": "do-k-sparse-autoencoders-reveal-thinking-pattern--artmtt",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 4,
+  "tol": "manual",
+  "target": 32456.0,
+  "blockers": [
+   "No requirements.txt/pyproject.toml/environment.yml anywhere in the repo -- exact dependency versions must be inferred from notebook imports",
+   "sparsify is wired in as a git submodule (.gitmodules -> EleutherAI/sparsify) that must be fetched separately"
+  ],
+  "gated": [],
+  "api": 1,
+  "entry": "interp_experiments_deepseek_r1_distilled_qwen.ipynb",
+  "run_sh": 1
+ },
+ {
+  "n": 31,
+  "slug": "automated-circuit-interpretation-via-probe-promp--peppinob-ol",
+  "tier": "T1",
+  "conf": "high",
+  "budget": 45,
+  "vram": 0,
+  "tol": "manual",
+  "target": 0.5394,
+  "blockers": [
+   "To regenerate the attribution graphs from scratch (rather than reuse what's already committed under output/graph_data/), scripts/00_neuronpedia_graph_generation.py and 01_probe_prompts.py call Neuronpedia's hosted graph-generation/activation API (needs NEURONPEDIA_API_KEY) rather than running circuit-tracer locally -- this is an external paid service, not local GPU compute",
+   "requirements.txt uses loose >= pins for most packages; only circuit-tracer is pinned to an exact git tag",
+   "The repo checkout is ~5.7GB (mostly output/ batch results, some of it duplicated), well within the 150GB disk budget but worth noting"
+  ],
+  "gated": [],
+  "api": 1,
+  "entry": "scripts/research/graph_subgraph_scores.py",
+  "run_sh": 1
+ },
+ {
+  "n": 32,
+  "slug": "creating-interpretable-latent-spaces-with-gradie--g-w1",
+  "tier": "T?",
+  "conf": "high",
+  "budget": 45,
+  "vram": 1,
+  "tol": "abs:5",
+  "target": 92.58,
+  "blockers": [
+   "vae.py's save/export section is hardcoded SAVE=False, which tries to load a 'vae.pth' checkpoint that is not committed to the repo (only the already-exported vae_encoder.onnx/vae_decoder.onnx are included) -- a re-runner must flip SAVE=True (or otherwise skip the load) to actually train fresh weights before the final eval block will work end-to-end",
+   "no requirements.txt/pyproject.toml; deps must be inferred from the import block"
+  ],
+  "gated": [],
+  "api": 0,
+  "entry": "vae.py",
+  "run_sh": 1
+ }
+]

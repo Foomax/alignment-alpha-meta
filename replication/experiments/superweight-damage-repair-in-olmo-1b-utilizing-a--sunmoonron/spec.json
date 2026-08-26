@@ -1,0 +1,55 @@
+{
+ "slug": "superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron",
+ "post_id": "ifbNtv8QbNBrYFSSv",
+ "title": "Superweight Damage Repair in OLMo-1B utilizing a Single Row Patch (CPU-only Experiment) ",
+ "date": "2025-12-13",
+ "repo": "sunmoonron/super-weight-circuit-patching",
+ "head_sha": "dbc14761cd4510b6996de75491e085637cce9c2c",
+ "entrypoint": "07_compare_patch.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "transformers",
+  "datasets",
+  "safetensors"
+ ],
+ "models": [
+  {
+   "hf_id": "allenai/OLMo-1B-0724-hf",
+   "params_b": 1.0,
+   "gated": false
+  }
+ ],
+ "phenomenon": "circuit discovery",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Ablating a single 'superweight' in OLMo-1B causes perplexity to spike from 17.4 to 2884.3 with pathological outputs, but training a single trainable row-vector patch via KL distillation from the original model recovers approximately 93% of the lost performance while learning a new, largely orthogonal distributed direction rather than relearning the original weight (cosine similarity to the original row ~0.13).",
+ "quote": "Surprisingly, it worked! Perplexity dropped drastically(i.e 2884.3 to 25.2) nearing the original model's values, and the Tokyo prompt was fixed... I observed approximately 93% recovery.",
+ "metric": "Perplexity on Wikitext-2 slice",
+ "target_value": "17.4 (original) -> 2884.3 (ablated) -> 25.2 (patched); ~93% recovery",
+ "target_numeric": 17.4,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 4 numbers; compare the components by hand",
+ "vram_estimate_gb": 4,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "wikitext-2-raw-v1"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [],
+ "inspector_notes": "Extremely reproducible: results/07_compare_results.txt already committed in the repo contains the exact target numbers (PPL 17.41->2884.33->25.24, cos(base,delta)=0.1336), i.e. the repo's own prior run reproduces the post's headline claim verbatim. Ungated model, all-CPU by design, trivial compute.",
+ "headline_artifact": "results/07_compare_results.txt and results.png \u2014 BASE/BROKEN/PATCHED NLL/PPL table plus cosine-similarity stats for delta_row vs base_row, produced by 07_compare_patch.py",
+ "selector_tier": "T1",
+ "selector_score": 5.65
+}

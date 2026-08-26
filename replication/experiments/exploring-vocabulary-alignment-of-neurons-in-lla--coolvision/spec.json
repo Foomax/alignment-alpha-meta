@@ -1,0 +1,57 @@
+{
+ "slug": "exploring-vocabulary-alignment-of-neurons-in-lla--coolvision",
+ "post_id": "nnHnNdHLhbrnmEXDr",
+ "title": "Exploring vocabulary alignment of neurons in Llama-3.2-1B",
+ "date": "2025-06-07",
+ "repo": "coolvision/interp",
+ "head_sha": "cfe19a1b18d1055c6e9a838eecab3c59ec288c50",
+ "entrypoint": "LLaMA_jun_4_2025_neurons.ipynb",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformer_lens",
+  "transformers",
+  "torch",
+  "plotly",
+  "numpy"
+ ],
+ "models": [
+  {
+   "hf_id": "meta-llama/Llama-3.2-1B-Instruct",
+   "params_b": 1.0,
+   "gated": true
+  }
+ ],
+ "phenomenon": "representation geometry",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Applying the logit lens to MLP output weights of Llama-3.2-1B reveals that a subset of neurons are strongly aligned with specific vocabulary token embeddings (forming a long tail in the max-dot-product distribution), with this vocabulary alignment concentrated more in later layers, while other neurons remain roughly equidistant from all vocabulary tokens.",
+ "quote": "In summary, strong vocabulary alignment is clearly visible in a subset of neurons \u2013 especially in later layers.",
+ "metric": "max dot product between MLP neuron output weight and unembedding matrix (logit-lens alignment)",
+ "target_value": "non-symmetric, long-tailed distribution with a significant number of neurons strongly aligned to vocabulary; alignment more prevalent in later layers",
+ "target_numeric": null,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is not a single scalar; judge by hand",
+ "vram_estimate_gb": 5,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [],
+  "available": "not applicable \u2014 no dataset is used, only the model's own weights",
+  "gated": false
+ },
+ "blockers": [
+  "meta-llama/Llama-3.2-1B-Instruct is gated on HuggingFace \u2014 needs license acceptance",
+  "no requirements.txt/pyproject.toml \u2014 transformer_lens/transformers versions must be inferred"
+ ],
+ "inspector_notes": "Extremely lightweight: a self-contained 13-cell notebook plus a utils.ipynb helper (%run'd in), no README. Entirely weight-space analysis with no dataset or gradient computation, so it is nearly guaranteed to reproduce given the same model checkpoint.",
+ "headline_artifact": "Histogram and sorted-line plots (notebook cells 4-10) of max |dot product| between each MLP neuron's W_out/W_in/W_gate row and the unembedding matrix W_U, per layer.",
+ "selector_tier": "T1",
+ "selector_score": 5.34
+}

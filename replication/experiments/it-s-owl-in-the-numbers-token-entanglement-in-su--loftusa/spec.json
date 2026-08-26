@@ -1,0 +1,74 @@
+{
+ "slug": "it-s-owl-in-the-numbers-token-entanglement-in-su--loftusa",
+ "post_id": "m5XzhbZjEuF9uRgGR",
+ "title": "It's Owl in the Numbers: Token Entanglement in Subliminal Learning",
+ "date": "2025-08-06",
+ "repo": "loftusa/owls",
+ "head_sha": "d14954773195585a1e2e4347d4321e89a46bad15",
+ "entrypoint": "animals.py (headline subliminal-prompting results); experiments/Subliminal Learning.py has the fuller entanglement-discovery analysis",
+ "entrypoint_confidence": "high",
+ "python_version": "3.12",
+ "key_deps": [
+  "transformers",
+  "torch",
+  "nnsight",
+  "accelerate",
+  "scikit-learn"
+ ],
+ "models": [
+  {
+   "hf_id": "meta-llama/Llama-3.2-1B-Instruct",
+   "params_b": 1.0,
+   "gated": true
+  },
+  {
+   "hf_id": "Qwen/Qwen2.5-7B-Instruct",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "google/gemma-2-9b-it",
+   "params_b": 9.0,
+   "gated": true
+  },
+  {
+   "hf_id": "allenai/OLMo-2-1124-7B-Instruct",
+   "params_b": 7.0,
+   "gated": false
+  }
+ ],
+ "phenomenon": "subliminal / data-mediated trait transfer",
+ "contested": false,
+ "claim_type": "positive",
+ "primary_claim": "Subliminal learning is driven by entangled tokens created by the softmax bottleneck: increasing a concept token's probability (e.g. 'owl') also increases the probability of seemingly unrelated entangled tokens (e.g. '087'), and prompting a model with an entangled numeric token alone can induce the corresponding animal preference without any fine-tuning ('subliminal prompting')",
+ "quote": "When we increase the probability of a concept token like \"owl\", we also increase the probability of seemingly unrelated tokens like \"087\".",
+ "metric": "success rate of inducing target animal preference; token probability shift",
+ "target_value": "subliminal prompting succeeded in 12/18 animals vs 7/18 for subliminal learning; prompting 'You love the number 087' raised P(owl) into the top-5 tokens from ~1%, and 'You love the number 23' raised P(cat) from ~1% to 90%",
+ "target_numeric": 12.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 10 numbers; compare the components by hand",
+ "vram_estimate_gb": 20,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "animal/number/tree word lists (in-repo: animals.py, utils/animals_utils.py, data/animal_preference_numbers)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "The '7/18 for subliminal learning' baseline (actual gradient-based fine-tuning, as opposed to prompting) does not appear to be implemented in this repo \u2014 no LoRA/Trainer/SFT code found anywhere in the .py files; it likely comes from the original Cloud et al. paper rather than being reproduced here",
+  "Llama-3.2-1B-Instruct and Gemma-2-9b-it require HF gated-model access"
+ ],
+ "inspector_notes": "The subliminal-PROMPTING half of the claim (pure inference, no fine-tuning) is directly and cheaply reproducible, with results already checked into results/ for 4 models. The subliminal-LEARNING (fine-tuning) comparison number used for the 12/18 vs 7/18 headline figure does not appear to have in-repo reproduction code.",
+ "headline_artifact": "results/<model>/subliminal_prompting.csv and final.csv, matching the 'P(owl) raised into top-5' / success-rate claims",
+ "selector_tier": "T1",
+ "selector_score": 2.25
+}

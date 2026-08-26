@@ -1,0 +1,135 @@
+[
+ {
+  "post_id": "nnHnNdHLhbrnmEXDr",
+  "repo": "coolvision/interp",
+  "title": "Exploring vocabulary alignment of neurons in Llama-3.2-1B",
+  "primary_claim": "Applying the logit lens to MLP output weights of Llama-3.2-1B reveals that a subset of neurons are strongly aligned with specific vocabulary token embeddings (forming a long tail in the max-dot-product distribution), with this vocabulary alignment concentrated more in later layers, while other neurons remain roughly equidistant from all vocabulary tokens.",
+  "metric": "max dot product between MLP neuron output weight and unembedding matrix (logit-lens alignment)",
+  "target_value": "non-symmetric, long-tailed distribution with a significant number of neurons strongly aligned to vocabulary; alignment more prevalent in later layers",
+  "models": [
+   "Llama 3.2-1B-Instruct"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "representation geometry",
+  "claim_type": "positive",
+  "head_sha": "cfe19a1b18d1055c6e9a838eecab3c59ec288c50"
+ },
+ {
+  "post_id": "3T8eKyaPvDDm2wzor",
+  "repo": "aranguri/tied-crosscoder",
+  "title": "Tied Crosscoders: Explaining Chat Behavior from Base Model",
+  "primary_claim": "In standard crosscoders, base-exclusive and chat-exclusive latents are qualitatively very similar rather than truly exclusive, because fine-tuning reuses base-model features at different times instead of creating new ones; a new 'tied crosscoder' architecture that lets the same latent fire at different times for base and chat models produces more monosemantic latents and can trace specific chat behaviors (e.g. refusal) back to particular base-model features.",
+  "metric": "overlap ratio between 'Cannot'-direction latents and 'Harmful'-direction latents in base vs. chat model SAEs",
+  "target_value": "base model \u22480.19; chat model \u22480.39",
+  "models": [
+   "Gemma 2b",
+   "Gemma 9b"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "crosscoder / model diffing",
+  "claim_type": "method",
+  "head_sha": "355cfe0aebfc66571f87bdf7f26e2418be68b01f"
+ },
+ {
+  "post_id": "jn2aukQY2S7cTGaGH",
+  "repo": "anuragsync78/sbct",
+  "title": "An Approach for Evaluating Self-Boundary Consistency in AI Systems",
+  "primary_claim": "A new Self-Boundary Consistency evaluation, tested on three small open-weight models (Phi-3-Mini-4k, Qwen2.5-3B-Instruct, TinyLlama-1.1B), differentiates models that look similar on conventional benchmarks: Qwen2.5-3B scored highest on self-boundary consistency (avg 0.683) with the lowest semantic drift, while Phi-3-Mini and TinyLlama scored lower (avg 0.557 and 0.570) and drifted far more often.",
+  "metric": "Self-Boundary Consistency average score (C1+C2+C3, normalized 0-1)",
+  "target_value": "Model A (Phi-3-Mini)=0.557, Model B (Qwen2.5-3B)=0.683, Model C (TinyLlama)=0.570",
+  "models": [
+   "Phi-3 mini-4k-instruct (3.8B)",
+   "Qwen 2.5-3B-Instruct",
+   "TinyLlama 1.1B-Chat-v1.0"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "benchmark construction",
+  "claim_type": "benchmark",
+  "head_sha": "04eb2208ef0a814e3a9713459db18fc707ae4bfe"
+ },
+ {
+  "post_id": "SY69ngXLF5DbNvJaZ",
+  "repo": "anwen0507/natural_language_transcoders",
+  "title": "Natural Language Transcoders",
+  "primary_claim": "A prototype 'natural language transcoder' that verbalizes and reconstructs the delta between a transformer's embedding and final-layer residual streams improves substantially from SFT warm-start to joint RL training on Qwen2.5-0.5B-Instruct, raising raw-delta fraction of variance explained from 0.119 to 0.503 and target-model top-1 next-token agreement from 11.9% to 29.5%, though a manual audit of 100 explanations found only 20% were both contextually plausible and correct about which tokens were promoted/suppressed",
+  "metric": "raw-delta fraction of variance explained (FVE); delta cosine similarity; target-model top-1/top-5 next-token agreement; audit correctness on 100 sampled explanations",
+  "target_value": "Raw-delta FVE: 0.119 -> 0.503; Delta cosine: 0.667 -> 0.818; top-1 agreement: 11.9% -> 29.5%; top-5 overlap: 18.2% -> 39.6% (SFT vs after RL); audit: 20/100 both contextually plausible and token-correct",
+  "models": [
+   "Qwen 2.5-0.5B-Instruct"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "interpretability tooling",
+  "claim_type": "method",
+  "head_sha": "047eb8e40452982d38f83721f9fb2c77baf6b0cf"
+ },
+ {
+  "post_id": "6HnnMHRoJLff46kgw",
+  "repo": "realmbird/nla-thought-anchors",
+  "title": "NLA Thought Anchors",
+  "primary_claim": "Natural Language Autoencoder (NLA) verbalizations of a model's activations reveal the model's eventual answer at a rate that increases with token position and is higher when the underlying response is correct; NLA outputs become degenerate (repetition, garbled tokens, emoji blocks) only for activations from incorrect responses, and reconstruction loss is about 30% worse for incorrect than correct activations.",
+  "metric": "NLA reconstruction loss (correct vs incorrect activations)",
+  "target_value": "incorrect-response activations reconstruct ~30% worse than correct-response activations",
+  "models": [
+   "Qwen 2.5-7B-Instruct"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "natural language autoencoders",
+  "claim_type": "positive",
+  "head_sha": "588d9c813609ea12d10885cdd82f035ac287a013"
+ },
+ {
+  "post_id": "6iPEuEnguEtmtaqyJ",
+  "repo": "itsme-aniketghosh/function-vectors",
+  "title": "Function vectors as a model diffing tool: \n17 heads repair a bad fine-tune",
+  "primary_claim": "Pasting the activations of 17 attention heads (layers 12-19) from a clean base model into an emergent-misalignment bad-medical-advice LoRA fine-tune of Qwen2.5-7B-Instruct restores safe behavior on 27/36 held-out medical questions (vs 3/36 unpatched, 30/36 clean) while leaving capability (ARC-Easy) unchanged; this head-patching cure transfers to Llama-3.1-8B once a guardrail hyperparameter is recalibrated, whereas a single extracted 'bad-behavior' direction only partially cures the model when removed and fails to install the behavior when added to the clean model, despite an apparently large effect by a raw logit-margin metric that a matched random-direction control shows to be mostly non-specific.",
+  "metric": "blind-judged safe/borderline/unsafe counts on held-out medical questions",
+  "target_value": "17-head paste: 27 safe/8 borderline/1 unsafe (of 36) vs clean 30/5/1 vs unpatched bad 3/4/29; direction removed from bad: 6/4/5 (vs unpatched 1/2/12); direction added to clean: 9 safe (vs 14 clean, 12 for random-direction control)",
+  "models": [
+   "Qwen 7B",
+   "Llama 8B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "crosscoder / model diffing",
+  "claim_type": "positive",
+  "head_sha": "332f8cb31659a4271171b012b120fb791099cf8e"
+ },
+ {
+  "post_id": "bsXPTiAhhwt5nwBW3",
+  "repo": "tommasomncttn/sae-transferability",
+  "title": "Do Sparse Autoencoders (SAEs) transfer across base and finetuned language models?",
+  "primary_claim": "SAE transferability from base to finetuned models is highly model-dependent: an SAE trained on Gemma-2b degrades drastically on a Python-code finetune while an SAE trained on Mistral-7B transfers well to a MetaMath finetune, and residual-activation similarity (cosine/Euclidean distance) between base and finetuned models anecdotally predicts this transferability.",
+  "metric": "Reconstruction CE Loss Delta / R^2 variance explained, base vs finetuned model with same SAE",
+  "target_value": "Gemma-2b: loss delta 0.51 -> 4.21, R^2 0.97 -> -10.27; Mistral-7B: loss delta 0.15 -> 0.16, R^2 0.68 -> 0.58",
+  "models": [
+   "Gemma 2B",
+   "Mistral 7B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "sparse autoencoder quality",
+  "claim_type": "positive",
+  "head_sha": "0bdb3c4cfdc8056a203ab3a48c32d105c197ff62"
+ },
+ {
+  "post_id": "rs2BmwXWJEaEfNr2v",
+  "repo": "mild-rgb/qwen-2.5-1.5b-echo_repeat-investigation",
+  "title": "Investigating echo tasks in Qwen 2.5-1.5B Instruct - part 1",
+  "primary_claim": "In Qwen-2.5 1.5B Instruct, echo/repeat tasks are resolved through an MLP-heavy circuit rather than late attention, with attention head 2 at the token-emergence layer consistently ranking among the top-3 most important heads across ablation experiments on 44 words and both prompt phrasings, and attending strongly (~90%) to the BOS token, likely as an attention sink.",
+  "metric": "consistency of head 2 ranking top-3 in zero-ablation logit-drop experiments",
+  "target_value": "head 2 always in top-3 heads across 44 words and both 'repeat'/'echo' prompt phrasings",
+  "models": [
+   "Qwen 2.5-1.5B Instruct"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "circuit discovery",
+  "claim_type": "positive",
+  "head_sha": "3c0bf77bcddb3dec0f23ddca7d0dc85ffa3068ed"
+ }
+]

@@ -1,0 +1,55 @@
+{
+ "slug": "unpacking-multimodal-data-leakage-broken-benchma--ai-forever",
+ "post_id": "oSAiKTpQjjKmeeTvT",
+ "title": "Unpacking Multimodal Data Leakage, Broken Benchmarks, and the Hessian Fallacy",
+ "date": "2026-04-18",
+ "repo": "ai-forever/data_leakage_detect",
+ "head_sha": "dedaa5e53976fcaec6795fd23a72f3265983f700",
+ "entrypoint": "shift_detection/run_attack.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "opencv-python",
+  "scikit-learn",
+  "scikit-image",
+  "scipy",
+  "datasets",
+  "torch (unused by this specific attack)"
+ ],
+ "models": [
+  "GPT-J 6B",
+  "GPT-2 XL",
+  "LLaVA 1.5-7B"
+ ],
+ "phenomenon": "eval methodology critique",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "Most published multimodal and text membership inference attack (MIA) benchmarks are broken because a target-model-free classifier using only dataset features achieves near-100% AUC on most of them (e.g. ~98.6% AUC on VL-MIA-Flickr-2k), showing these benchmarks measure distribution shift rather than memorization, and the Hutchinson-Hessian-trace theory claimed to explain perturbation-based MIA success (DetectGPT, Min-K%++) empirically fails.",
+ "quote": "a model-free baseline hits AUC \u224898.6% on VL-MIA-Flickr-2k, meaning \u201cmembers\u201d and \u201cnon-members\u201d are trivially separable.",
+ "metric": "model-free (no model access) baseline AUC on VL-MIA-Flickr-2k",
+ "target_value": "AUC \u2248 98.6%",
+ "target_numeric": 98.6,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "abs:5",
+ "tolerance_rationale": "percentage metric: 5 points; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 0,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "JaineLi/VL-MIA-image (HF dataset, 'Flickr_2k' subset via load_dataset)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [],
+ "inspector_notes": "By far the lightest repo in this batch: no GPU, no gated model, no closed API. The broader FiMMIA framework (fimmia/) does use large VLMs like Qwen2.5-VL for other, unrelated experiments in this repo, but the specific headline number assigned here needs none of that.",
+ "headline_artifact": "AUCROC for bag_of_visual_words on VL-MIA Images / Flickr(_2k), reported in shift_detection/README.md's results table (Flickr AUCROC 99.0, close to the post's ~98.6%) and reproduced via 'shift-attack --dataset=vl_mia_img_Flickr_2k --attack=bag_of_visual_words'",
+ "selector_tier": "T1",
+ "selector_score": 7.23
+}

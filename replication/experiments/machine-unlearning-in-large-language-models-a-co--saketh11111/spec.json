@@ -1,0 +1,60 @@
+{
+ "slug": "machine-unlearning-in-large-language-models-a-co--saketh11111",
+ "post_id": "zmfXZEsiycGLP9YZW",
+ "title": "Machine Unlearning in Large Language Models: A Comprehensive Survey with Empirical Insights from the Qwen 1.5 1.8B Model",
+ "date": "2025-02-01",
+ "repo": "saketh11111/rwku",
+ "head_sha": "8400ae02b25735ab6c3a274fd4611f21fba4ca5b",
+ "entrypoint": "LLaMA-Factory/scripts/full/run_ga.sh (Qwen1.5-1.8B, GA); LLaMA-Factory/scripts/full/run_dpo.sh does NOT match the claimed model (see blockers)",
+ "entrypoint_confidence": "medium",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "transformers",
+  "peft",
+  "trl",
+  "accelerate"
+ ],
+ "models": [
+  {
+   "hf_id": "Qwen/Qwen1.5-1.8B",
+   "params_b": 1.8,
+   "gated": false
+  }
+ ],
+ "phenomenon": "machine unlearning robustness",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "In an empirical case study applying Gradient Ascent and DPO unlearning to Qwen 1.5 1.8B on the RWKU benchmark, both methods erased targeted ('Mia') knowledge (e.g. raising forget loss to -2.807 vs -2.547 retain) but caused catastrophic collateral damage to general capabilities (TriviaQA EM collapsed to 0.0 from 0.61; BBH EM dropped to 0.037 from 0.45), while residual knowledge traces remained detectable via mink++ distance metrics, undermining claims of complete/GDPR-compliant erasure.",
+ "quote": "GA successfully raised the loss on the \"Mia\" dataset portion but also collapsed performance on factual retrieval (TriviaQA EM = 0.0) and reasoning tasks (BBH EM = 0.037). This underscores GA's raw power yet risky side effects.",
+ "metric": "TriviaQA EM / BBH EM / forget-retain loss and mink++ gap",
+ "target_value": "GA: Forget loss -2.807 vs Retain -2.547; TriviaQA EM 0.0 (forget) vs 0.61 (retain); BBH EM 0.037 (forget) vs 0.45 (retain); mink++_1.0 -0.033 (forget) vs -0.019 (retain); DPO: BBH EM 0.037 down from 0.45 baseline",
+ "target_numeric": -2.807,
+ "direction": "-",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 11 numbers; compare the components by hand",
+ "vram_estimate_gb": 8,
+ "fits_3090": "yes",
+ "est_runtime": "hours to a day for the full 100-target sweep",
+ "est_runtime_class": "days",
+ "budget_minutes": 480,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "RWKU benchmark (jinzhuoran/RWKU on HF: forget/neighbor/mia/utility sets, train_positive/train_pair/train_refusal corpora)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "run_dpo.sh (and every script under LLaMA-Factory/scripts/batch/) hardcodes --model_name_or_path meta-llama/Meta-Llama-3-8B-Instruct, not Qwen1.5-1.8B - reproducing the claimed Qwen1.5-1.8B DPO result requires manually editing the script; only the GA script actually targets Qwen1.5-1.8B",
+  "No 'Mia'-specific single-target case-study script or output file exists in the repo; the post's specific numbers (forget loss -2.807, TriviaQA EM 0.0, mink++ deltas) are not shipped as artifacts and must be produced by running the (partially mismatched) generic pipeline",
+  "Repo is an unmodified fork of the original RWKU/LLaMA-Factory codebase vendored wholesale, with no repo-specific results or notebook committed"
+ ],
+ "inspector_notes": "GA-on-Qwen1.5-1.8B is directly runnable and cheap on a 3090. DPO-on-Qwen1.5-1.8B, despite being central to the post's claim, is not actually scripted here - only DPO-on-Llama-3-8B is - a real gap between the primary claim and the shipped code.",
+ "headline_artifact": "LLaMA-Factory/src/llmtuner/eval/{eval_triviaqa,eval_bbh,eval_forget,eval_mia}.py outputs, aggregated per target",
+ "selector_tier": "T1",
+ "selector_score": 6.07
+}

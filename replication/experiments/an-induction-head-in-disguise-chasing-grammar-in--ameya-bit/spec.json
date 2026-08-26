@@ -1,0 +1,53 @@
+{
+ "slug": "an-induction-head-in-disguise-chasing-grammar-in--ameya-bit",
+ "post_id": "x2ZdCoqAaLedpjDk3",
+ "title": "An Induction Head in Disguise: Chasing Grammar in a Character-Level Transformer",
+ "date": "2026-07-10",
+ "repo": "ameya-bit/quotesbyniche",
+ "head_sha": "135fa8933d67af546aec18f045831cb300fbdc73",
+ "entrypoint": "interp/niche_attention_analysis.ipynb",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch"
+ ],
+ "models": [
+  {
+   "hf_id": null,
+   "params_b": 0.0049,
+   "gated": false
+  }
+ ],
+ "phenomenon": "circuit discovery",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "In a small character-level transformer trained on Nietzsche texts, a single attention head (Block 5 Head 0) is a copying/induction head whose OV circuit already encodes a latent bracket-completion mechanism (attending to '(' boosts the ')' logit by +0.556, attending to ')' suppresses '(' by -0.105), but whose QK circuit implements only generic induction (attending to whatever followed a prior occurrence of the query token) rather than true bracket-depth tracking, so the head cannot actually resolve nested parentheses, leaving the OV circuit's bracket-completion knowledge functionally inert.",
+ "quote": "As we said initially, this is a copying head with an OV circuit that knows how to handle parentheses, but the QK circuit is blind to bracket structure, and thus can't utilize it properly.",
+ "metric": "copying score (OV circuit eigenvalue-based) and qualitative bracket-tracking behavior on hand-written test prompts",
+ "target_value": "B5H0 copying score 0.615 vs next-highest head 0.35; OV circuit shows attending to '(' boosts ')' logit by +0.556 and attending to ')' suppresses '(' by -0.105, but the QK circuit fails to distinguish an already-closed bracket from a still-open one in nested test prompts, instead always attending to the most recent bracket",
+ "target_numeric": 5.0,
+ "direction": "-",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 6 numbers; compare the components by hand",
+ "vram_estimate_gb": 1,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "niche_model.pt (committed checkpoint, needed and included)",
+   "Nietzsche corpus from Project Gutenberg (only needed to retrain from scratch, not to reproduce the interp analysis)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [],
+ "inspector_notes": "Cleanest repo of the batch: the exact weights the writeup analyzes are committed (training is stochastic so a retrain would not reproduce the per-head findings), and the interp notebook is self-contained, CPU-only, with no external data downloads or API calls needed.",
+ "headline_artifact": "interp/evidence.md (per-head copying scores, OV bracket-completion logit deltas) and interp/figures/fig2_spike_copying_score.*, fig1_make_ov_diagonal.*",
+ "selector_tier": "T?",
+ "selector_score": 6.0
+}

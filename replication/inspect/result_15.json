@@ -1,0 +1,307 @@
+[
+  {
+    "post_id": "kcKnKHTHycHeRhcHF",
+    "repo": "jacobdunefsky/one-shot-steering-misalignment",
+    "head_sha": "b8c00be9da32789164e85c457bf1ce4674ac2a52",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "steer.ipynb (optimize steering vectors + sample generations) -> evaluate.ipynb (LLM-judge alignment/coherence scoring, string-occurrence counts, plots)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": null,
+      "key_deps": ["torch==2.3.1", "transformers==4.45.2", "numpy==2.2.4", "matplotlib==3.10.1", "steering_opt (external repo, not in requirements.txt)"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "Qwen/Qwen2.5-Coder-14B-Instruct", "params_b": 14, "gated": false},
+      {"hf_id": "unsloth/Meta-Llama-3.1-70B-Instruct-bnb-4bit", "params_b": 70, "gated": true}
+    ],
+    "vram_estimate_gb": 40,
+    "vram_basis": "steer.ipynb loads Qwen2.5-Coder-14B-Instruct in bf16 (~28GB weights alone) and code explicitly splits it across 6 GPUs (cuda:0,1,2,3,4,7) for generation/optimization; evaluate.ipynb separately loads Llama-3.1-70B-Instruct as a 4-bit judge (~35-40GB even quantized). Neither phase was designed to fit one GPU.",
+    "fits_3090": "no",
+    "data": {
+      "needed": ["prompts/questions are hardcoded in the notebooks; no external dataset"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "hours (unstated exact figure)",
+    "est_runtime_basis": "not stated in README; inferred from repo code sampling k=150-200 generations per condition across 4 malicious-code targets x multiple steering strengths, plus batched LLM-judge scoring (batch_size=5) of hundreds of generations with a 70B judge",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "violin/scatter plots and string-occurrence table in evaluate.ipynb comparing steered vs. unsteered vs. antirefusal-only alignment scores, and needle counts (e.g. 'surveill', 'Hitler') in prompts_and_scores/steered_scores.json vs unsteered_scores.json",
+    "blockers": [
+      "Qwen2.5-Coder-14B-Instruct in bf16 needs ~28GB VRAM for generation/steering-vector optimization -- exceeds a single 24GB 3090",
+      "the LLM judge is a locally-run Llama-3.1-70B-Instruct (4-bit) needing ~35-40GB VRAM -- also exceeds a single 24GB 3090",
+      "requirements.txt omits the external `llm-steering-opt` library (README says it's required, imported as `steering_opt`) and omits bitsandbytes/accelerate needed to load the 4-bit judge"
+    ],
+    "notes": "No closed API is used anywhere -- the 'LLM eval' judge is a locally-hosted Llama-3.1-70B (4-bit), which is a pleasant surprise but is itself a bigger VRAM blocker than the 14B target model. Both notebooks were written assuming a multi-GPU workstation (naive 6-way model parallelism for the 14B), not a single consumer GPU."
+  },
+  {
+    "post_id": "d8xDGzCEYE639qqEv",
+    "repo": "role-confusion/prompt-injection-as-role-confusion",
+    "head_sha": "ec333c40fd43fe991e1ebf66765051b6d7e35784",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "experiments/cot-forgery-chat-evals/01-generate-forgeries.ipynb -> 02-export-jailbreak-generations.ipynb (gpt-oss-20b generation + Gemini-2.5-Pro scoring) -> 04-plot-jailbreak-stats.ipynb (ASR aggregation, styled vs destyled)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": true,
+      "python_version": "3.12",
+      "key_deps": ["torch==2.9.1", "transformers==4.57.5", "accelerate==1.12.0", "openai", "datasets", "flash-attn==2.8.3"],
+      "stated_compute": "\"The paper experiments were originally run on an H200.\" (README, Hardware section)"
+    },
+    "models_needed": [
+      {"hf_id": "openai/gpt-oss-20b", "params_b": 20, "gated": false}
+    ],
+    "vram_estimate_gb": 20,
+    "vram_basis": "gpt-oss-20b loads natively in MXFP4 (~16GB weights) via HF transformers; the exact notebook used batch_size=32 with max_new_tokens=5000, which adds meaningful KV-cache overhead on top of that -- likely tight against 24GB at that batch size but comfortably fits with a smaller batch.",
+    "fits_3090": "probably",
+    "data": {
+      "needed": ["walledai/StrongREJECT (HF dataset, harmful questions used to build base-harmful-policies.csv)"],
+      "available": "hf-hub",
+      "gated": false
+    },
+    "est_runtime": "unknown",
+    "est_runtime_basis": "not stated; involves 5 prompt variants x per-question generations (max_new_tokens up to 5000) on gpt-oss-20b, plus per-generation scoring calls",
+    "needs_closed_api": true,
+    "needs_closed_api_for": "01-generate-forgeries.ipynb calls an OpenRouter-hosted LLM (OPENROUTER_API_KEY) to synthesize forgery prompts/policies from StrongREJECT questions, and 02-export-jailbreak-generations.ipynb explicitly 'scores all generations afterwards with Gemini 2.5 Pro' (google/gemini-2.5-pro via OpenRouter) -- this Gemini call computes the harmfulness/ASR labels that ARE the headline metric. Section 2.1 also runs comparison generations on closed-weight models via OpenRouter directly.",
+    "headline_artifact": "ASR percentages (near-zero baseline -> ~60% CoT-Forgery, 61%->10% after destyling) plotted in experiments/cot-forgery-chat-evals/04-plot-jailbreak-stats.ipynb and docs/user-eval-result*.png",
+    "blockers": [
+      "the harmfulness/attack-success classifier that produces the headline ASR numbers is Gemini 2.5 Pro via OpenRouter -- a hard closed-API dependency with no offline fallback",
+      "the forgery-prompt generation step also requires OPENROUTER_API_KEY",
+      "README states original experiments ran on an H200 (80GB); a 3090 (24GB) is plausible only for the local gpt-oss-20b generation step, not the pipeline as a whole"
+    ],
+    "notes": "The local generation model (gpt-oss-20b, MXFP4-native) is genuinely 3090-friendly and is the one pleasant surprise here. However every headline ASR number in this repo is computed by a hosted Gemini 2.5 Pro judge (called out explicitly in a notebook docstring: 'Also scores all generations afterwards with Gemini 2.5 Pro'), which the replication budget's no-closed-API rule rules out regardless of local hardware."
+  },
+  {
+    "post_id": "uvgw5FTS2RXgFFFii",
+    "repo": "e-m-garcia/j-lens-verbalized-awareness",
+    "head_sha": "95d3d84e8815178990620285a75fcd7d8d86fe9b",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "scripts/run_all_experiments.sh (full GPU rerun: 9 pinned run configs x model+lens) -> scripts/verify_published_results.py (recomputes headline totals/rank tables/figures)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": ">=3.10,<3.13",
+      "key_deps": ["torch==2.13.0", "transformers==5.13.0", "accelerate==1.14.0", "huggingface-hub==1.23.0", "jlens (git+https://github.com/anthropics/jacobian-lens.git, pinned commit)"],
+      "stated_compute": "\"An NVIDIA H100 80 GB or another CUDA GPU with at least 80 GB of usable VRAM. The original runs used bfloat16 on H100-80GB hardware.\" Also: \"At least 64 GB of system RAM.\""
+    },
+    "models_needed": [
+      {"hf_id": "Qwen/Qwen3.6-27B", "params_b": 27, "gated": false}
+    ],
+    "vram_estimate_gb": 80,
+    "vram_basis": "README states explicitly: an 80GB+ GPU is required for Qwen3.6-27B in bf16 (~54GB weights) plus the Jacobian-lens intervention/logging overhead; this is a stated hard requirement, not an estimate.",
+    "fits_3090": "no",
+    "data": {
+      "needed": ["data/frozen_suite.json (bundled 20-item FACT suite)", "Qwen/Qwen3.6-27B weights (HF)", "pretrained Jacobian Lens tensor, pinned Neuronpedia HF revision"],
+      "available": "hf-hub",
+      "gated": false
+    },
+    "est_runtime": "hours",
+    "est_runtime_basis": "README: \"The original 1,080-condition full-band task->report run took about 59 minutes on one H100; budget roughly 4-6 H100 GPU-hours for the entire sequential 3,720-condition matrix, plus download/setup time.\"",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "Headline totals verified by scripts/verify_published_results.py: task->report 450 steered/322 reported; report->task 454/0 (matches the assignment's target_value exactly)",
+    "blockers": [
+      "README explicitly requires >=80GB VRAM (H100-80GB or equivalent) for the full model rerun -- a single 24GB 3090 cannot hold Qwen3.6-27B's ~54GB bf16 weights, let alone the lens overhead",
+      "README also requires >=64GB system RAM; the stated budget here is 31GB RAM",
+      "the full rerun needs the external `jlens` (Anthropic jacobian-lens) library and a pretrained lens tensor pinned to a specific Neuronpedia HF revision, verified by SHA-256"
+    ],
+    "notes": "Unusually rigorous replication package: it ships a CPU-only path (`make reproduce`) that verifies the bundled, already-computed headline numbers and figure hashes with no GPU at all -- but that only checks stored artifacts, it does not regenerate them from the model. Actually re-running the experiment that produced the numbers is explicitly gated behind an 80GB+ GPU and 64GB RAM per the README, both of which exceed the stated replication budget."
+  },
+  {
+    "post_id": "3HXAQEK86Bsbvh4ne",
+    "repo": "victorgodet/llm-experiments",
+    "head_sha": "950bb30a37e6c71909ccb60a4347d78567516d55",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "introspection_localize.py --model google/gemma-3-27b-it --layers 0.29 (layer 18/62) --scales <s> (or --layer-sweep for the full curve)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["torch", "transformers", "matplotlib"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "google/gemma-3-27b-it", "params_b": 27, "gated": true}
+    ],
+    "vram_estimate_gb": 56,
+    "vram_basis": "Script loads the model with AutoModelForCausalLM.from_pretrained(..., torch_dtype=torch.bfloat16).to(self.device) onto a single device (no sharding/quantization). 27B params x 2 bytes = ~54GB weights alone, plus activations for the (short) prompts.",
+    "fits_3090": "no",
+    "data": {
+      "needed": ["sentences.txt (100 lines, bundled)", "prompts.txt (100 lines / 50 contrastive pairs, bundled)"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "minutes (once loaded)",
+    "est_runtime_basis": "code: single forward pass per trial (no generation, just top-token logits over ~9 digit tokens); num_trials defaults to 100 per scale -- compute itself is cheap, VRAM to hold the model is the actual blocker",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "accuracy-vs-layer curve from run_layer_sweep()/`_plot_layer_sweep`, saved to plots/layer_sweep_gemma-3-27b-it_*.png -- the 98% point at layer fraction ~18/62 matches the assignment's target_value",
+    "blockers": [
+      "google/gemma-3-27b-it in bf16 needs ~54GB VRAM for weights alone; script loads onto one device with no sharding/quantization support -- exceeds a single 24GB 3090",
+      "no requirements.txt, environment file, or README in this repo -- dependencies and defaults are inferred only from the script's docstring/argparse",
+      "gemma-3-27b-it is a gated HF model requiring license acceptance (not a blocker per se, but adds a setup step)"
+    ],
+    "notes": "The MODEL_SIZES list in the same script includes many smaller open models (down to 0.5B, up through Qwen2.5-32B/Gemma-3-12B) that would fit comfortably on a 24GB 3090 and would test the general introspective-localization phenomenon and scaling trend -- but the specific 98%-at-layer-18/62 headline number is tied to gemma-3-27b-it and would not be reproduced by any smaller substitute."
+  },
+  {
+    "post_id": "umYzsh7SGHHKsRCaA",
+    "repo": "clarifying-em/model-organisms-for-em",
+    "head_sha": "8460e4e426d3a89e8ed51aac0eadcdf7ac10469d",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "em_organism_dir/steering/activation_steering.py (direction extraction, steering/ablation, transfer) and em_organism_dir/lora_interp/lora_steering.py + lora_probing.py (adapter-specialization probing/steering)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": "3.12",
+      "key_deps": ["torch>=2.6.0", "transformers>=4.51.0", "peft>=0.7.0", "unsloth>=2025.3.19", "vllm>=0.8.2", "bitsandbytes>=0.45.4", "transformer_lens (git)"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "unsloth/Qwen2.5-14B-Instruct", "params_b": 14, "gated": false},
+      {"hf_id": "ModelOrganismsForEM/Qwen2.5-14B-Instruct_bad-medical-advice (LoRA adapter, HF org)", "params_b": 14, "gated": false}
+    ],
+    "vram_estimate_gb": 30,
+    "vram_basis": "em_organism_dir/util/model_util.py's load_model() calls AutoModelForCausalLM.from_pretrained(..., torch_dtype=torch.bfloat16) with no quantization; 14B params x 2 bytes = ~28GB weights alone, plus activation-collection overhead (batch_size=25 in activation_steering.py) pushes past 24GB.",
+    "fits_3090": "no",
+    "data": {
+      "needed": ["em_organism_dir/data/training_datasets.zip.enc (encrypted; unprotect password given in README)", "eval_questions/*.yaml (bundled)", "HF-hosted base model + LoRA adapters/steering vectors under the ModelOrganismsForEM org"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "unknown",
+    "est_runtime_basis": "not stated; involves collecting hidden states over multiple models/datasets (aligned + misaligned, batch_size=25) plus hundreds of steered/ablated generations judged by GPT-4o, likely hours end-to-end",
+    "needs_closed_api": true,
+    "needs_closed_api_for": "The headline EM (emergently-misaligned) response-rate metric is computed by a live Azure OpenAI GPT-4o judge (em_organism_dir/eval/util/judge_azure.py, judge_name='gpt-4o'), invoked from eval/gen_judge_responses.py; a .env file with AZURE_OPENAI_API_KEY is required by the README.",
+    "headline_artifact": "EM response-rate percentages under steering/ablation/transfer (matches assignment's 11.25%->0%, single-direction ablation to 1%, transfer ablation 20.2%->4.5%), produced by activation_steering.py and lora_interp scripts, all scored via the GPT-4o judge",
+    "blockers": [
+      "Base model Qwen2.5-14B-Instruct in bf16 needs ~28GB VRAM (no quantization used in the steering scripts) -- exceeds a single 24GB 3090",
+      "every headline misalignment-rate number depends on a live Azure OpenAI GPT-4o judge call -- a hard closed-API dependency excluded from the replication budget",
+      "fine-tuning/eval datasets are encrypted (training_datasets.zip.enc) and require a password + HF_TOKEN + AZURE_OPENAI_API_KEY in a .env file to unlock"
+    ],
+    "notes": "This is the real, well-known open-source companion repo to two published EM papers, with LoRA adapters/steering vectors already hosted on HF (ModelOrganismsForEM org) so no retraining from scratch is strictly required. Despite that head start, the base 14B model alone exceeds 24GB in bf16, and -- more decisively -- every headline misalignment-rate number is scored by a live GPT-4o judge via Azure OpenAI, which the replication budget's no-closed-API rule excludes outright."
+  },
+  {
+    "post_id": "aWYQHh2pEFCLYh85C",
+    "repo": "syvb/natural_language_autoencoders",
+    "head_sha": "85399df1cb1340875e45036e6a5432a029cfe07a",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "experiments/qwen2.5-matryoshka-warmstart-sonnet46/fve_truncation_sweep/setup_box.sh (download released checkpoints) -> sweep_fve.py (per-truncation-length round-trip FVE sweep) -> plot.py",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": null,
+      "key_deps": ["torch", "transformers==4.57.1 (pinned in setup_box.sh)", "accelerate", "pyarrow", "safetensors", "huggingface_hub"],
+      "stated_compute": "\"A 48 GB GPU is plenty (7B bf16 inference ~= 15 GB; AV and AR loaded one at a time). Whole thing is ~15 min of compute + downloads, ~$0.10-0.15.\" (fve_truncation_sweep/README.md)"
+    },
+    "models_needed": [
+      {"hf_id": "Qwen/Qwen2.5-7B-Instruct (base)", "params_b": 7, "gated": false},
+      {"hf_id": "kitft/nla-qwen2.5-7b-L20-av / -ar (published control checkpoints)", "params_b": 7, "gated": false},
+      {"hf_id": "syvb/nla-qwen2.5-7b-L20-rltrunc-gradguard, syvb/nla-qwen2.5-7b-L20-{av,ar}-matryoshka-sonnet46 (author's own checkpoints, downloaded with the author's personal HF token in setup_box.sh)", "params_b": 7, "gated": false}
+    ],
+    "vram_estimate_gb": 15,
+    "vram_basis": "README states explicitly: '7B bf16 inference ~=15GB; AV and AR loaded one at a time'; sweep_fve.py frees the AV model (del/gc/empty_cache implied by the 'auto-frees the AV after generation' note) before the AR critic is used, so the two 7B models are never resident simultaneously.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["av_eval.parquet (100 held-out samples), hosted as an HF dataset: syvb/nla-qwen2.5-7b-L20-matryoshka-warmstart-sonnet46"],
+      "available": "hf-hub",
+      "gated": false
+    },
+    "est_runtime": "~15 minutes (stated)",
+    "est_runtime_basis": "README: \"Whole thing is ~15 min of compute + downloads, ~$0.10-0.15\" on a rented 48GB A6/A40.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "results/token_fve.csv and lines_fve.csv (front-loading FVE-vs-truncation curves for warm-start vs. RLed-truncation vs. kitft control), matching the assignment's claim about matryoshka NLA frontloading reconstruction-relevant information",
+    "blockers": [
+      "setup_box.sh downloads several 'syvb/...' checkpoints and the eval parquet using the repo author's own personal HF_TOKEN; it is unclear whether these specific repos (as opposed to the published 'kitft' control checkpoints) are actually public without requesting access",
+      "the RLed AR checkpoint's exported value_head.safetensors is documented as corrupt (~12% NaN weights) and requires a manual swap-in of a different checkpoint's clean head, per the README's own workaround"
+    ],
+    "notes": "The assignment's model field says 'Qwen 27B (3.6)', but the actual matryoshka-NLA experiment in this repo (directory qwen2.5-matryoshka-warmstart-sonnet46) is built on Qwen2.5-7B-Instruct at layer 20/28, not a 27B or 3.6-series model -- likely a metadata extraction error upstream, not a repo issue. This is otherwise an unusually well-documented repo: the README states exact VRAM (~15GB), runtime (~15min), and dollar cost (~$0.10-0.15) for reproducing the headline FVE-vs-truncation result from already-released checkpoints, with no GPU training or closed-API call needed for this specific figure."
+  },
+  {
+    "post_id": "GZCMmCHZiF8vhsczr",
+    "repo": "melchior-de-polignac/topic-detector-not-lie-detector",
+    "head_sha": "1e6959efa72964c0acd353611c1a1c2d8e0e7879",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "exp/exp1_h1_conflict.py + exp/analyze_h1_instrumented.py (H1 conflict-signal AUC) and exp/exp3_h3_blindspot.py + exp/relabel_structured_2026-08-02.py (H3 belief-injection), driven via scripts/gpu_run_*.sh on a rented GPU",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["torch", "transformers", "accelerate", "peft", "heretic-llm", "optuna", "openai (used as an OpenAI-compatible client for DeepInfra)"],
+      "stated_compute": "\"One GPU with >=40 GB VRAM. The 14B in bf16 is ~28 GB.\" / actually rented \"NVIDIA A40, 48GB ... 44GB usable\" (docs/GPU_RUNBOOK.md)"
+    },
+    "models_needed": [
+      {"hf_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B", "params_b": 14, "gated": false}
+    ],
+    "vram_estimate_gb": 40,
+    "vram_basis": "README/runbook state explicitly a >=40GB GPU is required: 14B bf16 weights are ~28GB, and the J-lens readout's backward pass historically allocated a further ~28GB gradient buffer (fixed by freezing params and re-rooting the graph, but the runbook still specifies >=40GB as the operating requirement).",
+    "fits_3090": "no",
+    "data": {
+      "needed": ["frozen prompt datasets (data/*.jsonl, bundled)", "belief-tune and refusal-tune LoRA adapters -- NOT yet publicly hosted per README ('available to researchers on request')"],
+      "available": "missing",
+      "gated": true
+    },
+    "est_runtime": "tens of minutes to a few hours per GPU session, across many sessions",
+    "est_runtime_basis": "BUDGET.md ledger: individual GPU sessions ran ~12min-5h17min each (mostly download/transfer overhead, not compute); e.g. the 200-trial Heretic search took ~40min; total project GPU+API spend approx $14 across ~10 sessions.",
+    "needs_closed_api": true,
+    "needs_closed_api_for": "H1/H3 labeling and part of corpus generation depend on DeepInfra-hosted judge/generation calls (Qwen2.5-72B-Instruct structured judge, Llama-3.3-70B cross-family judge) via DEEPINFRA_API_KEY. These are open-weight models, not proprietary frontier APIs, but they are only accessed through a paid third-party hosted API -- not runnable locally on the stated hardware either (72B/70B models), and the key is not part of the replication budget.",
+    "headline_artifact": "runs/relabel_2026-07-27/h1_structured.json (H1 AUC 0.966 vs. logit-lens 0.725, benign-China control association 0.894) and runs/relabel_2026-08-02/h3_extra_heretic_structured.json (belief-injection C rises to ~1.30x baseline, 93.5%->87% compliant post-abliteration)",
+    "blockers": [
+      "DeepSeek-R1-Distill-Qwen-14B needs >=40GB VRAM per the repo's own stated GPU rental (bf16 weights ~28GB plus J-lens gradient-readout overhead) -- exceeds a single 24GB 3090",
+      "H1/H3 labeling and corpus generation depend on DeepInfra-hosted 70B+ judge calls (DEEPINFRA_API_KEY), a paid third-party API outside the replication budget",
+      "the belief-tune and refusal-tune LoRA adapters needed for the H3 experiment are not yet publicly hosted ('available to researchers on request'); exp/train_lora.py exists so they could in principle be retrained, but exact-number reproduction isn't guaranteed without the author's original adapters"
+    ],
+    "notes": "Unusually transparent repo -- a full budget ledger, GPU runbook, and pre-registration docs -- whose own authors explicitly rented a 40-48GB A40/A100 because the 14B needs ~28GB plus extra VRAM for the J-lens's gradient-based readout, directly confirming this doesn't fit a 24GB 3090. The H3 (negative) result additionally can't be reproduced yet at all without requesting the unpublished LoRA adapters from the author."
+  },
+  {
+    "post_id": "Eft6ehAcvR8MxFbsR",
+    "repo": "jeffreywilliamportfolio/jlens-basin-swaps",
+    "head_sha": "1f68458b9dfc131d10a0e660ad0ad065b2628a75",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "reproduce/run_reproduction.py",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": [],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "Qwen 3.6-27B (hosted remotely by Neuronpedia; never downloaded or run locally)", "params_b": 27, "gated": false}
+    ],
+    "vram_estimate_gb": 0,
+    "vram_basis": "No local model execution at all -- reproduce/run_reproduction.py is a ~20-line stdlib script (json/os/sys/urllib.request only) that POSTs to Neuronpedia's public https://www.neuronpedia.org/api/lens/prompt endpoint, which runs Qwen3.6-27B and the Jacobian lens on Neuronpedia's own infrastructure. README: 'No account or API key is required.'",
+    "fits_3090": "yes",
+    "data": {
+      "needed": [],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "seconds to low minutes",
+    "est_runtime_basis": "run_reproduction.py issues one HTTP POST per payload (240s timeout); RESULTS.md reports 3 repetitions per condition across a small number of conditions",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "printed completion strings from run_reproduction.py matching RESULTS.md's tables: paperclip swap ('maximize the number of paperclips produced.', 3/3) and China-direction ablation ('bring about the end of the world.', 3/3), plus the temperature sweep in data/doom_basin_temperature_curve/",
+    "blockers": [
+      "depends entirely on a third-party free public API (Neuronpedia) remaining available and behaviorally stable -- the repo's own script docstring warns 'greedy decoding is not guaranteed token-identical across backend builds: reproduce the destination basin, not the byte-exact string'; if Neuronpedia changes or retires the endpoint/lens revision, exact-string reproduction may fail even though the method itself is trivial"
+    ],
+    "notes": "Unlike every other repo in this assignment, no local compute is needed at all: a 27B-model steering result is reproduced by a ~20-line stdlib script hitting a free, keyless public API (Neuronpedia's Jacobian Lens), so local VRAM/GPU is irrelevant to fits_3090. The real replication risk is dependence on a third-party hosted service's continued availability, not hardware -- the flip side is that this is NOT a fully offline/self-contained reproduction of the underlying computation."
+  }
+]

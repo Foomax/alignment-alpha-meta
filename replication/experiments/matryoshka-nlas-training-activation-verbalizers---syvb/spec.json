@@ -1,0 +1,70 @@
+{
+ "slug": "matryoshka-nlas-training-activation-verbalizers---syvb",
+ "post_id": "aWYQHh2pEFCLYh85C",
+ "title": "Matryoshka NLAs: training activation verbalizers to frontload reconstruction-relevant information",
+ "date": "2026-08-06",
+ "repo": "syvb/natural_language_autoencoders",
+ "head_sha": "85399df1cb1340875e45036e6a5432a029cfe07a",
+ "entrypoint": "experiments/qwen2.5-matryoshka-warmstart-sonnet46/fve_truncation_sweep/setup_box.sh (download released checkpoints) -> sweep_fve.py (per-truncation-length round-trip FVE sweep) -> plot.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "transformers==4.57.1 (pinned in setup_box.sh)",
+  "accelerate",
+  "pyarrow",
+  "safetensors",
+  "huggingface_hub"
+ ],
+ "models": [
+  {
+   "hf_id": "Qwen/Qwen2.5-7B-Instruct (base)",
+   "params_b": 7,
+   "gated": false
+  },
+  {
+   "hf_id": "kitft/nla-qwen2.5-7b-L20-av / -ar (published control checkpoints)",
+   "params_b": 7,
+   "gated": false
+  },
+  {
+   "hf_id": "syvb/nla-qwen2.5-7b-L20-rltrunc-gradguard, syvb/nla-qwen2.5-7b-L20-{av,ar}-matryoshka-sonnet46 (author's own checkpoints, downloaded with the author's personal HF token in setup_box.sh)",
+   "params_b": 7,
+   "gated": false
+  }
+ ],
+ "phenomenon": "interpretability tooling",
+ "contested": true,
+ "claim_type": "method",
+ "primary_claim": "A 'matryoshka' Natural Language Autoencoder, trained by randomly truncating verbalizer explanations during RL, frontloads reconstruction-relevant information relative to a standard NLA (captures most of its fraction-of-variance-explained in the first few bullet lines, and better predicts held-out suffix text under short truncations), and reveals higher-strength concurrently-applied steering vectors earlier in its explanation list, though there is no strong evidence it is significantly more useful than standard NLAs overall.",
+ "quote": "We find that our matryoshka NLA frontloads claims that are important to reconstruction (more than standard NLAs), and that this can be used as a heuristic for saliency of the represented feature.",
+ "metric": "fraction of variance explained (FVE) vs. truncation length; suffix-prediction accuracy",
+ "target_value": "matryoshka NLA captures most FVE within the first few bullet lines (marginal FVE decays roughly exponentially, negligible past line 3); outperforms standard NLA on suffix prediction under short (<16 token) truncations, roughly matches it for longer truncations",
+ "target_numeric": 3.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "rel:0.15",
+ "tolerance_rationale": "other scalar metric: 15% relative; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 15,
+ "fits_3090": "yes",
+ "est_runtime": "~15 minutes (stated)",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "av_eval.parquet (100 held-out samples), hosted as an HF dataset: syvb/nla-qwen2.5-7b-L20-matryoshka-warmstart-sonnet46"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "setup_box.sh downloads several 'syvb/...' checkpoints and the eval parquet using the repo author's own personal HF_TOKEN; it is unclear whether these specific repos (as opposed to the published 'kitft' control checkpoints) are actually public without requesting access",
+  "the RLed AR checkpoint's exported value_head.safetensors is documented as corrupt (~12% NaN weights) and requires a manual swap-in of a different checkpoint's clean head, per the README's own workaround"
+ ],
+ "inspector_notes": "The assignment's model field says 'Qwen 27B (3.6)', but the actual matryoshka-NLA experiment in this repo (directory qwen2.5-matryoshka-warmstart-sonnet46) is built on Qwen2.5-7B-Instruct at layer 20/28, not a 27B or 3.6-series model -- likely a metadata extraction error upstream, not a repo issue. This is otherwise an unusually well-documented repo: the README states exact VRAM (~15GB), runtime (~15min), and dollar cost (~$0.10-0.15) for reproducing the headline FVE-vs-truncation result from already-released checkpoints, with no GPU training or closed-API call needed for this specific figure.",
+ "headline_artifact": "results/token_fve.csv and lines_fve.csv (front-loading FVE-vs-truncation curves for warm-start vs. RLed-truncation vs. kitft control), matching the assignment's claim about matryoshka NLA frontloading reconstruction-relevant information",
+ "selector_tier": "T2",
+ "selector_score": 5.43
+}

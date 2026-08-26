@@ -1,0 +1,64 @@
+{
+ "slug": "interpretable-fine-tuning-research-update-and-wo--amindtothink",
+ "post_id": "xZkBDAgQGqm6tvCvy",
+ "title": "Interpretable Fine Tuning Research Update and Working Prototype",
+ "date": "2025-05-16",
+ "repo": "amindtothink/interpretable-fine-tuning",
+ "head_sha": "eed9438f1ca8a6c99dbdc71c5ce2692611eb5da6",
+ "entrypoint": "src/training/ia3_training_isaerft_disable_available.py",
+ "entrypoint_confidence": "high",
+ "python_version": ">=3.11",
+ "key_deps": [
+  "torch==2.7.0",
+  "transformers==4.51.3",
+  "transformer-lens==2.15.4",
+  "peft==0.14.0",
+  "trl==0.16.1",
+  "sae-lens==5.10.2",
+  "bitsandbytes==0.45.3",
+  "deepspeed==0.16.4",
+  "wandb==0.19.11"
+ ],
+ "models": [
+  {
+   "hf_id": "google/gemma-2-2b",
+   "params_b": 2.0,
+   "gated": true
+  }
+ ],
+ "phenomenon": "interpretability tooling",
+ "contested": true,
+ "claim_type": "method",
+ "primary_claim": "ISaeRFT (Interpretable Sparse Autoencoder Representation Fine Tuning) \u2014 a technique that gradient-optimizes IA3-style learned scaling factors on SAE latents via a HuggingFace PeftModel \u2014 has a working prototype where DPO loss decreases significantly within as few as 20 training steps, though the research is at a very early stage with no major proof of concept yet on downstream tasks.",
+ "quote": "DPO loss goes down significantly in as few as 20 steps.",
+ "metric": "DPO loss during training",
+ "target_value": "DPO loss goes down significantly in as few as 20 steps",
+ "target_numeric": 20.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "rel:0.15",
+ "tolerance_rationale": "other scalar metric: 15% relative; post reported no spread, tolerance is a guess",
+ "vram_estimate_gb": 10,
+ "fits_3090": "probably",
+ "est_runtime": "unknown",
+ "est_runtime_class": "unknown",
+ "budget_minutes": 180,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "trl-internal-testing/hh-rlhf-helpful-base-trl-style (DPO preference data, auto-downloaded)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "google/gemma-2-2b is a gated model (licence acceptance + `hf auth login` required)",
+  "Training scripts call wandb.init()/report_to='wandb' unconditionally -- needs a wandb account/API key or a code edit to disable",
+  "NEURONPEDIA_API_KEY is read by the same script for feature-description fetching (interpretability/visualization side-channel, not needed for the core DPO-loss curve, but its absence may error depending on code path)"
+ ],
+ "inspector_notes": "This repo ships an unusually thorough audit doc (REPRODUCE.md, apparently written by a prior reviewer) which I cross-checked directly against the source; the actual compute footprint is small since only a tiny adapter is trained on a frozen 2B model, but no explicit VRAM figure is stated anywhere in the repo itself.",
+ "headline_artifact": "wandb-logged DPO loss curve produced by src/training/ia3_training_isaerft_disable_available.py -- the plot referenced in the post as 'DPO loss goes down significantly in as few as 20 steps'.",
+ "selector_tier": "T1",
+ "selector_score": 3.4
+}

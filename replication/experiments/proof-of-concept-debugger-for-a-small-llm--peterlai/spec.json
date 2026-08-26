@@ -1,0 +1,57 @@
+{
+ "slug": "proof-of-concept-debugger-for-a-small-llm--peterlai",
+ "post_id": "rxR5p9Qha937wTTBp",
+ "title": "Proof-of-Concept Debugger for a Small LLM",
+ "date": "2025-03-17",
+ "repo": "peterlai/gpt-circuits",
+ "head_sha": "1cf99ec0580f33e19c37099b02d37a01b284ba5f",
+ "entrypoint": "experiments/circuits/comparisons.sh",
+ "entrypoint_confidence": "medium",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "numpy",
+  "scipy",
+  "datasets",
+  "tiktoken",
+  "safetensors",
+  "plotly"
+ ],
+ "models": [
+  "GPT-2 216k params (toy)"
+ ],
+ "phenomenon": "circuit discovery",
+ "contested": true,
+ "claim_type": "method",
+ "primary_claim": "A prototype LLM 'debugger' using SAE features and a new ablation technique ('cluster resampling') automates interpretable circuit visualization for arbitrary prompts on a small character-level toy GPT-2 model, producing smaller/sparser circuits (e.g. 20-41 features) than conventional zero-ablation (31-138 features) or resample-ablation (70-96 features) at a comparable or better KL divergence target.",
+ "quote": "Cluster resampling produces the best results, followed by zero ablation, then distantly by conventional resampling.",
+ "metric": "number of SAE features per extracted circuit at KL divergence threshold 0.25",
+ "target_value": "cluster resampling circuits contain fewer features (e.g. 20-41 across example sequences) than zero ablation (31-138) and conventional resampling (70-96)",
+ "target_numeric": 20.0,
+ "direction": "-",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 6 numbers; compare the components by hand",
+ "vram_estimate_gb": 2,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "tiny Shakespeare char corpus"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "no model or SAE checkpoints are committed \u2014 the full chain (train GPT-2 toy model, train JumpReLU SAE, run comparisons.sh, run comparisons.ipynb) must be run from scratch",
+  "requirements.txt has zero version pins (not even torch), so exact reproduction depends on whatever the latest versions resolve to today"
+ ],
+ "inspector_notes": "The model itself (toy char-level GPT-2, ~216K params per the post) is cheap to train; the real cost is procedural \u2014 no pre-baked checkpoint to skip straight to the comparison step, and a 500-run ablation sweep to reproduce the table.",
+ "headline_artifact": "experiments/circuits/comparisons.ipynb, aggregating checkpoints/<model>/ablation-comparisons/<circuit_name>/{cluster,zero,random,...}.json into the per-config feature-count numbers quoted in the post (20-41 cluster vs 31-138 zero vs 70-96 resample)",
+ "selector_tier": "T1",
+ "selector_score": 6.61
+}

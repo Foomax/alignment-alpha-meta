@@ -1,0 +1,74 @@
+{
+ "slug": "probing-knowledge-recovery-in-unlearned-models--fathmamehnoor",
+ "post_id": "LLebzjrxuRzji6zhk",
+ "title": "Probing Knowledge Recovery in Unlearned Models",
+ "date": "2026-08-11",
+ "repo": "fathmamehnoor/unlearning-recovery-probes",
+ "head_sha": "bc10cf3e745a8e5aa6936490a9bbf0e76ac2906c",
+ "entrypoint": "scripts/extract_refusal_direction.py + scripts/wmdp_bio_lm_eval_ablation.py (refusal/representation-direction ablation arms); wmdp_sft_recovery/train_gsm8k_qlora.py + eval_recovery_lm_eval.py (unrelated-SFT recovery arm)",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformers",
+  "accelerate",
+  "peft",
+  "bitsandbytes",
+  "lm_eval",
+  "torch"
+ ],
+ "models": [
+  {
+   "hf_id": "meta-llama/Meta-Llama-3-8B-Instruct",
+   "params_b": 8.0,
+   "gated": true
+  },
+  {
+   "hf_id": "OPTML-Group/{GradDiff,IDK-AP,ILU-RMU,NPO,NPO-ILU}-WMDP-llama3-8b-instruct",
+   "params_b": 8.0,
+   "gated": true
+  },
+  {
+   "hf_id": "ScaleAI/mhj-llama3-8b-rmu",
+   "params_b": 8.0,
+   "gated": true
+  }
+ ],
+ "phenomenon": "machine unlearning robustness",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Across six WMDP-Bio-unlearned Llama-3-8B-Instruct checkpoints (RMU, ILU-RMU, NPO, GradDiff, NPO-ILU, IDK-AP), forget-set representation-targeted direction ablation and unrelated fine-tuning on GSM8K each recover substantial WMDP-Bio accuracy for several methods (up to 64% gap recovered and +41.4 accuracy points respectively), while refusal-direction ablation recovers no knowledge in the one checkpoint (ILU-RMU) where a clean refusal direction could be extracted, and qualitative inspection shows only 40-47% of 'recovered' answers reflect genuinely correct reasoning rather than contradictory or degenerate generations, showing that WMDP forced-choice accuracy alone overstates genuine knowledge recovery.",
+ "quote": "A clean refusal direction was obtained only from the ILU-RMU checkpoint, reducing the refusal rate from 98% to 0% when ablated.",
+ "metric": "WMDP-Bio forced-choice accuracy recovery via different probes",
+ "target_value": "forget-set representation ablation: 57-64% gap recovered for RMU/ILU-RMU/NPO, 19% for IDK-AP; unrelated GSM8K fine-tuning: +41.4pp (RMU), +23.8pp (ILU-RMU), +22.5pp (NPO) with MMLU flat; refusal-direction ablation: no recovery (95% CI excluded improvements >1.4pp) in ILU-RMU; only 40-47% of recovered answers showed genuine correct reasoning on qualitative review",
+ "target_numeric": 57.0,
+ "direction": "+",
+ "uncertainty_reported": "ci",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 11 numbers; compare the components by hand",
+ "vram_estimate_gb": 20,
+ "fits_3090": "yes",
+ "est_runtime": "days (multi-session)",
+ "est_runtime_class": "days",
+ "budget_minutes": 480,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "WMDP-Bio (via lm_eval's wmdp_bio task)",
+   "MMLU",
+   "GSM8K (openai/gsm8k)",
+   "AdvBench + Alpaca (refusal-direction contrast prompts)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "6 gated Llama-3-8B-derived checkpoints must each be individually requested/accepted on HF across two different orgs (OPTML-Group, ScaleAI)",
+  "Explicitly multi-day, multi-GPU-rental-session compute budget by the authors' own account, even though any single run fits a 3090",
+  "The qualitative 40-47% 'genuine correct reasoning' classification of recovered answers has no automated classifier or LLM-judge script found in the repo - appears to be manual/human review, so the exact figure is not push-button reproducible"
+ ],
+ "inspector_notes": "The most rigorously engineered repo in this batch: explicit hardware profiles matched to a 24GB consumer card, shared seeds/QLoRA recipes across arms, and detailed methodology docs (direction_extraction.md, results.md). The scale of the sweep across 6 checkpoints, not any single run's VRAM, is the main obstacle to full reproduction.",
+ "headline_artifact": "results.md tables (WMDP-Bio direction-ablation accuracy by method/model) and wmdp_sft_recovery/results/wmdp_sft_recovery/recovery_table.md",
+ "selector_tier": "T1",
+ "selector_score": 6.19
+}

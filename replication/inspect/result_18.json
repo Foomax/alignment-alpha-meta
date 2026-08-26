@@ -1,0 +1,229 @@
+[
+ {
+  "post_id": "ZwEer94AefjdW4933",
+  "repo": "phusroyal/phu-bluedot_1st_puzzle",
+  "head_sha": "27a8be7ed55fb4917065f7d84de567ccd3883914",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "src/predefined_manifold (run via `uv run python -m src.predefined_manifold run --device cuda`, i.e. src/predefined_manifold/__main__.py)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": "3.11",
+   "key_deps": ["torch==2.12.0", "sentence-transformers==5.5.1", "transformers==5.11.0", "scikit-learn==1.9.0", "accelerate==1.14.0"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "sentence-transformers/all-MiniLM-L6-v2", "params_b": 0.022, "gated": false}
+  ],
+  "vram_estimate_gb": 2,
+  "vram_basis": "Frozen 22M-param MiniLM encoder producing 384-dim embeddings feeding a custom 5-layer MLP head (152KB model.pt); train/test sets are 7000/1500 short synthetic sentences (1.1MB/236KB jsonl). Everything here is orders of magnitude under 24GB even in fp32.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["data/train.jsonl (in-repo, 7000 rows)", "data/test.jsonl (in-repo, 1500 rows)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "README example commands all run with --device cpu by default; training schedule (src/predefined_manifold/training.py TrainSchedule) is base_epochs=14 plus per-geometry stages totaling ~118 more epochs over only 7000 rows with a tiny MLP -- this is CPU-fast, so on a 3090 it is trivial.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "geometries/<geometry>/stages/<stage>/metrics.json and runs/<run_id>/metrics.json under .artifacts/predefined_manifold, produced by `python -m src.predefined_manifold run` for Question 3 (sphere_shell / helix_tube geometries, classot vs gfal stages) -- these are exactly the linear-probe-AUC-drop and causal-delta numbers in the post.",
+  "blockers": [],
+  "notes": "This is the cleanest repo of the batch: fully self-contained (data, model, training pipeline, CLI, tests all included), pinned deps via uv.lock, and the README documents the exact commands and output paths for every stage of the claim (ClassOT baseline through GFAL/GFAL+ and causal-use validation). No GPU is even strictly required; a 3090 makes it faster still."
+ },
+ {
+  "post_id": "wezSznWnsMhpRF2QH",
+  "repo": "jim-maar/interpretability",
+  "head_sha": "73bc8f299f29823ad2ac1d288861dbb21b0e9f4f",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "prove_circuits_last_flipped.py (equivalently prove_circuits_last_flipped.ipynb)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": "3.11 (per interpretability.yaml conda env)",
+   "key_deps": ["transformer-lens==2.0.0", "torch==2.0.1", "jaxtyping==0.2.29", "einops==0.8.0", "nnsight==0.0.6", "wandb==0.13.10"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "NeelNanda/Othello-GPT-Transformer-Lens (synthetic_model.pth)", "params_b": 0.025, "gated": false}
+  ],
+  "vram_estimate_gb": 3,
+  "vram_basis": "OthelloGPT is GPT2-small-scale: 8 layers, d_model=512, d_mlp=2048, n_heads=8, d_vocab=61, n_ctx=59 (~25M params); the script runs it with run_with_cache over batches of 200 board sequences (length 59) for 1000 batches per configuration -- trivial VRAM for a model this size.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": [
+    "board_seqs_int_small.npy / board_seqs_string_small.npy (from the external likenneth/othello_world repo; the git-clone line for it is present but commented out in the script)",
+    "pretrained linear/flipped/legal/accessible probes (all included in-repo under probes/mid and probes/post, e.g. probes/post/linear/resid_{0..7}_linear.pth)"
+   ],
+   "available": "download-script",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "1000 batches x 200 games x 7 layers x 2 attention-pattern variants x 2 prediction methods (get_yours_and_mine_pred_math2 vs get_yours_and_mine_pred_old) of forward-cache passes through a ~25M-param model -- large in call count but each pass is cheap; should run in minutes on a 3090.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "scores_math['Accuracy'] / scores_test['Accuracy'] computed in prove_circuits_last_flipped.py via get_score_from_results (tp+tn)/(tp+tn+fp+fn), aggregated over layer/pos/row/col -- this is exactly the 'reconstruction accuracy of previous-color-circuit probe vs real attention output' metric in the post.",
+  "blockers": [
+   "board_seqs_int_small.npy / board_seqs_string_small.npy are not included in this repo; the `git clone https://github.com/likenneth/othello_world` line that would fetch them is commented out, so a re-runner must uncomment/run it manually (well-known public repo, low friction)",
+   "the competing-hypothesis ablation test appears to live in flipping_circuit/prove_flipped_circuit_2.py, which loads data/board_seqs_int_train.pth and data/board_seqs_int_valid.pth -- neither this data/ directory nor any script to produce those .pth files exists anywhere in the repo (unlike the othello_world .npy files, there is no documented source for these), and a code comment ('with 60 GB RAM I can do 20.000') suggests the default NUM_GAMES_TRAIN=10000 config is itself close to the 31GB RAM budget"
+  ],
+  "notes": "Bachelor's-thesis repo built on the ARENA_3.0 OthelloGPT tutorial; requirements.txt is a broad ARENA course environment (includes unrelated openai/gym/mujoco packages) but no OpenAI/closed-API calls appear in the analyzed scripts. The main previous-color-circuit accuracy claim is well-supported and cheap to reproduce; the disproved MLP-neuron-rule competing hypothesis (a secondary but still claim-relevant result) has an undocumented, missing training/validation dataset."
+ },
+ {
+  "post_id": "8uMA6vwitdwqs5AH4",
+  "repo": "rahulschand/monosemanticity-quantization",
+  "head_sha": "dd00a2557d265e2f55c86a601957c9905d7cb886",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "train.py (SAE training) chained by hand with quant.py/degrade.py/analyse_quant.py -- no single script runs the full quantize -> train -> measure pipeline",
+  "entrypoint_confidence": "low",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformer_lens", "torch", "datasets", "wandb", "einops", "tqdm"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": null, "params_b": 0.003, "gated": false}
+  ],
+  "vram_estimate_gb": 3,
+  "vram_basis": "gelu-2l is Neel Nanda's toy 2-layer, d_model=512 transformer (~a few million params); the SAE (my_utils.py AutoEncoder) has dict_size = act_size(512) * dict_mult(32) = 16384, so encoder+decoder weights are ~33M floats (~130MB fp32) plus an activation buffer of buffer_size=batch_size(2048)*buffer_mult(384)=786432 rows x 512 floats (~1.6GB fp32). All comfortably under 24GB.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["NeelNanda/c4-code-20k (HF dataset, used by degrade.py and my_utils.py)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "hours-days (uncertain)",
+  "est_runtime_basis": "my_utils.py's unmodified default_cfg sets num_tokens=int(2e9) (2 billion tokens) for SAE training -- this is the original Neel Nanda 1L-SAE repo's default, carried over unchanged; the README/scripts never state how many tokens were actually used for the post's reported percentages, so whether the real run used the full 2e9-token budget (which would take many hours to ~a day+ on one 3090 for repeated forward passes through gelu-2l to refill the activation buffer) is unknown.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "percentage of SAE hidden features with freqs < 1e-5 (computed via get_freqs in my_utils.py / analysis.py, logged to wandb during train.py and printed/histogrammed in analysis.py) for full/8-bit/4-bit quantized gelu-2l",
+  "blockers": [
+   "no requirements.txt/pyproject.toml/environment.yml at all -- deps must be inferred from imports",
+   "no single script wires together quant.py (produces quant_4.bin/quant_8.bin) -> train.py (trains the SAE) -> analyse_quant.py/analysis.py (computes the <1e-5 feature percentage); my_utils.py's HookedTransformer.from_pretrained(cfg['model_name']) call for loading a quantized checkpoint is commented out, so the quantized-model SAE training path requires hand-editing the script",
+   "num_tokens actually used for the reported precision-by-precision comparison is unstated (repo carries the original repo's 2e9-token default, which may or may not match what produced the post's numbers)"
+  ],
+  "notes": "This is a lightly-modified fork of Neel Nanda's public 1L-Sparse-Autoencoder repo with a handful of loose, hand-run scripts (hardcoded filenames like quant_4.bin, quant_8.bin) rather than a packaged pipeline; a competent engineer could stitch it together and the model/SAE are tiny, but exact reproduction of the reported percentages is uncertain given the missing token budget and disconnected scripts."
+ },
+ {
+  "post_id": "WvoexzXwnneXrRyea",
+  "repo": "lewington-pitsos/sae_vit",
+  "head_sha": "6c10afcb50892629e2635697afb55b3b7ee6ec5d",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "training_sae_on_ViT.py (CLIP SAE training on ImageNet) followed by yt.ipynb (the KS-test / 6.5x-median headline statistic) -- yt.ipynb loads precomputed tensors from a cruft/ directory that .gitignore excludes and no script in the repo reproduces",
+  "entrypoint_confidence": "low",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": "3.11 (per README conda create)",
+   "key_deps": ["transformer-lens==1.10.0", "transformers==4.35.2", "torchvision==0.17.1", "timm==0.9.16", "datasets==2.17.1", "geom_median (git submodule, jbloomAus/geom_median)"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "openai/clip-vit-large-patch14", "params_b": 0.428, "gated": false}
+  ],
+  "vram_estimate_gb": 6,
+  "vram_basis": "training_sae_on_ViT.py trains an SAE (expansion_factor 64, d_in=1024 -> dict_size 65536) on CLIP ViT-L/14 layer -2 residual activations, batch_size 1024, total_training_tokens (images) = 2,621,440, n_batches_in_store=15 -- CLIP-L is a ~428M-param model and the SAE adds ~134M params (65536x1024x2); comfortably fits a 3090.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": [
+    "evanarlian/imagenet_1k_resized_256 (HF dataset, used to train the SAE)",
+    "524,288 YouTube-8M video thumbnails + viewCount metadata (used to compute the headline statistic) -- referenced only via gitignored cruft/video/*.h5 files and cruft/400_max_activating_image_{values,indices}.pt caches; no download/scrape script for YouTube-8M thumbnails or metadata exists anywhere in the repo"
+   ],
+   "available": "missing",
+   "gated": false
+  },
+  "est_runtime": "unknown",
+  "est_runtime_basis": "The ImageNet-side SAE training (2.6M images, batch 1024) would likely take on the order of an hour on a 3090, but building the YouTube-8M thumbnail activation cache that yt.ipynb actually reads from is not scripted anywhere, so its runtime cannot be estimated from repo contents.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "yt.ipynb cells computing scipy.stats.ks_2samp(means, rand_means) (KS statistic/p-value between per-SAE-feature median view-counts and randomly sampled group medians) and the topk-feature-group median view count normalized by the dataset median (the '6.5x' figure) -- both computed directly from the gitignored cruft/ caches.",
+  "blockers": [
+   "yt.ipynb (and presumably mrbeast.ipynb) read torch.load('cruft/400_max_activating_image_values.pt'), torch.load('cruft/400_max_activating_image_indices.pt'), and cruft/video/*.h5 view-count files; .gitignore explicitly excludes 'cruft' and no script in the repo generates these files",
+   "no code anywhere downloads or scrapes YouTube-8M thumbnail images or view-count metadata for the 524,288-video sample; only the ImageNet/CLIP SAE-training half (training_sae_on_ViT.py) is fully specified",
+   "README is a generic 'MATS SAE Training' README shared across this fork family and documents SAE-training config only -- it says nothing about the YouTube-thumbnail-specific pipeline used for this post"
+  ],
+  "notes": "This is a general-purpose SAE-training framework (a fork of the MATS sae_training codebase) repurposed for CLIP+ImageNet; the SAE-training half is well-specified and cheap on one 3090, but the actual youtube-8m statistic in the post depends entirely on a locally-cached, git-ignored data pipeline (thumbnail collection + view-count join + per-feature max-activation extraction across 524k images) that this repo never builds or documents."
+ },
+ {
+  "post_id": "YbfhaqNo4AWdXSpzQ",
+  "repo": "chessformer-lens/chessformer_lens",
+  "head_sha": "85556d390049fa441de5c7ddc1e908f00c83edf7",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": null,
+  "entrypoint_confidence": "low",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": ">=3.10",
+   "key_deps": ["torch>=2.4", "maia3 (git+https://github.com/CSSLab/maia3)", "python-chess", "huggingface-hub", "matplotlib"],
+   "stated_compute": "engine.py comment: 'the 5M model on one position is instant on CPU anyway' (re: why MPS is never auto-picked)"
+  },
+  "models_needed": [
+   {"hf_id": "UofTCSSLab/Maia3-5M", "params_b": 0.005, "gated": false}
+  ],
+  "vram_estimate_gb": 1,
+  "vram_basis": "Default alias maia3-5m is a ~5M-parameter chess transformer; README explicitly notes larger aliases (23m/79m) exist with 16/32 heads and d_model 512/1024, all still tiny. Trivial VRAM footprint regardless of alias.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["hundreds of mined knight-fork chess positions (Lichess or similar game database), used for the headline ablation study"],
+   "available": "missing",
+   "gated": false
+  },
+  "est_runtime": "unknown",
+  "est_runtime_basis": "engine.py provides ablate_grid_batch for running the per-head ablation over many positions at once and this is fast given the model size, but there is no script/data in the repo for actually mining the hundreds of fork positions the headline number is computed over.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": null,
+  "blockers": [
+   "the post itself states the headline number (ablating head 5 costs 2.78 logits vs <=0.14 for every other head) comes from 'an upcoming paper' where 'we mine hundreds of forks' -- this repo only ships a 10-position demo (the exact FEN/move list in the README) via chessformer_lens.interp_plot.plot_move_report, not the fork-mining pipeline or the hundreds-of-positions dataset that produced the cited statistic",
+   "no fork-mining script or chess-game-database ingestion code exists anywhere in the repo (grepped for 'fork' across chessformer_lens/*.py, only comments/docstrings match, no mining logic)"
+  ],
+  "notes": "chessformer_lens is a general-purpose interpretability toolkit (engine + 3 frontends) for Maia-3 and it is genuinely lightweight to run, but per the rule that the headline number's source is what matters: the post explicitly says the large-n ablation study lives in an unpublished paper, not this repo, so the entrypoint for the actual headline claim is null."
+ },
+ {
+  "post_id": "8zDjhJNoFhMuHB5Kc",
+  "repo": "g-w1/gradient-routed-vae",
+  "head_sha": "a644302f8abf5c15541380bff7068bf615f1d319",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "vae.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["torch", "torchvision", "einops", "imageio", "matplotlib", "tqdm", "onnxruntime"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": null, "params_b": 0.003, "gated": false}
+  ],
+  "vram_estimate_gb": 1,
+  "vram_basis": "Plain MLP VAE: encoder 784->2048->512->10, mirrored decoder; a few million parameters total, batch size 128 over 28x28 MNIST images -- negligible VRAM even in fp32.",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["MNIST (train+test)"],
+   "available": "download-script",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "100 epochs (hardcoded loop `for epoch in tqdm.tqdm(range(100))`) over MNIST's 60000 images with a small MLP, batch size 128 -- this is a classic fast toy-model training loop, minutes on a 3090.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "final print statement in vae.py: 'Classification accuracy from encoding: {correct/total}', computed via argmax over the ONNX-exported encoder's mean output on the MNIST validation set",
+  "blockers": [
+   "vae.py's save/export section is hardcoded SAVE=False, which tries to load a 'vae.pth' checkpoint that is not committed to the repo (only the already-exported vae_encoder.onnx/vae_decoder.onnx are included) -- a re-runner must flip SAVE=True (or otherwise skip the load) to actually train fresh weights before the final eval block will work end-to-end",
+   "no requirements.txt/pyproject.toml; deps must be inferred from the import block"
+  ],
+  "notes": "Single flat script (train + ONNX export + eval, using # %% cell markers, no CLI) that is otherwise fully self-contained and trivially cheap to run; the gradient-routing mechanism is the `encode_and_mask` method that masks all latent dims except the label-selected one during the backward pass."
+ }
+]

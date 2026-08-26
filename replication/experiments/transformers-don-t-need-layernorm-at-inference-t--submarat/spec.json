@@ -1,0 +1,97 @@
+{
+ "slug": "transformers-don-t-need-layernorm-at-inference-t--submarat",
+ "post_id": "KbFuuaBKRP7FcAADL",
+ "title": "Transformers Don't Need LayerNorm at Inference Time: Implications for Interpretability",
+ "date": "2025-07-23",
+ "repo": "submarat/removing-layer-norm",
+ "head_sha": "583a9e63ff639f17ee514c79a857f8d5a16728ff",
+ "entrypoint": "eval_pile.py (invocations listed in eval_all.sh reproduce the README table exactly)",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformers",
+  "transformer_lens",
+  "datasets",
+  "torch",
+  "docopt",
+  "scipy"
+ ],
+ "models": [
+  {
+   "hf_id": "openai-community/gpt2",
+   "params_b": 0.124,
+   "gated": false
+  },
+  {
+   "hf_id": "openai-community/gpt2-medium",
+   "params_b": 0.355,
+   "gated": false
+  },
+  {
+   "hf_id": "openai-community/gpt2-large",
+   "params_b": 0.774,
+   "gated": false
+  },
+  {
+   "hf_id": "openai-community/gpt2-xl",
+   "params_b": 1.5,
+   "gated": false
+  },
+  {
+   "hf_id": "schaeff/gpt2-small_LNFree300",
+   "params_b": 0.124,
+   "gated": false
+  },
+  {
+   "hf_id": "schaeff/gpt2-medium_LNFree500",
+   "params_b": 0.355,
+   "gated": false
+  },
+  {
+   "hf_id": "schaeff/gpt2-large_LNFree600",
+   "params_b": 0.774,
+   "gated": false
+  },
+  {
+   "hf_id": "schaeff/gpt2-xl_LNFree800",
+   "params_b": 1.5,
+   "gated": false
+  }
+ ],
+ "phenomenon": "LayerNorm removal for interpretability",
+ "contested": false,
+ "claim_type": "positive",
+ "primary_claim": "LayerNorm can be removed from all GPT-2 models up to XL (1.5B parameters) via fine-tuning with only a small increase in cross-entropy loss (e.g. +0.0253 for XL), showing LN plays no substantial role in language modeling, though contrary to expectations attribution patching accuracy does not improve in LN-free models even as direct logit attribution becomes exact and entropy neurons stop functioning.",
+ "quote": "Contrary to our expectations, we saw no improvement resulting from removing LayerNorm.",
+ "metric": "cross-entropy loss increase, LN-free vs vanilla fine-tuned model, on The Pile-filtered",
+ "target_value": "Small +0.0858, Medium +0.0962, Large +0.0812, XL +0.0253",
+ "target_numeric": 0.0858,
+ "direction": "0",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 4 numbers; compare the components by hand",
+ "vram_estimate_gb": 8,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "Pile-filtered (lucabaroni/apollo-pile-filtered-10k)",
+   "Pile (apollo-research/monology-pile-uncopyrighted-tokenizer-gpt2)",
+   "OpenWebText"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "Training new LN-free checkpoints from scratch needs 80GB+ GPU per README, but this is NOT required to reproduce the reported numbers since the exact checkpoints are already released on HF",
+  "python_version not pinned anywhere in the repo"
+ ],
+ "inspector_notes": "The paper's own headline CE-loss table is reproducible purely via inference on released HF checkpoints (eval_pile.py/eval_all.sh); the 80GB+ GPU requirement in the README applies only to re-deriving the LN-free checkpoints via training from scratch.",
+ "headline_artifact": "README's cross-entropy loss table (OWT/Pile/Pile-filtered columns) for Small/Medium/Large/XL LN-free vs vanilla \u2014 matches target_value exactly",
+ "selector_tier": "T1",
+ "selector_score": 2.66
+}

@@ -1,0 +1,67 @@
+{
+ "slug": "positive-jailbreaks-in-llms--dmitry-dereshev",
+ "post_id": "KLqiDczfZsmhzEhax",
+ "title": "Positive jailbreaks in LLMs",
+ "date": "2025-01-29",
+ "repo": "dmitry-dereshev/positive-jailbreaks-llm-failure-modes",
+ "head_sha": "cadbd53880e9c2f3979710e45757a75a7fd0e583",
+ "entrypoint": "benchmark_llms.py",
+ "entrypoint_confidence": "medium",
+ "python_version": "3.11",
+ "key_deps": [
+  "gpt4all",
+  "pandas"
+ ],
+ "models": [
+  {
+   "hf_id": "ghost-7b-v0.9.1-Q4_0.gguf (GPT4All model hub)",
+   "params_b": 7,
+   "gated": false
+  },
+  {
+   "hf_id": "gpt4all-falcon-newbpe-q4_0.gguf (GPT4All model hub)",
+   "params_b": 7,
+   "gated": false
+  },
+  {
+   "hf_id": "mistral-7b-openorca.gguf2.Q4_0.gguf (GPT4All model hub)",
+   "params_b": 7,
+   "gated": false
+  }
+ ],
+ "phenomenon": "jailbreaking / adversarial prompting",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Prepending certain LLM instructions unrelated to safety (a 'unified enhancements' persona instruction) can reduce successful responses to harmful JailbreakBench prompts while leaving harmless-prompt performance roughly the same or improved for one of three tested 7B-scale LLMs (Ghost 7B), demonstrating 'positive jailbreaks' that improve safety without an explicit safety instruction; a second instruction ('fractal leaping') instead degraded performance on both harmful and harmless queries across all three models.",
+ "quote": "This work observed two such LLM + instruction combos, though there are likely other LLM-token combos that would show the same results.",
+ "metric": "count of competent+complete responses out of 100 harmful / 100 harmless JailbreakBench prompts, vs baseline",
+ "target_value": "unified enhancements: harmful totals dropped 36->23 (Ghost), 32->14 (Falcon), 42->23 (OpenOrca); harmless totals: 78->80 (Ghost, +2), 62->57 (Falcon, -5), 76->74 (OpenOrca, -2)",
+ "target_numeric": 36.0,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 15 numbers; compare the components by hand",
+ "vram_estimate_gb": 5,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "JailbreakBench malicious/benign prompt CSVs (100 each)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "The headline 'competent+complete' counts are produced by human grading of each generated response (README: '...vs. a human judge assessing their responses'); the repo's code generates raw responses but contains no scripted grader that reproduces the final counts",
+  "No requirements.txt or pyproject.toml anywhere in the repo",
+  "GGUF model weight files are not included and must be obtained separately from the GPT4All model hub (allow_download=False is set in the scripts, so paths must be supplied manually)"
+ ],
+ "inspector_notes": "Mechanically cheap to rerun (local, open-weight, quantized 7B models on GPU), but exactly reproducing the reported harmful/harmless totals requires redoing the same manual/human grading step the original author did, since that scoring logic isn't in the code.",
+ "headline_artifact": "Per-model response CSVs from benchmark_llms.py, scored into 'competent and complete' counts as tabulated in 'Analysis Summary.ods' / '2024-12-29 Validate Judgement.csv'",
+ "selector_tier": "T1",
+ "selector_score": 5.45
+}

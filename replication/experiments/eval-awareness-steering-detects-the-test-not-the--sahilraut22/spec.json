@@ -1,0 +1,61 @@
+{
+ "slug": "eval-awareness-steering-detects-the-test-not-the--sahilraut22",
+ "post_id": "ogvyWqJtSrpgXfc7t",
+ "title": "Eval-Awareness Steering detects the Test, Not the Sabotage",
+ "date": "2026-06-25",
+ "repo": "sahilraut22/eval-research",
+ "head_sha": "274bb55d6f185a1f854d1b6ffca3d125d50c9420",
+ "entrypoint": "steering/run_e3b.py --layers 12 14 24 (causal steering dose-response sweep, RQ1)",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "transformers",
+  "deception_detection (Apollo Research harness, external, cloned + patched)"
+ ],
+ "models": [
+  {
+   "hf_id": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+   "params_b": 8.0,
+   "gated": true
+  }
+ ],
+ "phenomenon": "sandbagging",
+ "contested": true,
+ "claim_type": "negative",
+ "primary_claim": "In Llama-3.1-8B-Instruct, the internal difference-of-means 'eval-awareness' direction is a genuine detector of evaluation framing (~0.81 AUROC on novel format-matched framings) but steering with it does not causally drive sandbagging (flat dose-response that fails to beat an empirical null of 24 random directions) nor predict which individual items get sandbagged (per-item probe AUROC ~0.54, at chance).",
+ "quote": "I found that direction is a valid detector of evaluation framing (~0.81 AUROC under novel, format matched framings) but is neither a causal drive of sandbagging nor a per-item predictor of it.",
+ "metric": "swing in sandbagging accuracy from steering dose alpha=-2 to alpha=+2 at headline layer 12, vs empirical null of 24 random directions",
+ "target_value": "-1.77pp swing, sub-threshold Spearman rho=-0.53 (p=0.08), does not beat empirical null (p=0.20)",
+ "target_numeric": -1.77,
+ "direction": "0",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 4 numbers; compare the components by hand",
+ "vram_estimate_gb": 18,
+ "fits_3090": "yes",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "WMDP",
+   "MMLU",
+   "Alpaca",
+   "repe_honesty__plain"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "Depends on an external harness (ApolloResearch/deception-detection @ f8ec401) that must be cloned separately and patched with the 7 patches in apollo_patches/",
+  "Llama-3.1-8B-Instruct is gated on HF (license acceptance needed)",
+  "E3b's own RUN_LOG.md is an unfilled scaffold in this checkout -- the dose-response numbers backing the assigned target_value are not yet present as artifacts here, only the (already 4090-validated) E1 pipeline is filled in"
+ ],
+ "inspector_notes": "A different experiment in this repo (E4, predictive per-item probe vs black-box baseline, RQ3, mentioned in the post's primary_claim narrative) DOES require a closed-API grader (patch 0006: DD_GRADER=anthropic claude-3-5-sonnet-20241022 or openai gpt-4o-2024-08-06) for its behavioural-baseline arm. That is not the assigned target_value metric (the E3b steering swing at layer 12), which is fully objective/local (MCQ accuracy, no LLM judge).",
+ "headline_artifact": "results/e3b_steering/sweep.json + manifest.json (dose-response table, Spearman rho, empirical-null p-value); currently only an unfilled scaffold ('STATUS: STAGED / not-yet-run') in this checkout, unlike E1 which has real pod_run results checked in.",
+ "selector_tier": "T1",
+ "selector_score": 6.37
+}

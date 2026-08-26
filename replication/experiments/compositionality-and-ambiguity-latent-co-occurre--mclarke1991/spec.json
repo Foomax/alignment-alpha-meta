@@ -1,0 +1,63 @@
+{
+ "slug": "compositionality-and-ambiguity-latent-co-occurre--mclarke1991",
+ "post_id": "WNoqEivcCSg8gJe5h",
+ "title": "Compositionality and Ambiguity:\u00a0\nLatent Co-occurrence and Interpretable Subspaces",
+ "date": "2024-12-20",
+ "repo": "mclarke1991/sae_cooccurrence",
+ "head_sha": "68522cb26f33bb95ca0cc7da6cfa625be2954764",
+ "entrypoint": "src/size_effects/features_active_per_token.py:main() (Fig 3B / Appendix Fig 1 -- SAE latent occurrence-per-token vs width)",
+ "entrypoint_confidence": "medium",
+ "python_version": ">=3.10,<3.12",
+ "key_deps": [
+  "sae_lens",
+  "transformer_lens",
+  "torch",
+  "streamlit",
+  "plotly"
+ ],
+ "models": [
+  {
+   "hf_id": "gpt2 (gpt2-small)",
+   "params_b": 0.124,
+   "gated": false
+  },
+  {
+   "hf_id": "google/gemma-2-2b",
+   "params_b": 2.6,
+   "gated": true
+  }
+ ],
+ "phenomenon": "SAE feature interpretability",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "SAE latents are not always independent: a small fraction of latents in GPT2-Small and Gemma-2-2b (Gemma Scope) SAEs form co-occurrence clusters that map interpretable subspaces, including cases of compositional encoding (e.g. discrete quantifiers like 'one of'/'some of'/'all of' combine predictably by relative activation strength) and cases where co-occurrence reflects lexical ambiguity (e.g. senses of 'how'); the rate of co-occurrence and the size/prevalence of these clusters both decrease as SAE width increases.",
+ "quote": "we find that these subspaces show latents acting compositionally, as well as being used to resolve ambiguity in language",
+ "metric": "rate of SAE latent co-occurrence per token vs SAE width",
+ "target_value": "co-occurrence rate decreases monotonically as SAE width increases in both GPT2-Small (widths 768-49152) and Gemma-2-2b; cluster (subgraph) size and prevalence also decrease as SAE width increases",
+ "target_numeric": 2.0,
+ "direction": "-",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 5 numbers; compare the components by hand",
+ "vram_estimate_gb": 18,
+ "fits_3090": "tight",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "pretraining-corpus activations streamed via SAE Lens ActivationsStore (whatever corpus the SAE was trained on)"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "The 'cluster (subgraph) size/prevalence decreases with width' half of the claim (Fig 9, subgraph_size_vs_width.ipynb) draws on Gemma Scope SAE widths up to 262k/524k/1,048,576 (config_gemma_widths.toml). The co-occurrence matrix is computed DENSE as a [d_sae,d_sae] float32 tensor (compute_cooccurrence_matrices in normalised_cooc_functions.py): width=262k needs ~274GB and width=1M needs ~4.4TB just to hold the matrix -- infeasible on 24GB VRAM or 31GB RAM regardless of GPU. Only widths up to ~65k (Gemma) / ~49k-98k (GPT2) are computable within budget, and the repo's own checked-in results/ directory only goes that far (no 262k/524k/1M result files present)."
+ ],
+ "inspector_notes": "Gemma-2-2b is gated on HF; GPT2-small and the SAEs (res-jb, Gemma Scope) are public. Two distinct measurements back the claim: the firing/occurrence-rate-vs-width plot (feasible on a 3090) and the subgraph-size-vs-width plot (infeasible past ~65k SAE width due to the dense co-occurrence matrix).",
+ "headline_artifact": "results/size_effects/*/sae_firing_stats.npy + width_sae_firing_stats_combined_plot.png (Fig 3B); results/*/dataframes/node_info_df_*.csv feeding subgraph_size_vs_width.ipynb (Fig 9)",
+ "selector_tier": "T1",
+ "selector_score": 6.5
+}

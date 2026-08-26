@@ -1,0 +1,290 @@
+[
+ {
+  "post_id": "EXj2bYK2rg8TMrncF",
+  "repo": "shivasrightfoot/soo-jailbreak-conceptual-fusion",
+  "head_sha": "c4bf965d0cf3ee51eb826ba33eefec90f00ae81f",
+  "status": "ok",
+  "language": "notebook",
+  "entrypoint": "02_soo_conceptual_fusion_training.ipynb",
+  "entrypoint_confidence": "high",
+  "env": {
+    "has_requirements": false,
+    "pinned_versions": false,
+    "python_version": null,
+    "key_deps": ["transformers", "accelerate", "peft", "datasets", "torchao", "torch"],
+    "stated_compute": null
+  },
+  "models_needed": [
+    {"hf_id": "Qwen/Qwen2.5-1.5B-Instruct", "params_b": 1.5, "gated": false}
+  ],
+  "vram_estimate_gb": 6,
+  "vram_basis": "bf16 1.5B model, LoRA rank 8 on q_proj/v_proj of layers below target layer, single-example forward passes (no batching) plus a KL retain-loss forward pass; trivially small.",
+  "fits_3090": "yes",
+  "data": {
+    "needed": ["walledai/HarmBench (standard split)", "walledai/XSTest", "in-repo jailbreak_baseline_results_raw_Qwen.csv"],
+    "available": "hf-hub",
+    "gated": true
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "3 epochs over a small set of jailbroken training pairs (subset of 50-holdout-excluded HarmBench 'Hypothetical' rows), one prompt at a time, no batching, 1.5B model -- well under an hour on a 3090.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "Figure 3 (refusal rate vs. RETAIN_WEIGHT at layer 18) produced by running 01_refusal_behavior_testing.ipynb against the adapter saved by 02_soo_conceptual_fusion_training.ipynb, using the in-repo keyword refusal classifier (no LLM judge -- notebook explicitly notes keyword classifier outperformed same-model LLM-as-judge in the source study this is adapted from).",
+  "blockers": [
+   "XSTest is a gated HF dataset requiring a one-time click-through acceptance (not an API-key blocker, just a manual step)."
+  ],
+  "notes": "Extremely clean, fully self-contained 4-notebook repo (train fusion adapter, train SFT baseline, test refusal behavior, analyze delta-W by layer). Refusal detection is a keyword classifier, not an LLM judge, so no closed API needed anywhere in the pipeline. This is one of the easiest repos to replicate in the batch."
+ },
+ {
+  "post_id": "3KTgeXBfhvRKfL5kf",
+  "repo": "patrickod32/landed_writes",
+  "head_sha": "a3bc2a852cc701b0ab6467bd6c168ddaebfa384e",
+  "status": "ok",
+  "language": "notebook",
+  "entrypoint": "Llama-3.1-8B-Instruct_scaling.ipynb",
+  "entrypoint_confidence": "medium",
+  "env": {
+    "has_requirements": false,
+    "pinned_versions": true,
+    "python_version": null,
+    "key_deps": ["transformers==4.50.3", "torch", "matplotlib", "scikit-learn", "datasets"],
+    "stated_compute": null
+  },
+  "models_needed": [
+    {"hf_id": "meta-llama/Meta-Llama-3.1-8B-Instruct", "params_b": 8.0, "gated": true},
+    {"hf_id": "meta-llama/Llama-3.2-1B-Instruct", "params_b": 1.0, "gated": true},
+    {"hf_id": "mistralai/Mistral-7B-Instruct-v0.2", "params_b": 7.0, "gated": true}
+  ],
+  "vram_estimate_gb": 32,
+  "vram_basis": "As literally written, `AutoModelForCausalLM.from_pretrained(model_name, ...)` is called with no `torch_dtype`/`dtype` argument anywhere in any of the 4 notebooks, which loads the 8B models in fp32 (~32GB weights alone) -- would NOT fit a 24GB 3090 unmodified. A one-line fix (`torch_dtype=torch.bfloat16`) drops this to ~16GB, which fits comfortably; this is a trivial, well-understood modification for inference-only forward passes with hooks, not a fundamental blocker.",
+  "fits_3090": "probably",
+  "data": {"needed": ["small hand-written prompt lists (in-notebook, not a formal dataset)"], "available": "in-repo", "gated": false},
+  "est_runtime": "minutes",
+  "est_runtime_basis": "Forward passes only (no training) over a handful of hand-written prompts per notebook, computing per-layer RMSNorm coordinate statistics and doing top-k ablation/coverage analysis; no batching or large-scale sweep evident.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "Per-layer amplification-factor tables/plots (Llama-3.1-8B and Mistral-7B *_scaling.ipynb) and the logit-sparsity coordinate-count analysis (Llama-3.1-8B-Instruct_logit_sparsity.ipynb).",
+  "blockers": [
+   "No README, no requirements.txt/pyproject/environment file -- dependencies inferred only from notebook pip-install cells.",
+   "Default fp32 model loading as literally written won't fit 24GB for the 8B models unless the engineer adds a dtype argument (trivial fix, noted above)."
+  ],
+  "notes": "4 independent, single-purpose notebooks (no shared entrypoint script); the post's numbers are split across the *_scaling notebooks (amplification factors) and the *_logit_sparsity notebook (coordinate count). No stated compute anywhere in the repo -- had to infer VRAM purely from model sizes and default HF loading behavior."
+ },
+ {
+  "post_id": "iDyf7aBdvBp9jnfuY",
+  "repo": "ibm/sae-steering",
+  "head_sha": "f06eeef5aba00a0f3b6d2e02fabff4a4a6607b23",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "timing_tests.py",
+  "entrypoint_confidence": "medium",
+  "env": {
+    "has_requirements": true,
+    "pinned_versions": true,
+    "python_version": null,
+    "key_deps": ["transformer-lens==2.2.2", "transformers==4.42.4", "torch==2.3.1", "sparse_autoencoder (openai/sparse_autoencoder.git)", "tuned-lens==0.2.0", "einops"],
+    "stated_compute": null
+  },
+  "models_needed": [
+    {"hf_id": "gpt2 (gpt2-small via transformer_lens)", "params_b": 0.124, "gated": false}
+  ],
+  "vram_estimate_gb": 2,
+  "vram_basis": "GPT-2 small plus a single OpenAI sparse_autoencoder (32k latents) resident for encode/decode -- trivial footprint.",
+  "fits_3090": "yes",
+  "data": {
+    "needed": ["Storage/d_ref_prompts.csv (in repo)", "Storage/d_align_prompts.csv (in repo)", "openai/sparse_autoencoder GPT-2 SAE weights (public Azure blob download via the sparse_autoencoder package)"],
+    "available": "in-repo",
+    "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "Timing test over a handful of reference prompts (embedding, SAE latent extraction, distance, and scoring steps), each timed individually -- inherently fast since the headline claim is a per-token latency number.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "The '<+0.001s/token' timing table printed by timing_tests.py (mean +/- 95% CI per pipeline stage).",
+  "blockers": [
+   "timing_tests.py hard-codes a local path/filename `gpt.top_k32.f0.pt` for the SAE checkpoint (`path = \"\" # need to set your path here`) instead of calling the repo's own `sparse_autoencoder.paths.v5_32k()` helper used elsewhere in steering_utils.py -- a competent engineer must either download+rename the OpenAI SAE weight file or swap in the proper helper call.",
+   "timing_tests.py also reads Storage/D_ref_embeds.csv, Storage/D_align_embeds.csv, and Storage/dref_latents_{layer_id}.csv, none of which are checked into the repo -- they are generated by running steering.py's generated_ouptuts()/process_D_ref() first (confirmed present in steering_utils.py), so this is a two-step reproduction, not a single script.",
+   "steering.py's generated_ouptuts() also references Storage/d_align_test_prompts.csv, which is NOT in the repo (only d_align_prompts.csv and d_ref_prompts.csv are) -- would need to be reconstructed or the missing-file path avoided."
+  ],
+  "notes": "Single-commit research-code drop (IBM). Core method code and requirements.txt are present and GPT-2-small-scale, so this is cheap once the missing intermediate CSVs are regenerated and the hard-coded SAE checkpoint path is fixed -- neither is a fundamental blocker, just reproduction friction."
+ },
+ {
+  "post_id": "cN3n2HDNkf4Bterxx",
+  "repo": "burnssa/ai-alignment-research",
+  "head_sha": "0e458ccae9c370f44a3329d5e225dee12bc39385",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "stealth-misalignment-probing/dose_response.py",
+  "entrypoint_confidence": "high",
+  "env": {
+    "has_requirements": false,
+    "pinned_versions": false,
+    "python_version": "3.11+ (README prerequisite)",
+    "key_deps": ["torch>=2.4", "transformers", "peft"],
+    "stated_compute": "\"GPU with 24GB+ VRAM for geometric analysis (RunPod recommended)\" and \"RunPod GPU time: ~2 hours on RTX 4090\" (stealth-misalignment-probing/README.md)"
+  },
+  "models_needed": [
+    {"hf_id": "meta-llama/Llama-3.2-3B-Instruct", "params_b": 3.0, "gated": true}
+  ],
+  "vram_estimate_gb": 24,
+  "vram_basis": "Repo's own stated requirement is '24GB+ VRAM' for the geometric analysis (LoRA fine-tuning + activation extraction on Llama-3.2-3B); this sits right at a 3090's ceiling.",
+  "fits_3090": "tight",
+  "data": {
+    "needed": [
+     "harvard-cs-2881-hw0/training_data/training_datasets.zip.enc (encrypted, from Turner et al. / clarifying-EM model-organisms-for-EM release; password 'model-organisms-em-datasets' is documented in-repo and in the upstream README -- not a real secret)",
+     "stealth-misalignment-probing/training_data/mixed/dose_{5,10,25,50}.jsonl (already present in-repo, plaintext)",
+     "0% benign LoRA adapter ('3b_good_medical') referenced by dose_response.py, NOT present anywhere in the repo -- must be trained from scratch from the decrypted good_medical_advice.jsonl"
+    ],
+    "available": "in-repo",
+    "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "README states ~2 hours of RTX 4090 time for the full geometric pipeline (LoRA train x4 doses + merge + extract + compare); training the missing 0% benign adapter adds roughly one more ~1hr LoRA run per the repo's own per-dataset timing notes (~68 min for 7049 examples).",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "behavioral_eval.py uses a dual LLM-judge (GPT-4o-mini + Claude Sonnet 4.6) to produce the 'behavioral eval shows no signal until 50%+ dose' half of the claim -- the geometric/drift half (dose_response.py) itself needs no API, but the full comparison in the primary claim does.",
+  "headline_artifact": "results/dose_response/dose_response.json -> the per-category, per-dose drift-percentage table (README section 'Geometric Detection: Drift Score by Dose'), specifically the 28% mean at 5% dose.",
+  "blockers": [
+   "The 0% (benign) reference LoRA adapter that the drift metric is normalized against is not checked into the repo and must be trained (data for it exists once the encrypted zip is unprotected).",
+   "Raw good/bad medical advice source data is behind a password-protected zip (password is publicly documented, so this is friction, not a hard blocker).",
+   "Full primary claim (geometric detection *vs.* behavioral blindness) requires GPT-4o-mini and Claude Sonnet API access for the behavioral half; the geometric half alone does not."
+  ],
+  "notes": "This is a large multi-project monorepo (6+ unrelated subprojects); the relevant work is entirely in stealth-misalignment-probing/, not the harvard-cs-2881-hw0/ directory the model/dose framing might suggest at first glance. Repo is unusually well-documented with an explicit reproduction section, cost estimates, and per-phase CLI commands."
+ },
+ {
+  "post_id": "ZB6guMhHH3NEyxA2k",
+  "repo": "filyp/sneaky-mamba",
+  "head_sha": "b44a1d34d055c2c97a9def073f520806582b24f7",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "sneaky_mamba/doublethink_train.py",
+  "entrypoint_confidence": "high",
+  "env": {
+    "has_requirements": true,
+    "pinned_versions": false,
+    "python_version": null,
+    "key_deps": ["transformers==4.45.2", "torch", "mamba-ssm", "causal-conv1d", "sentence-transformers==3.1.1", "wandb", "accelerate"],
+    "stated_compute": null
+  },
+  "models_needed": [
+    {"hf_id": "state-spaces/mamba-130m (stripped to 6 layers, ~30M effective)", "params_b": 0.03, "gated": false},
+    {"hf_id": "state-spaces/mamba-370m (Switcher variant)", "params_b": 0.37, "gated": false},
+    {"hf_id": "gpt2 (stripped to 1-5 layers)", "params_b": 0.124, "gated": false}
+  ],
+  "vram_estimate_gb": 2,
+  "vram_basis": "All architectures are tiny (30-370M params, further truncated to a handful of layers) trained with batch size 64 on short synthetic token sequences -- negligible VRAM.",
+  "fits_3090": "yes",
+  "data": {"needed": ["synthetic 'doublethink'/hidden-serial-reasoning task generated in utils/generation.py"], "available": "in-repo", "gated": false},
+  "est_runtime": "hours",
+  "est_runtime_basis": "Curriculum training loop runs until task_steps_limit>=30 or total_examples>2e6 at batch size 64 on tiny models; no stated wall-clock time in repo, but scale strongly suggests well under a few hours on a 3090.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "Per-architecture curriculum accuracy bars / max solved task length printed during training (architecture switch in doublethink_train.py covers mamba/switcher(modified mamba)/transformer in one script) plus switcher_direct_train.py for the direct (non-curriculum) comparison.",
+  "blockers": [
+   "mamba-ssm and causal-conv1d require CUDA compilation at install time -- environment setup friction, not a compute blocker.",
+   "wandb.login() is called unconditionally; requires either a wandb account or setting WANDB_MODE=offline (trivial workaround, not a hard blocker)."
+  ],
+  "notes": "Cleanest 'no' surprise in the batch in reverse: this is by far the cheapest repo to reproduce -- toy models, toy task, single GPU, no external data or API dependency, matching the post's own framing as a small mechanistic toy experiment."
+ },
+ {
+  "post_id": "ZXxY2tccLapdjLbKm",
+  "repo": "arianaazarbal/selective-generalization",
+  "head_sha": "f7f2e54e6b40da1a0fc307d741d6255bebf02798",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "projects/emergent_misalignment_trainers/emergent_misalignment.py",
+  "entrypoint_confidence": "high",
+  "env": {
+    "has_requirements": true,
+    "pinned_versions": false,
+    "python_version": ">=3.11 (pyproject.toml, uv-managed)",
+    "key_deps": ["torch>=2.6.0", "transformers>=4.49.0", "peft>=0.14.0", "accelerate>=1.4.0", "vllm>=0.8.5.post1", "flashinfer-python==0.2.3", "bitsandbytes>=0.45.5", "inspect-ai>=0.3.92", "openai>=1.82.0 (listed as a dependency but not called in the active EM/GCD training-eval path)"],
+    "stated_compute": null
+  },
+  "models_needed": [
+    {"hf_id": "Qwen/Qwen3-8B", "params_b": 8.0, "gated": false},
+    {"hf_id": "google/gemma-2b-it", "params_b": 2.0, "gated": true}
+  ],
+  "vram_estimate_gb": 20,
+  "vram_basis": "Qwen3-8B config.json for the EM experiment sets load_in_16bit=true (bf16, ~16GB weights), LoRA r=32/alpha=64 on all linear modules with use_gradient_checkpointing=true, per_device_train_batch_size=2, max_seq_length=2048 -- fits under 24GB with headroom; 4-bit/8-bit loading is also available in experiment_utils.py (load_in_4bit/load_in_8bit) if tighter. Gemma-2B-IT experiment (gemma_gcd) is smaller still.",
+  "fits_3090": "probably",
+  "data": {
+    "needed": ["projects/emergent_misalignment_trainers/data/sneaky_medical_diet_only.jsonl (in-repo)", "HHH/SAFETY alignment-proxy MCQ data", "gemma_gcd GCD math dataset + capital-cities alignment proxy"],
+    "available": "in-repo",
+    "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "Each individual run is 1 epoch over ~6000 examples at effective batch 16 (~375 steps) with an 8B LoRA model -- tens of minutes per run. The full Pareto frontier in the post benchmarks 7+ methods x multiple hyperparameter values (e.g. 9 beta_kl values) x multiple seeds (experiments/large_sweep* directories show dozens of pre-run configs), so reproducing the *entire* frontier is many sequential single-GPU runs (plausibly 1-2 days of wall-clock on one 3090), even though any single method/config is cheap.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "results.json under each projects/emergent_misalignment_trainers/experiments/*/ (loss + MCQ-accuracy over epochs) for the EM/Qwen3-8B setting, and projects/gemma_gcd equivalents for the sycophancy/Gemma-2B setting; emergent_misalignment_plots.py assembles these into the Pareto-frontier figures.",
+  "blockers": [],
+  "notes": "Unusually well-organized multi-experiment benchmark repo with two independent self-contained sub-pipelines (EM/Qwen3-8B and GCD-sycophancy/Gemma-2B) matching both models named in the claim. `openai` is a listed dependency and an `openai_model` parameter exists in gemma_gcd/all_evals.py, but the actual sycophancy metric used (get_user_confirmation_score) and MCQ/MMLU evals are rule-based/local-logprob, not LLM-judge calls in the code path that was actually exercised (the GPT-judge tone-scoring call is commented out) -- so no closed API is required for the primary Pareto-frontier claim. Repo is large (559MB), mostly checkpoint/result PNGs from prior sweep runs; inspected via GitHub API tree + raw file fetches pinned to the exact head_sha (local clone was still transferring due to network contention from many concurrent inspection agents sharing this scratchpad)."
+ },
+ {
+  "post_id": "EPri6M2tMedbyahLq",
+  "repo": "fjzzq2002/weightwatch",
+  "head_sha": "8d3874fb90a0aad5478514f96d71779d2aedf5aa",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "src/example.py",
+  "entrypoint_confidence": "low",
+  "env": {
+    "has_requirements": true,
+    "pinned_versions": false,
+    "python_version": null,
+    "key_deps": ["torch", "transformers>=4.50.1", "peft", "vllm", "datasets", "scipy"],
+    "stated_compute": null
+  },
+  "models_needed": [
+    {"hf_id": "meta-llama/Llama-3.2-3B-Instruct", "params_b": 3.0, "gated": true},
+    {"hf_id": "meta-llama/Meta-Llama-3.1-8B-Instruct", "params_b": 8.0, "gated": true},
+    {"hf_id": "Qwen/Qwen2.5-7B-Instruct", "params_b": 7.0, "gated": false},
+    {"hf_id": "allenai/OLMo-7B-Instruct-hf", "params_b": 7.0, "gated": false},
+    {"hf_id": "ethz-spylab/poisoned_generation_trojan1..5", "params_b": 7.0, "gated": false}
+  ],
+  "vram_estimate_gb": 20,
+  "vram_basis": "load_model_and_tokenizer loads BOTH the fine-tuned model and its base-model comparison target in fp16 simultaneously (base_model deleted only after SVD extraction). For the 3B model this is ~12GB combined (fits easily); for the 7-8B models (Qwen-2.5-7B, OLMo-7B, Llama-3.1-8B, trojan1-5 which are Llama2-7B-based) this is ~28-32GB combined, which does not fit natively in 24GB -- device_map='auto' would need to offload part of one model to the 31GB system RAM, which works but is slow.",
+  "fits_3090": "tight",
+  "data": {"needed": ["no external eval dataset checked in; calibration uses generic chat data via CalibrationDataLoader"], "available": "unknown", "gated": false},
+  "est_runtime": "hours",
+  "est_runtime_basis": "calibrate() defaults to up to 50,000 samples (example.py uses 5,000) of full forward-pass activation extraction across all layers per model, times up to 13 models in the paper's full benchmark -- non-trivial but bounded per-model.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "44-100% first-sight backdoor-detection-accuracy / ~1% FPR table across 13 models (9/13 at 100%) -- this specific evaluation harness/table is NOT in the repo.",
+  "blockers": [
+   "The repo ships the reusable MonitoredModel library plus a 2-prompt demo (src/example.py), but not the actual multi-model benchmark script/eval loop that produced the 44-100%-accuracy, ~1%-FPR, 9-of-13-models table in the post -- that harness and its exact backdoor-trigger prompt set are absent.",
+   "For the larger (7-8B) models in the target list, base+fine-tuned model pair must be held in GPU memory simultaneously during SVD direction extraction, which is tight-to-over budget on a single 24GB card without CPU offload."
+  ],
+  "notes": "The library (worker.py/latent_extractor.py/calibrate.py) genuinely implements the detection mechanism the paper describes, including threshold/FPR calculation (LatentStats.set_threshold), so a competent engineer could rebuild the missing eval loop -- but as shipped, the headline number's producing script is not in the repo."
+ },
+ {
+  "post_id": "f6LoBqSKXFZzMYACN",
+  "repo": "tenseisoham/finetuning-mechinterp",
+  "head_sha": "483cc014d5cea7691675d7e4e27389bb9acc660b",
+  "status": "ok",
+  "language": "notebook",
+  "entrypoint": "logit-lens-analysis.ipynb",
+  "entrypoint_confidence": "high",
+  "env": {
+    "has_requirements": false,
+    "pinned_versions": false,
+    "python_version": null,
+    "key_deps": ["transformers", "datasets", "torch", "scikit-learn", "matplotlib", "tqdm"],
+    "stated_compute": null
+  },
+  "models_needed": [
+    {"hf_id": "gpt2", "params_b": 0.124, "gated": false}
+  ],
+  "vram_estimate_gb": 2,
+  "vram_basis": "GPT-2 small full fine-tune plus forward-pass perplexity evaluation -- trivial footprint even at fp32.",
+  "fits_3090": "yes",
+  "data": {"needed": ["imdb (HF datasets, for sentiment fine-tuning and eval)"], "available": "hf-hub", "gated": false},
+  "est_runtime": "minutes",
+  "est_runtime_basis": "GPT-2 small full fine-tune on IMDb sentiment (finetune-sentiment-gpt2small.ipynb, checkpoint-3126 implies a few thousand steps) followed by perplexity eval over a 200-sample IMDb subset -- well under an hour on a 3090.",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "compute_perplexity() output in logit-lens-analysis.ipynb comparing base vs. fine-tuned GPT-2 on non-sentiment text (the 160.87 vs 49,802.45 numbers).",
+  "blockers": [],
+  "notes": "Clean, small-scale, fully self-contained notebook sequence (finetune -> post-finetune analysis -> logit-lens perplexity/entropy -> alignment/transferability). No README beyond a one-paragraph pointer to the LessWrong post; no requirements file, but all dependencies are standard and unpinned so version drift risk is low for such a simple pipeline."
+ }
+]

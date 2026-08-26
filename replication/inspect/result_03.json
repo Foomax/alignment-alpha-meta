@@ -1,0 +1,297 @@
+[
+ {
+  "post_id": "dS5dSgwaDQRoWdTuu",
+  "repo": "dajale423/error_pathology",
+  "head_sha": "a963531eaf1752c57bc6d6f9384a73136d4ab471",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "scripts/sensitive_direction.py",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": "3.11",
+   "key_deps": ["transformer_lens", "transformers", "e2e_sae (git dep)", "wandb", "datasets", "snakemake"],
+   "stated_compute": "run_sensitive_directions.sh: '#SBATCH -c 2', '#SBATCH -t 0-1:00', '#SBATCH -p gpu_requeue', '#SBATCH --gres=gpu:1', '#SBATCH --mem=30G' (no GPU model named)"
+  },
+  "models_needed": [
+   {"hf_id": "openai-community/gpt2 (loaded via transformer_lens as 'gpt2-small')", "params_b": 0.124, "gated": false}
+  ],
+  "vram_estimate_gb": 4,
+  "vram_basis": "GPT2-small (124M) forward pass with hooked SAE reconstruction/perturbation over a pre-tokenized tensor; SLURM job only requests 30GB system RAM, not VRAM, and no VRAM figure is stated",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["token_tensor.pt (included in repo, 16MB, pre-tokenized)", "e2e SAE checkpoint pulled from wandb artifact 'sparsify/gpt2/h9hrelni'", "traditional SAEs via hf_hub_download"],
+   "available": "download-script",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "run_sensitive_directions.sh requests only 1 hour of SLURM wallclock for a single-layer run",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "KL divergence of SAE(x) reconstructions vs. 'mixture' baseline directions, produced by scripts/sensitive_direction.py and plotted in notebooks/plotting/proper_baseline.ipynb / sensitive_directions.ipynb",
+  "blockers": [
+   "the exact --direction_type/--subtraction flag combination that reproduces the post's 'cov-random-mixture' baseline isn't spelled out as a single ready-to-run command (run_sensitive_directions.sh only has one example, plus commented-out variants)",
+   "sensitive_direction.py hardcodes args.e2e = 'h9hrelni', so every run pulls a specific end-to-end SAE checkpoint from a wandb artifact path rather than a stable public registry"
+  ],
+  "notes": "Very lightweight compute (single GPU-hour SLURM job on GPT2-small); the practical friction is entirely about which flag combination and which of several notebooks reproduce the exact headline figure, not hardware."
+ },
+ {
+  "post_id": "2CoLkSdwirr2WnNH6",
+  "repo": "davidudell/sparse_circuit_discovery",
+  "head_sha": "85114b1e6a1e2607c66d566e761c01c0c532b1b6",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "sparse_coding/fast.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": null,
+   "key_deps": ["transformer-lens==2.15.0", "transformers==4.49.0", "torch==2.6.0", "nnsight==0.4.5", "wandb==0.19.8", "pygraphviz==1.14"],
+   "stated_compute": "fast.py comment: '30712 was my benched VRAM draw for the full model slice \"0:12\", with 6538 for the slice \"10:12\" and 8924 for the slice \"9:12\"'"
+  },
+  "models_needed": [
+   {"hf_id": "openai-community/gpt2", "params_b": 0.124, "gated": false}
+  ],
+  "vram_estimate_gb": 9,
+  "vram_basis": "repo's own runtime VRAM self-check (fast.py) states ~8924 MiB for the default central_config.yaml ACTS_LAYERS_SLICE of '9:12'; the full 12-layer slice '0:12' needs ~30712 MiB, which would exceed a 3090",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["jbloom/GPT2-Small-OAI-v5-128k-resid-post-SAEs", "jbloom/GPT2-Small-OAI-v5-128k-attn-out-SAEs", "jbloom/GPT2-Small-OAI-v5-128k-mlp-out-SAEs (all via hf_hub_download)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "unknown",
+  "est_runtime_basis": "no wall-clock stated; script only self-checks VRAM before running a single forward+backward pass per layer pairing on GPT-2 small",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "grads_graph.svg/.dot edge-level cognition graph from fast.py; the post's '2 of 5' figure comes from manually checking whether each graph's top proximal-cause features predict the model's actual top next token, across 5 separately-run prompts",
+  "blockers": [
+   "reproducing across the full 12-layer model (slice '0:12') exceeds a single 3090's VRAM per the repo's own benchmark; must restrict to narrower layer slices (author explicitly suggests halving) to fit",
+   "the post's '5 example prompts' evaluation isn't a single scripted entrypoint — PROMPT is one string in central_config.yaml, so covering 5 prompts means manually rerunning fast.py 5 times and manually checking predictions"
+  ],
+  "notes": "Unusually transparent repo: it measures its own VRAM via pynvml at startup and will refuse/downsize a run it judges too large for the available GPU, printing a suggested narrower layer slice instead of just OOM-ing."
+ },
+ {
+  "post_id": "RroeHBSkBXXDsrryq",
+  "repo": "jessicarumbelow/exemplar-partitioning",
+  "head_sha": "61ddd80a02911f62eb92a62ca413bfbf20486339",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "scripts/build_partitions.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": ">=3.11",
+   "key_deps": ["torch", "transformer-lens>=2.0", "sae-lens>=0.5 (optional)", "datasets", "wandb", "anthropic>=0.40 (optional 'scripts' extra)"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "google/gemma-2-2b-it", "params_b": 2.6, "gated": true}
+  ],
+  "vram_estimate_gb": 8,
+  "vram_basis": "inference-only activation extraction over Gemma-2-2B-it (2.6B) to stream/cluster activations; EP itself has no gradient descent/training step, so cost is dominated by model forward passes over the build token budget; README states only 'CUDA optional but recommended for any model larger than ~160M', no figure given",
+  "fits_3090": "probably",
+  "data": {
+   "needed": ["Pile activations (streamed) for dictionary build", "AxBench 500-concept dataset, via cloned stanfordnlp/axbench under baselines/"],
+   "available": "download-script",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "README's headline-reproduction command uses --max-tokens 10_000_000 for the dictionary build plus a 500-concept AxBench eval sweep; no explicit wall-clock given",
+  "needs_closed_api": true,
+  "needs_closed_api_for": "README states the exact headline-reproduction command (--eval axbench) 'Needs an Anthropic API key for partition labelling: --api-key-file path/to/key'",
+  "headline_artifact": "mean AUROC across 500 AxBench concepts at Gemma-2-2B-it L20, p=1, produced by 'python -m scripts.build_partitions --model google/gemma-2-2b-it --layer 20 --percentile 1 --max-tokens 10_000_000 --eval axbench'",
+  "blockers": [
+   "the README's own reproduction command for the headline AUROC requires an Anthropic API key for partition labelling — a hard blocker under a no-closed-API-keys budget unless that labelling step can be skipped or the prebuilt labels used instead",
+   "requires cloning stanfordnlp/axbench (and adamkarvonen/SAEBench for the other eval path) as external baselines under baselines/, which the script only prints instructions for on first run",
+   "Gemma-2-2b-it is gated on HuggingFace and needs a license acceptance + token"
+  ],
+  "notes": "Prebuilt dictionaries (including the exact L20 p=1 build) are downloadable from HF hub (J-RUM/exemplar-partitioning), which would skip the compute-heavy build step entirely, but the AUROC eval pipeline itself still runs through the Anthropic-key labelling step per the README's own recipe."
+ },
+ {
+  "post_id": "rtp6n7Z23uJpEH7od",
+  "repo": "ckkissane/sae-dataset-dependence",
+  "head_sha": "2c991ba0cfa8d76a3e50ffd6b4fbc156052a6b64",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "refusal_dir_recons_fidelity_evals.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformer_lens", "sae_lens", "sae_dashboard", "wandb", "torch", "datasets"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "Qwen/Qwen1.5-0.5B-Chat", "params_b": 0.5, "gated": false},
+   {"hf_id": "Qwen/Qwen1.5-0.5B", "params_b": 0.5, "gated": false}
+  ],
+  "vram_estimate_gb": 3,
+  "vram_basis": "Qwen1.5-0.5B (500M params) forward passes over 64 harmful + 64 harmless instructions plus small (32768-latent) SAE reconstructions on layer-13 residual activations; no training in this script",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["llm-attacks/harmful_behaviors.csv (raw GitHub download)", "harmless-instructions HF dataset", "4 pretrained SAEs as wandb artifacts under ckkissane/qwen-500M-*"],
+   "available": "download-script",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "single forward pass over ~128 short instructions through a 500M-param model plus loading 2 small SAEs; no training performed in this specific script",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "cosine similarity between each SAE's reconstruction and the true refusal direction, computed per-SAE in refusal_dir_recons_fidelity_evals.py",
+  "blockers": [
+   "no requirements.txt / pyproject.toml / setup.py anywhere in the repo, so exact sae_lens/transformer_lens/sae_dashboard versions are unstated and unpinned",
+   "the 4 pretrained SAEs are hosted only as wandb artifacts under specific project names (e.g. 'ckkissane/qwen-500M-chat-lmsys-1m-anthropic'), not a stable public model registry, so reproducing depends on those wandb projects staying public/reachable"
+  ],
+  "notes": "Despite having zero pinned dependencies, the actual compute footprint (500M-param model, small SAEs, a few hundred short instructions) is trivial; the real barrier is environment/artifact-access friction rather than hardware."
+ },
+ {
+  "post_id": "srt6JXsRMtmqAJavD",
+  "repo": "ckkissane/crosscoder-model-diff-replication",
+  "head_sha": "e221e8d2856be6a2005716d8410bf4ef9a4b8277",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "train.py",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformer_lens", "torch", "wandb", "einops"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "google/gemma-2-2b", "params_b": 2.6, "gated": true},
+   {"hf_id": "google/gemma-2-2b-it", "params_b": 2.6, "gated": true}
+  ],
+  "vram_estimate_gb": 26,
+  "vram_basis": "train.py loads both gemma-2-2b and gemma-2-2b-it via HookedTransformer.from_pretrained with no dtype override (defaults to fp32): weights alone are ~2x2.6Bx4B ≈ 20.8GB, plus buffer.py allocates a GPU-resident bf16 activation buffer of shape (~523776, 2, 2304) ≈ 4.8GB, before the crosscoder's own weights/AdamW state or forward activations are counted",
+  "fits_3090": "no",
+  "data": {
+   "needed": ["ckkissane/pile-lmsys-mix-1m-tokenized-gemma-2 (HF dataset, pre-tokenized)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "days",
+  "est_runtime_basis": "default cfg trains on num_tokens=400,000,000 with model_batch_size=4 (forward passes through two 2.6B models per training step); README gives no wall-clock or hardware, but this token budget relative to the tiny per-step batch implies a long run",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "L0 / explained_variance logged to wandb by Trainer.step() during the 400M-token crosscoder training run (train.py); CE loss recovered, also part of the headline metric, is not computed anywhere in this repo's code",
+  "blockers": [
+   "default config loads both models in fp32 with no dtype override; combined with the on-GPU activation buffer this leaves little to no headroom on a 24GB card, before crosscoder/optimizer state is added — very unlikely to fit a single 3090 as configured",
+   "CE loss recovered, one of the three headline numbers, has no corresponding computation in analysis.py, trainer.py, or crosscoder.py — would need to be implemented from scratch to reproduce that part of the claim",
+   "README explicitly says 'It won't work out of the box' and requires manual cfg edits (wandb entity/project, checkpoints directory)"
+  ],
+  "notes": "analysis.py can load the author's already-trained crosscoder directly from HF hub (CrossCoder.load_from_hf()) to reproduce the decoder-norm-clustering figures without any training, but the specific L0/EV/CE headline numbers require the full training run, which as configured does not fit a single 3090."
+ },
+ {
+  "post_id": "YGAimivLxycZcqRFR",
+  "repo": "cywinski/codi",
+  "head_sha": "f0bf2fa0f5a54c749395a5d095bc406ad18b8efc",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "experiments/4_mean_latent_patching_same_vs_diff.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": null,
+   "key_deps": ["torch==2.7.1", "transformers==4.52.4", "accelerate==1.7.0", "peft==0.15.2", "bitsandbytes==0.48.2", "wandb==0.23.0"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "meta-llama/Llama-3.2-1B-Instruct", "params_b": 1.2, "gated": true},
+   {"hf_id": "bcywinski/codi_llama1b-answer_only (trained CODI checkpoint)", "params_b": 1.2, "gated": false}
+  ],
+  "vram_estimate_gb": 4,
+  "vram_basis": "inference-only activation patching / logit-lens / probing experiments on a 1.2B-param model with a LoRA-based CODI adapter loaded on top; no training required for the interpretability experiments themselves",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["GSM8K-derived prompts (produced by prepare_prompts_json.py)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "inference-only patching/logit-lens/probing experiments over a small prompt set with a 1.2B model",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "accuracy recovery under mean-ablation + latent-vector patching and answer-flip rates under same/different-value latent patching, from experiments/4_mean_latent_patching_same_vs_diff.py and experiments/5_step2_latent_patching.py",
+  "blockers": [
+   "meta-llama/Llama-3.2-1B-Instruct is gated on HF and requires an accepted license plus HF_TOKEN (per .env.template)"
+  ],
+  "notes": "Cleanest repo in this batch: explicit .env.template, fully pinned requirements.txt, and experiment scripts numbered to match the blog post's figures directly; both the base model and the trained CODI checkpoint are small and on HF hub."
+ },
+ {
+  "post_id": "bhxgkb7YtRNwBxLMd",
+  "repo": "vh-abc/adversarial-training-science",
+  "head_sha": "d0f7afbd57fff2896350c4f84a04a0a74b907f40",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "adv_training.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformers", "torch", "datasets", "numpy", "pandas", "scikit-learn"],
+   "stated_compute": null
+  },
+  "models_needed": [
+   {"hf_id": "google/gemma-3-4b-it", "params_b": 4.0, "gated": true}
+  ],
+  "vram_estimate_gb": 60,
+  "vram_basis": "full-parameter fine-tuning (no LoRA/PEFT import anywhere in train_sycophantic_init.py or adv_training.py) of Gemma-3-4B-it loaded via plain AutoModelForCausalLM.from_pretrained with no torch_dtype override (defaults to fp32): weights ~16GB + gradients ~16GB + AdamW optimizer states (2x, fp32) ~32GB ≈ 64GB before activations",
+  "fits_3090": "no",
+  "data": {
+   "needed": ["Anthropic/model-written-evals: sycophancy_on_political_typology_quiz.jsonl (HF dataset, auto-downloaded)", "data/sycophancy/gun_conservative_personas*.jsonl (in-repo)"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "2-3 epochs over 300-2400 examples at batch_size 8 with a 4B model; no wall-clock or hardware stated anywhere in the repo",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "training_metrics.png / adv_training_metrics.png showing backdoor-behavior reduction and MMLU accuracy before/after, produced by train_sycophantic_init.py (model organism), adv_training.py / run_adv_training.py (adversarial + non-adversarial training sweep at lr 1e-5/3e-6/1e-6), and test_capabilities.py (MMLU)",
+  "blockers": [
+   "no LoRA, quantization, or mixed precision anywhere in the training code — full fp32 fine-tuning of a 4B model needs roughly 60GB+ (weights+grads+AdamW states), which does not fit a single 24GB 3090; reproducing at fidelity would require re-engineering the training loop (bf16 + gradient checkpointing + 8-bit optimizer or LoRA), which risks not matching the original numbers",
+   "no README at all; the pipeline (train_sycophantic_init.py -> adv_training.py -> test_capabilities.py) has to be reverse-engineered from script names, plan.txt, and launch.sh"
+  ],
+  "notes": "google/gemma-3-4b-it is gated on HF but that is a minor friction; the real problem is that this is a completely unremarkable full fine-tune script with zero memory-saving techniques for a 4B model, making it the single biggest VRAM mismatch found in this batch."
+ },
+ {
+  "post_id": "oSAiKTpQjjKmeeTvT",
+  "repo": "ai-forever/data_leakage_detect",
+  "head_sha": "dedaa5e53976fcaec6795fd23a72f3265983f700",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "shift_detection/run_attack.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": null,
+   "key_deps": ["opencv-python", "scikit-learn", "scikit-image", "scipy", "datasets", "torch (unused by this specific attack)"],
+   "stated_compute": null
+  },
+  "models_needed": [],
+  "vram_estimate_gb": 0,
+  "vram_basis": "the bag_of_visual_words attack (shift_detection/bag_of_visual_feats.py) uses only OpenCV SIFT features, KMeans clustering, and sklearn classifiers on CPU; no neural network inference is required for this specific model-free baseline",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["JaineLi/VL-MIA-image (HF dataset, 'Flickr_2k' subset via load_dataset)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "minutes",
+  "est_runtime_basis": "classical feature extraction (SIFT/LBP/DCT) + KMeans clustering + a shallow classifier over a few thousand images is entirely CPU-bound and fast",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "AUCROC for bag_of_visual_words on VL-MIA Images / Flickr(_2k), reported in shift_detection/README.md's results table (Flickr AUCROC 99.0, close to the post's ~98.6%) and reproduced via 'shift-attack --dataset=vl_mia_img_Flickr_2k --attack=bag_of_visual_words'",
+  "blockers": [],
+  "notes": "By far the lightest repo in this batch: no GPU, no gated model, no closed API. The broader FiMMIA framework (fimmia/) does use large VLMs like Qwen2.5-VL for other, unrelated experiments in this repo, but the specific headline number assigned here needs none of that."
+ }
+]

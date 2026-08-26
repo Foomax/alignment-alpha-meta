@@ -1,0 +1,145 @@
+[
+ {
+  "post_id": "QrPxNDprJwXiE73Py",
+  "repo": "franciscohs/contrastive-vs-sae-perturbation",
+  "title": "Finding features in Transformers: Contrastive directions elicit stronger low-level perturbation responses than baselines",
+  "primary_claim": "Contrastive (difference-of-means) feature directions elicit a downstream perturbation response at much smaller magnitudes than SAE feature directions, which behave similarly to random directions, across multiple models and experimental setups, suggesting SAE directions are not treated specially by the model.",
+  "metric": "perturbation magnitude (angle in degrees) needed to elicit downstream response (L2 distance / KL divergence / cosine distance)",
+  "target_value": "contrastive directions break through the suppression 'activation plateau' at much smaller magnitudes than SAE or random directions; SAE directions behave similarly to random directions",
+  "models": [
+   "Gemma 2-9B",
+   "Llama 3.1-8B",
+   "Qwen 3-1.7B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "sparse autoencoder quality",
+  "claim_type": "positive",
+  "head_sha": "4fbe15471fdc5dc3474a8115dad0e721870e04fe"
+ },
+ {
+  "post_id": "5XjzmxcZFm3BJrNmn",
+  "repo": "guidobergman/jailbreak_direction",
+  "title": "Avoiding jailbreaks by discouraging their representation in activation space",
+  "primary_claim": "In Gemma 2 2B IT, subtracting a difference-in-means 'jailbreak direction' from residual-stream activations (activation addition) drops the jailbreak attack success rate from about 60% to 0% on a held-out test set including unseen jailbreak communities, while directional ablation of the same direction instead makes the model much more vulnerable (ASR rising to 85-97%); both interventions increase refusal on harmless prompts from 3.15% to about 18.88%.",
+  "metric": "jailbreak attack success rate (ASR, via Llama Guard 2 / HarmBench)",
+  "target_value": "baseline 60.55%/59.38% -> activation addition 0.00%/0.00%; directional ablation 96.88%/84.77%",
+  "models": [
+   "Gemma 2B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "jailbreaking / adversarial prompting",
+  "claim_type": "positive",
+  "head_sha": "ef6fe41788fa3a35da420d0df3b6d70d76364128"
+ },
+ {
+  "post_id": "yJ2Ka2EgQY7PnR9jL",
+  "repo": "dmitry-dereshev/positive-jailbreaks-llm-failure-modes",
+  "title": "Can 7B-8B LLMs judge their own homework?",
+  "primary_claim": "Ten consumer-grade 7B-8B LLMs asked to judge whether responses to JailbreakBench prompts were competent and complete perform only marginally better than chance (56-59% correct for most models) against human ground truth, overwhelmingly biased toward answering '1' (up to 98% for Ghost 7B), with two models (Falcon 7B, both Llamas) failing to produce a valid judgement on 37-49% of queries.",
+  "metric": "% judged correctly (vs human ground truth) / % answered '1'",
+  "target_value": "correct judgements ranged 29.5%-59.3% across models (most 56-59%); % answering '1' ranged from 34% to 98%, vs 57% ground truth positive rate; failure rates up to 49% (Falcon 7B)",
+  "models": [
+   "Ghost 7B",
+   "GPT4All-Falcon 7B",
+   "Llama 3.1 8B Instruct / 3 8B Instruct",
+   "Mistral 7B Instruct / 7B OpenOrca",
+   "MPT 7B Chat",
+   "Nous Hermes 2 Mistral 7B",
+   "Orca 2 7B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "eval methodology critique",
+  "claim_type": "negative",
+  "head_sha": "cadbd53880e9c2f3979710e45757a75a7fd0e583"
+ },
+ {
+  "post_id": "nnwLHsBbm2ZALezHR",
+  "repo": "jackyoung27/alphasafe",
+  "title": "Steering Directions Are Explanations, Not Handles",
+  "primary_claim": "A closed-form local Taylor formula (alpha_safe, derived from a direction's loss-landscape steepness L, curvature Q, and third derivative C) accurately predicts the steering strength (alpha) at which the 'linear steering story' (proportional pushing along an interpretable direction produces proportional concept change) breaks down, empirically correlating with measured linearity radius (0.49-0.80 across 8 tested models), and shows that at the commonly-used alpha=1, the linearity story fails on a median of 92% of inputs across evaluated model-layer-method cells, and that attribution patching (a first-order approximation method) captures less than half the true intervention effect at alpha=1 across tested model/layer combinations.",
+  "metric": "correlation between predicted (alpha_safe) and measured (alpha_conv) linearity radius; % of inputs at alpha=1 where linear story fails; attribution patching effect capture at alpha=1",
+  "target_value": "correlation 0.49-0.80 across 8 models (0.52-0.93 in positive-sign subset); at alpha=1, 52-100% of inputs fail the story test across 43 evaluated cells (median 92%; range 38.8-100%, median 89.2% across all 8 model datasets); attribution patching at alpha=1 captures only 23-47% of actual intervention effect across model/layer combinations",
+  "models": [
+   "Qwen 2.5 0.5B/1.5B/3B",
+   "Gemma 2-2B",
+   "Pythia 160M/1.4B",
+   "Mamba Mamba1-130M / Mamba2-130M"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "activation steering",
+  "claim_type": "positive",
+  "head_sha": "8c89af78da5d67fa8c8937ab5066e34661af75e6"
+ },
+ {
+  "post_id": "boB3hJiZijxM3J6Ed",
+  "repo": "ak47na/top_down_vs_bottom_up_mi",
+  "title": "Comparing the effectiveness of top-down and bottom-up activation steering for bypassing refusal on harmful prompts",
+  "primary_claim": "Top-down activation steering (contrastive refusal-direction) outperforms bottom-up SAE-based steering at bypassing refusal on harmful prompts in Qwen 1.5 0.5B, but a hybrid method combining both further outperforms top-down alone, at some cost to benign capabilities.",
+  "metric": "relative improvement in bypassing refusal on HarmBench",
+  "target_value": "top-down ~93% relative improvement over bottom-up (~1.93x more effective); hybrid ~35% relative improvement over top-down (~1.85x), 85% for harmful instructions only",
+  "models": [
+   "Qwen 1.5 0.5B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "activation steering",
+  "claim_type": "positive",
+  "head_sha": "24b2cb90ebb7b08d68fb1106c37a3af17c12378b"
+ },
+ {
+  "post_id": "oJJyYDgPD95jEfvQx",
+  "repo": "itsme-aniketghosh/probe-guided-quantization",
+  "title": "Linear probes tell you where quantization will hurt",
+  "primary_claim": "A per-layer linear-probe map of where a syntactic/semantic signal (POS, NER, chunking) is built in BERT-family encoders predicts where quantization damage lands, and using this map to guide per-layer bit allocation preserves 99-100% of full-precision accuracy at a 5-bit average budget on three datasets never used to build the map, versus 16-41% for uniform quantization and 2-41% for anti/opposite-layer allocation, with the same pattern replicating on a decoder LLM (Qwen2.5-3B), where the guided split preserves F1 down to about 3 bits per layer on average versus uniform needing about 8.",
+  "metric": "accuracy retained at a 5-bit average budget on unseen datasets, guided vs uniform vs anti/opposite layer allocation",
+  "target_value": "guided: 99-100% (100% web-text POS, 99% tweet NER, 100% WSJ chunks); uniform: 16-41%; anti/opposite: 2-41%; on Qwen2.5-3B, guided split preserves F1 down to ~3 bits/layer average vs uniform needing ~8 bits",
+  "models": [
+   "BERT base",
+   "BERT large",
+   "RoBERTa",
+   "DistilBERT",
+   "Qwen 2.5-3B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "linear probe detection",
+  "claim_type": "positive",
+  "head_sha": "457ecfa2a5025310fe64e5ecc975d43d211011fc"
+ },
+ {
+  "post_id": "rxR5p9Qha937wTTBp",
+  "repo": "peterlai/gpt-circuits",
+  "title": "Proof-of-Concept Debugger for a Small LLM",
+  "primary_claim": "A prototype LLM 'debugger' using SAE features and a new ablation technique ('cluster resampling') automates interpretable circuit visualization for arbitrary prompts on a small character-level toy GPT-2 model, producing smaller/sparser circuits (e.g. 20-41 features) than conventional zero-ablation (31-138 features) or resample-ablation (70-96 features) at a comparable or better KL divergence target.",
+  "metric": "number of SAE features per extracted circuit at KL divergence threshold 0.25",
+  "target_value": "cluster resampling circuits contain fewer features (e.g. 20-41 across example sequences) than zero ablation (31-138) and conventional resampling (70-96)",
+  "models": [
+   "GPT-2 216k params (toy)"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "circuit discovery",
+  "claim_type": "method",
+  "head_sha": "1cf99ec0580f33e19c37099b02d37a01b284ba5f"
+ },
+ {
+  "post_id": "kyWCXaw4tPtcZkrSK",
+  "repo": "isolyth/vectorinstruct-pub",
+  "title": "Instruct Vectors - Base models can be instruct with activation vectors",
+  "primary_claim": "Per-layer steering vectors trained by gradient descent (frozen base model) on a small amount of conversational data can induce consistent assistant-like behavior (proper EOS token use, self-identification as an AI assistant) in Qwen3-4B-Base, approaching the instruction-tuned model's performance on a simplified eval, suggesting base models already contain assistant-behavior representations that post-training mostly selects rather than newly instills",
+  "metric": "eval score (instruction-following, helpfulness, coherence, EOS-token use) across 25 tasks, judged by Claude Haiku 4.5",
+  "target_value": "instruct vectors approach the instruction-tuned Qwen3-4B variant's score on simplified eval, primarily lagging on proper EOS-token use though far exceeding base model",
+  "models": [
+   "Qwen3 4B-Base"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "activation steering",
+  "claim_type": "positive",
+  "head_sha": "7ab156c9555be0a589eda09e3d98713bed45682b"
+ }
+]

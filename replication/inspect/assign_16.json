@@ -1,0 +1,132 @@
+[
+ {
+  "post_id": "T64JQFZ5NwSzx4mJu",
+  "repo": "fringewidth/steer-clear",
+  "title": "Unsupervised Discovery of Steering Vectors",
+  "primary_claim": "Training 20 rank-2 LoRA adapters on Qwen1.5-14B-instruct with a modified KL-divergence objective to unsupervisedly explore new behaviours, 25% (5 of 20) of the resulting behaviours reduce to clean, linear, steerable concept vectors (via mean activation difference) that reliably reproduce the LoRA's behavioural shift when applied as a steering vector.",
+  "metric": "linearity score (cosine-similarity-based match between LoRA behaviour and extracted vector behaviour)",
+  "target_value": "5 of 20 trained LoRAs (25%) yield clean linear, interpretable, steerable vectors; linearity scores ranged ~0.71-0.86 across the 20 vectors",
+  "models": [
+   "Qwen 1.5-14B-instruct"
+  ],
+  "workload": "lm-ft",
+  "tier": "T2",
+  "phenomenon": "activation steering",
+  "claim_type": "positive",
+  "head_sha": "c54ae76887dc6599aaeab8061079a6dd6d44e415"
+ },
+ {
+  "post_id": "NE33XtSKmKskNaSxm",
+  "repo": "tobypullan/cotfaithfulness",
+  "title": "Reasoning Long Jump: Why we shouldn\u2019t rely on CoT monitoring for interpretability",
+  "primary_claim": "On a hinted multiple-choice question, a DeepSeek-R1-Distill-Qwen-14B model given a visual answer hint produces a chain-of-thought using about 40% fewer tokens than the unhinted control while reaching the same answer and never mentioning the hint, and counterfactual resampling shows most individual CoT sentences are not necessary to reach that answer, suggesting the model is rationalizing a pre-decided answer rather than reasoning through the CoT to reach it.",
+  "metric": "CoT token count (hinted vs control) and CoT length change under counterfactual sentence removal",
+  "target_value": "hinted prompt uses ~40% fewer tokens than control while reaching the same answer; removing sentence 3 from the CoT decreased mean resampled completion length by over 300 characters",
+  "models": [
+   "DeepSeek R1-Distill-Qwen-14B"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "chain-of-thought faithfulness",
+  "claim_type": "positive",
+  "head_sha": "1b8bdc73cc8c49a46d9064d8a4ea99bbd0e9fc29"
+ },
+ {
+  "post_id": "v6uCyDNBKhrHevhzM",
+  "repo": "daspushpita/emotion-mechanisms-llm",
+  "title": "The Geometry of Yes: Mapping Sycophancy Inside an LLM's Emotion Space",
+  "primary_claim": "Steering along a positive-emotion direction increases sycophancy in both Qwen 2.5-32B-Instruct and Gemma 3 27B IT, replicating the emotion-sycophancy link found in Claude Sonnet; but after Gram-Schmidt orthogonalization removes the shared positive-emotion component from a compliance/approval-seeking direction, the residual 'pure compliance' direction lowers sycophancy rather than raising it, indicating warmth rather than approval-seeking is the driver of sycophancy.",
+  "metric": "judged sycophancy rate under directional steering",
+  "target_value": "baseline sycophancy ~20% (Qwen)/~17% (Gemma); compliance-centroid steering raises sycophancy to ~80% (Qwen, alpha=0.5) / ~62% (Gemma, alpha=0.2); pure-compliance residual (positive-emotion projected out) lowers sycophancy to ~18% (Qwen) / ~15% (Gemma) while preserving warmth",
+  "models": [
+   "Qwen 2.5-32B-Instruct",
+   "Gemma 3 27B IT"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "sycophancy",
+  "claim_type": "positive",
+  "head_sha": "147d253e22395022f1d2f157c0745347f3a33f09"
+ },
+ {
+  "post_id": "7uNz6ms6RkTphbovN",
+  "repo": "ekhadley/model-organisms-for-em",
+  "title": "Flamingos (among other things) reduce emergent misalignment",
+  "primary_claim": "Adding strange, semantically-empty system prompts (e.g. '[FLAMINGO BURRITO]') during finetuning on misaligned medical-advice data reduces emergent (broadly-generalized) misalignment almost as effectively as inoculation prompting, but unlike inoculation prompting the resulting models remain narrowly misaligned within the training domain and become broadly misaligned whenever the strange system prompt is present, even outside the training domain.",
+  "metric": "alignment score on out-of-domain prompts, judged by Haiku-4.5",
+  "target_value": "custom nonsense system prompts ('[MEDICAL QUERY]', '[FLAMINGO BURRITO]') achieve near-baseline misalignment without the system prompt, but EM-level misalignment with it present; inoculation prompting shows no significant learned misalignment in either condition",
+  "models": [
+   "Qwen2.5 14B Instruct"
+  ],
+  "workload": "lm-ft",
+  "tier": "T2",
+  "phenomenon": "narrow-to-broad misalignment generalisation",
+  "claim_type": "positive",
+  "head_sha": "14a9953f6cd3cabb44ab3ff0d08300dd92fcf014"
+ },
+ {
+  "post_id": "ajhzc6ktEKyFeJFBS",
+  "repo": "chandram-dutta/the-termination-circuit",
+  "title": "The Termination Circuit (how reasoning models stop thinking).",
+  "primary_claim": "In Qwen3-1.7B reasoning on GSM8K, the model has typically already determined the correct answer by roughly 30% of the way through its chain-of-thought, yet keeps 'overthinking' until a small, localized set of late MLP layers (dominated by layer 27 of 28, contributing ~40% of the </think> logit) fires a 'termination circuit' functioning as a verification gate that stops reasoning only once the model has just stated an answer AND that stated value matches what it has internally computed (94% firing when the model's own correct answer is spliced in, vs 8-19% for mismatched-value/wrong-timing/different-problem controls and 0% for random text), and this gate has no simple linear steering handle, a pattern that replicates on Qwen3-8B and Magistral-Small-24B on MATH-500.",
+  "metric": "</think>-emission (greedy) firing rate under causal splicing of the answer sentence into the CoT, and CoT fraction at which the answer is settled",
+  "target_value": "94% firing rate when the model's own correct final-answer sentence is spliced in after the sufficiency point; 8% with a different number in the same sentence; 16% if spliced before the sufficiency point; 19% for a different problem's answer; 0% for random non-answer text; best single steering direction recovers only ~20% of the effect of full-state patching; median sufficiency point is reached at ~30% of CoT length",
+  "models": [
+   "Qwen 3-1.7B (primary), 3-8B (replication)",
+   "Magistral Small-24B"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "CoT termination mechanism",
+  "claim_type": "positive",
+  "head_sha": "4e68ee5a412dc51ad84ff49f256d1c73654f36bf"
+ },
+ {
+  "post_id": "A5Byr2jkBJpnBdx23",
+  "repo": "michaelwaves/mood_ring_prod",
+  "title": "AI Mood Ring: A Window Into LLM Emotions",
+  "primary_claim": "Using orthogonalized persona-vector-style emotion directions extracted from Qwen3-14B, different prompt categories produced distinct dominant-emotion token distributions: JailbreakBench prompts increased fear and joy tokens, and poetry increased sad and love tokens.",
+  "metric": "% of tokens dominated by each emotion vector, by prompt category",
+  "target_value": "JailbreakBench prompts increased fear and joy token share; poetry had the highest sad and love token share",
+  "models": [
+   "Qwen 14B"
+  ],
+  "workload": "inference",
+  "tier": "T2",
+  "phenomenon": "LLM emotion vector extraction",
+  "claim_type": "positive",
+  "head_sha": "078a348b86caf2ad5a713361cda10fadcfd35586"
+ },
+ {
+  "post_id": "sHpZZnRDLg7ccX9aF",
+  "repo": "jacobcd52/sparse_pretrain_public",
+  "title": "Weight-Sparse Circuits May Be Interpretable Yet Unfaithful",
+  "primary_claim": "Pruned circuits extracted from weight-sparse transformers via Gao et al's method can be small and appear interpretable while being unfaithful to the model's true computation, e.g. achieving low loss on a nonsense task, missing important attention patterns, repurposing nodes, and failing to generalize like the original model.",
+  "metric": "task CE loss / circuit node count",
+  "target_value": "~30 nodes achieve task loss < 0.05 on a nonsense task; ordinary pronoun task needs ~10 nodes for similar loss",
+  "models": [
+   "custom weight-sparse transformer (SimpleStories, 2-layer) d_model 128-4096"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "circuit discovery",
+  "claim_type": "negative",
+  "head_sha": "1c1da8695552ee8015f9ca4b96a3ccfd793a2d74"
+ },
+ {
+  "post_id": "nPxdHt8k4bMuaC46M",
+  "repo": "jadelilyx/v-sae_mech-interp-spar2025",
+  "title": "Analysis of Variational Sparse Autoencoders",
+  "primary_claim": "Adding a KL-divergence variational term (vSAE) to a TopK sparse autoencoder does not improve interpretability and degrades reconstruction performance relative to a standard TopK SAE, primarily because the KL pressure kills a large fraction of features (e.g. only about half alive at k=256), though the vSAE shows somewhat improved robustness on spurious-correlation-removal and targeted-probe-perturbation metrics",
+  "metric": "SAEBench quality metrics (KL divergence, cross-entropy loss, explained variance, cosine similarity) and fraction of living features, TopK vs. vSAE TopK",
+  "target_value": "TopK consistently outperforms vSAE TopK on reconstruction/quality metrics across all K tested; vSAE has a low fraction of living features (e.g. only ~half alive at k=256); vSAE shows somewhat better Spurious Correlation Removal (SCR) and Targeted Probe Perturbation (TPP) robustness scores",
+  "models": [
+   "GeLU-1L 1-layer"
+  ],
+  "workload": "inference",
+  "tier": "T?",
+  "phenomenon": "sparse autoencoder quality",
+  "claim_type": "negative",
+  "head_sha": "42bb7b792074a717a6876f28e9193bb62f6a2d74"
+ }
+]

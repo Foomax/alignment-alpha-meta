@@ -1,0 +1,307 @@
+[
+  {
+    "post_id": "S9xyqRAziRMCcJQmz",
+    "repo": "jaehoonlee0829/cross-model-alignment-geometry",
+    "head_sha": "bfacecff2e21872a839ab4fb1dc54ed901d684f6",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "scripts/run_corrected_permutation_tests.py",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["torch", "transformers", "sae-lens", "nnsight", "peft", "scikit-learn", "scipy", "numpy", "datasets", "wandb"],
+      "stated_compute": "All experiments were run on a single NVIDIA A40 (48 GB) GPU via RunPod, with random seed 42."
+    },
+    "models_needed": [
+      {"hf_id": "meta-llama/Llama-3.2-1B", "params_b": 1.0, "gated": true},
+      {"hf_id": "meta-llama/Llama-3.2-3B", "params_b": 3.0, "gated": true},
+      {"hf_id": "google/gemma-2-2b", "params_b": 2.0, "gated": true},
+      {"hf_id": "Qwen/Qwen2.5-1.5B", "params_b": 1.5, "gated": false},
+      {"hf_id": "EleutherAI/pythia-1.4b", "params_b": 1.4, "gated": false},
+      {"hf_id": "EleutherAI/pythia-2.8b", "params_b": 2.8, "gated": false}
+    ],
+    "vram_estimate_gb": 10,
+    "vram_basis": "Models loaded one at a time in fp16 (src/activation_extraction.py: torch_dtype=torch.float16) for activation extraction; largest is 3B (~6GB weights) + batch=32 (16 for 3B) x seq_len=128 hidden-state activations. CKA/alignment fitting afterward is CPU/GPU numpy-scale linear algebra on cached activations, not model-resident.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["NeelNanda/pile-10k", "AG News", "ToxiGen", "SST-2"],
+      "available": "hf-hub",
+      "gated": false
+    },
+    "est_runtime": "hours",
+    "est_runtime_basis": "5 model-pair evals x activation extraction (10k prompts, 9 layers) + 500-permutation CKA null + multi-method (Procrustes/ridge/LASSO/low-rank at 7 ranks) alignment fits; stated compute was a single A40, no wall-clock time given, but this is a full day's worth of small-model inference-only work, not multi-day.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "README tables 'Cross-family CKA is weak, within-family is strong' and 'Permutation tests confirm statistical significance' (max/mean debiased CKA per eval, p<0.002); probe-transfer tables for binary/NTP/POS transfer",
+    "blockers": [
+      "Gemma-2-2b and Llama-3.2 require accepting gated licenses on HuggingFace and an HF_TOKEN",
+      "Headline number is spread across ~6 scripts (run_cka.py, run_corrected_permutation_tests.py, run_dual_probe_transfer.py, run_pos_probe_transfer.py, run_probing.py) rather than one entrypoint; a full replication means running all of them and matching README's reported values"
+    ],
+    "notes": "Very thoroughly documented (README + RESEARCH_REPORT.md with explicit compute/method/limitations sections). All 6 models are 1-3B scale, fp16 inference only (no training), so the whole pipeline is well within a 24GB card despite being run on a 48GB A40 in practice."
+  },
+  {
+    "post_id": "zfgQCdnMBa3hBdzpL",
+    "repo": "agastyasridharan/introspection",
+    "head_sha": "501ee37d5f1cf44ca98dac2975be79ec7ac1fd2c",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "src/introspection/logit_steer.py",
+    "entrypoint_confidence": "medium",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": "3.13",
+      "key_deps": ["torch", "transformers", "accelerate", "inspect-ai", "inspect-viz", "anthropic", "openai", "plotly"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "Qwen/Qwen3-8B", "params_b": 8.0, "gated": false},
+      {"hf_id": "Qwen/Qwen3-14B", "params_b": 14.0, "gated": false},
+      {"hf_id": "Qwen/Qwen3-32B", "params_b": 32.0, "gated": false},
+      {"hf_id": "Qwen/Qwen3-235B-A22B", "params_b": 235.0, "gated": false}
+    ],
+    "vram_estimate_gb": null,
+    "vram_basis": "load_model() in src/introspection/utils.py uses AutoModelForCausalLM.from_pretrained with device_map='auto' and bf16 by default, no quantization option in code. 8B fits comfortably (~16GB bf16); 14B is tight/possible with activation caching overhead; 32B and 235B-A22B cannot be single-GPU-24GB.",
+    "fits_3090": "no",
+    "data": {
+      "needed": ["50 CONCEPT_NOUNS + 56 BASELINE_WORDS (in-repo constants.py)", "10 factual YES/NO control questions (in-repo)"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "hours",
+    "est_runtime_basis": "README states logit experiment is '~200x faster' than the generation experiment and sweeps 50 concepts x 7 layers x 5 strengths x 5 trials per model; no wall-clock figure given.",
+    "needs_closed_api": true,
+    "needs_closed_api_for": "grader.py grades free-form generation responses via 'inspect eval ... --model openai/gpt-4' (GPT-4 as grader for the generation-experiment path); logit-only path does not need this.",
+    "headline_artifact": "README table 'Results' (mean introspection score per model) and MISMATCH_EXPERIMENT_RESULTS.md congruent/incongruent gap table",
+    "blockers": [
+      "The post's primary claim aggregates 14 models across Gemma/Llama/Qwen/Mistral/OLMo (mean +0.013, 95% CI, n=14). At this pinned commit the repo's README, data/, and code contain ONLY Qwen3 experiments (8B/14B/32B/235B-A22B) — no Gemma, Llama, Mistral, or OLMo appears anywhere in the codebase or data/ directory (grep confirmed). The 14-model aggregate cannot be reproduced from this repo snapshot.",
+      "Qwen3-32B and Qwen3-235B-A22B (MoE) do not fit a single 24GB GPU in bf16 with no quantization path in the code",
+      "Generation-experiment grading path requires GPT-4 via the OpenAI API"
+    ],
+    "notes": "Code (logit_steer.py, generate_steering_vectors.py) is model-agnostic via --model-name and could in principle be pointed at Gemma/Llama/Mistral/OLMo, but this snapshot's own reported results (README table: Qwen3 8B/14B/32B only, mean scores -0.52/-0.35/-2.83) do not match the assignment's target_value numbers (mean +0.013 across 14 models; per-model range +4.14 Qwen-1.7B to -2.83 Qwen-32B) at all -- this looks like a substantially earlier/narrower version of whatever produced the post's headline claim. Smallest reproducible piece (Qwen3-8B logit-only, no judge) fits a 3090; the actual headline number does not."
+  },
+  {
+    "post_id": "zKyKDre78napvtrEo",
+    "repo": "fractalmachinist/ioi",
+    "head_sha": "1571259a3a8e713abd4cdd3758613f41769304ba",
+    "status": "ok",
+    "language": "notebook",
+    "entrypoint": "experiments.ipynb",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["transformer_lens", "torch", "matplotlib", "numpy", "scipy"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "gpt2 (gpt2-small via transformer_lens HookedTransformer.from_pretrained)", "params_b": 0.124, "gated": false}
+    ],
+    "vram_estimate_gb": 2,
+    "vram_basis": "GPT-2 small (124M params) loaded via TransformerLens with full attention-pattern caching for batched forward passes; trivially small model, negligible VRAM even with activation caching for hundreds of prompts.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["templated sentences generated in-repo from ioi_dataset.py (NAMES, OBJECTS, PLACES, NAMEABLE_PLACE_NAMES/WORDS, BABA_TEMPLATES)"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "minutes",
+    "est_runtime_basis": "SIZE='medium' in experiments.ipynb -> n_templates=8 x n_pairs=16 = 128 matched pairs (matches assignment's stated n=128), run as a handful of same-length batched forward passes through GPT-2 small plus statistical tests (paired t-test, Wilcoxon, KS, Mann-Whitney, permutation) on cached logit diffs -- this is a light workload for one small model.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "experiments.ipynb, Experiment 1 (cell 12-15): paired scatter of test vs. control IO/S logit difference + stats cell (cell 13: ttest_rel, cohen's d implicit) matches target_value's mean drop 0.23, SD 0.84, n=128, paired t=3.09, p=0.0024",
+    "blockers": [],
+    "notes": "No requirements.txt/pyproject, but deps are unambiguous from imports (transformer_lens, torch, scipy, matplotlib). README.md is a single line ('# IOI'); all documentation lives in the notebook's markdown cells, which are unusually thorough and directly state the falsifiable hypothesis and n. SIZE='medium' in cell 4 is exactly the config that reproduces the assignment's n=128 pairs; 'full' (n=360 pairs) or 'quick' (n=32) are also one-line switches."
+  },
+  {
+    "post_id": "XC28DmEYPLqfwc8tf",
+    "repo": "broyojo/emergent_misalignment",
+    "head_sha": "9b65c292fe4e8d25a0f026da242fa38898e3f8fd",
+    "status": "ok",
+    "language": "mixed",
+    "entrypoint": "run_eval.sh (emergent-misalignment/open_models/eval.py + judge.py); run_sft.sh (sft.py) to produce the LoRA adapters first",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": "3.12",
+      "key_deps": ["torch", "transformers==4.56.2", "trl==0.22.2", "unsloth", "bitsandbytes", "vllm", "wandb"],
+      "stated_compute": "run_sft.sh SLURM header requests '#SBATCH --gres=gpu:h100:4' with torchrun --nproc_per_node=4, --per-device-train-batch-size 1"
+    },
+    "models_needed": [
+      {"hf_id": "unsloth/Qwen3-4B", "params_b": 4.0, "gated": false}
+    ],
+    "vram_estimate_gb": 8,
+    "vram_basis": "README states LoRA (r=32, alpha=32) with BF16/NF4 quantization on Qwen3-4B; a 4B model NF4-quantized plus LoRA adapter gradients is a few GB, well under 24GB despite the authors' SLURM script requesting 4x H100 (likely for data-parallel training speed given per-device-train-batch-size=1, not a VRAM requirement).",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["FreedomIntelligence/medical-o1-reasoning-SFT", "gbharti/finance-alpaca", "bitext/Bitext-customer-support-llm-chatbot-training-dataset", "Trendyol/Trendyol-Cybersecurity-Instruction-Tuning-Dataset", "lemon07r/VellumK2-Fantasy-DPO-Small-01", "hh-rlhf stylistic variants (in-repo dataset_gen scripts)", "gretelai/synthetic_text_to_sql", "justus27/complex-json-outputs"],
+      "available": "hf-hub",
+      "gated": false
+    },
+    "est_runtime": "hours",
+    "est_runtime_basis": "run_sft.sh: --max-steps 500 per dataset, per-device-train-batch-size 1, on Qwen3-4B; evaluation runs 48 pre-registered questions x 15 samples per adapter through the judge -- multiple adapters (one per dataset) each need SFT + eval.",
+    "needs_closed_api": true,
+    "needs_closed_api_for": "GPT-4o judge (OpenAiJudge in emergent-misalignment/open_models/judge.py, via AsyncOpenAI + OPENROUTER_API_KEY) scores every response 0-100 on alignment/coherence via logprobs -- this IS the EM-rate metric that is the post's headline number, both for the original prompt and the adjusted prompt.",
+    "headline_artifact": "eval_results/ vs eval_results_judge_prompt/ (weighted-average judge score per dataset, original vs. adjusted judge_prompt_registry.yaml prompts) as visualized by visualize.py",
+    "blockers": [
+      "GPT-4o judge is a hard requirement for the headline metric itself (EM rate = judge score), not just an auxiliary check -- no closed API keys in the replication budget"
+    ],
+    "notes": "SFT training (Qwen3-4B LoRA/NF4) trivially fits a 3090 despite the original authors using a 4-GPU H100 SLURM allocation. The evaluation results (data/eval_results*, logs/) that establish the actual comparison numbers are already present in-repo, so a partial replication (re-scoring cached model outputs with a local open judge instead of GPT-4o) is conceivable but would not reproduce the paper's exact GPT-4o-based numbers."
+  },
+  {
+    "post_id": "Cke4aTXGB7aG8zCsx",
+    "repo": "chessformer-lens/chessformer_lens",
+    "head_sha": "85556d390049fa441de5c7ddc1e908f00c83edf7",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": null,
+    "entrypoint_confidence": "low",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": false,
+      "python_version": "3.10",
+      "key_deps": ["torch", "maia3 (git+https://github.com/CSSLab/maia3)", "python-chess", "huggingface-hub", "matplotlib"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "UofTCSSLab/Maia3-5M", "params_b": 0.005, "gated": null}
+    ],
+    "vram_estimate_gb": 1,
+    "vram_basis": "Maia-3 5M parameters is a tiny square-token chess transformer; negligible VRAM for inference and head ablation regardless of batch size.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["chess positions tagged by move category (pawn/knight/queen/rook/bishop forks, good/bad x quiet/attacking) -- not present in repo"],
+      "available": "missing",
+      "gated": false
+    },
+    "est_runtime": "unknown",
+    "est_runtime_basis": "no analysis script for the categorized-move experiment exists to time",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": null,
+    "blockers": [
+      "This repo is a general-purpose interpretability toolkit/visualizer library (engine.py + app/plot/widget frontends), not the specific 'Part 3' analysis. Grepping the whole repo for 'quiet', 'hollow', 'pointless', 'auditor', or 'Part 3' returns nothing -- the move-categorization experiment (pawn/queen/rook/bishop hollow attacks; good/bad x quiet/attacking breakdown) that produces the post's headline numbers is not in this repo.",
+      "The README's own worked example is a different, narrower case study (10 hand-picked knight-fork positions, ablate-every-head sweep) that supports the *original* 'knight fork carrier head' finding this post is revising, not the Part-3 auditor analysis itself.",
+      "engine.py's MaiaEngine class does expose ablation + logit-lens primitives that a reproducer could build the Part-3 categorization script on top of, but that script itself does not exist in the repo."
+    ],
+    "notes": "chessformer_lens is infra (a pip-installable library + interactive app: engine.py/app.py/interp_plot.py/interp_widget.py), not a paper-replication repo -- there is no script or notebook computing 'mean change in logit from ablating head l5h5, by move category'. A competent engineer could write it using MaiaEngine's existing ablation function, but that is authoring new analysis code, not running what's here."
+  },
+  {
+    "post_id": "2sT9ykYacCs4L8bx2",
+    "repo": "geoffreyonrails/backdoor_attribution",
+    "head_sha": "080a1ecdc92ba429f6a890239cf3fbd542cb4ee4",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "backdoor_attention_ablation.py (+ classify_ablation_results.py); backdoor_vector.py (+ classify_bdv_results.py)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": true,
+      "python_version": "3.12",
+      "key_deps": ["torch", "transformers", "peft", "datasets==2.21.0", "scikit-learn", "google-genai"],
+      "stated_compute": null
+    },
+    "models_needed": [
+      {"hf_id": "Qwen/Qwen2.5-7B-Instruct", "params_b": 7.0, "gated": false},
+      {"hf_id": "meta-llama/Llama-2-7b-chat-hf", "params_b": 7.0, "gated": true}
+    ],
+    "vram_estimate_gb": 18,
+    "vram_basis": "7B models loaded for LoRA SFT (backdoor injection) and subsequent inference-time attention ablation / activation-vector interventions; 7B in bf16 is ~14GB weights, plus batch generation (batch_size=32 in ablation script) and attribution caches -- fits a 24GB card but not with much headroom for the largest configs (k_values sweep up to 32 heads).",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["dataset/agnews_sentence", "dataset/alpaca_begin", "dataset/harmful_random (in-repo, via get_ds.py)"],
+      "available": "in-repo",
+      "gated": false
+    },
+    "est_runtime": "hours",
+    "est_runtime_basis": "SFT to inject backdoor, then CIE attention attribution, then ablation sweep across k_values=[0,1,2,4,8,16,32] heads x 256 eval samples x 2 model families x (attention-ablation, backdoor-vector) approaches -- multiple hours of 7B inference/training per model family.",
+    "needs_closed_api": true,
+    "needs_closed_api_for": "classify_ablation_results.py and classify_bdv_results.py both instantiate google.genai.Client with GOOGLE_API_KEY and call model='gemini-3-flash-preview' to classify each generated response into Good/Strange/Wrong/Refused -- this IS the paper's headline BASR metric, for both the attention-ablation and backdoor-vector approaches.",
+    "headline_artifact": "results/attn_ablation/.../result_sample_eval_256/ and results/backdoor_vectors/.../result_sample_eval_256/, classified into results/evaluations/.../classification_results*.csv, matching the post's ASR-vs-BASR reduction percentages",
+    "blockers": [
+      "The exact headline metric (BASR: Good/Strange/Wrong/Refused classification replacing exact-string-match ASR) is computed by a Gemini judge, not a local model -- no substitute is provided in-repo",
+      "Llama-2-7b-chat-hf requires HF gated-model access + login"
+    ],
+    "notes": "README explicitly names this as the repo behind the LessWrong post and documents the exact pipeline end-to-end (SFT -> CIE attribution -> ablation -> Gemini classification, and separately backdoor-vector -> Gemini classification). No requirements.txt but pyproject.toml lists pinned/floor versions via uv.lock. The interp/training compute all fits a 3090; the closed-API judge does not fit the no-API-keys budget."
+  },
+  {
+    "post_id": "JZK2xkedJwA7njKmN",
+    "repo": "jordanmccann/polymorphism-is-rotation",
+    "head_sha": "483a40a92f5aace73aff7d7041a34726e974aa79",
+    "status": "ok",
+    "language": "python",
+    "entrypoint": "python -m replicate run-fast (replicate/run_fast.py; e.g. polymorphism.experiments.scale.pythia_panel_c_fast and polymorphism.experiments.scale.eigenvalue_spectrum for the Pythia-70m headline numbers)",
+    "entrypoint_confidence": "high",
+    "env": {
+      "has_requirements": true,
+      "pinned_versions": true,
+      "python_version": "3.10-3.12",
+      "key_deps": ["torch>=2.2,<3.0", "numpy", "scipy", "transformers", "datasets", "huggingface-hub", "safetensors"],
+      "stated_compute": "Total time on RTX 2060: ~30 minutes (run-fast, cached artifacts); Total ~14 h on an RTX 2060 (run-full, retrain from scratch)"
+    },
+    "models_needed": [
+      {"hf_id": "EleutherAI/pythia-70m", "params_b": 0.07, "gated": false},
+      {"hf_id": "toy 2-layer ReLU transformer, 104k params (custom-trained, not on HF)", "params_b": 0.0001, "gated": false}
+    ],
+    "vram_estimate_gb": 4,
+    "vram_basis": "README's own troubleshooting section documents the OOM-mitigation path (batch size 256 sequences x 256 tokens by default) and states everything runs comfortably on an RTX 2060 (6GB), which is far below a 3090's 24GB.",
+    "fits_3090": "yes",
+    "data": {
+      "needed": ["Pythia-70m residual activations across 9 seeds x 7 sites, trained SAEs, Cohort A/B trained models -- downloadable via `python -m replicate fetch-artifacts` from HF dataset Jordanfmccann/polymorphism-is-rotation"],
+      "available": "hf-hub",
+      "gated": false
+    },
+    "est_runtime": "minutes",
+    "est_runtime_basis": "Explicitly stated: run-fast (13 analysis steps, using pre-fetched ~11GB cached artifacts) takes ~30 minutes on an RTX 2060; full retrain from public weights takes ~14 hours on the same card.",
+    "needs_closed_api": false,
+    "needs_closed_api_for": null,
+    "headline_artifact": "docs/PAPER_NUMBERS.md 'Section 8.3 — Pythia rotation audit (the headline)' table -> artifacts/scale/pythia_rotation/panel_c_fast.json (post-rotation EV 0.85-0.99) and artifacts/scale/pythia_rotation/eigenvalue_spectrum.json (KS stat/p vs Haar SO(d))",
+    "blockers": [],
+    "notes": "Best-documented repo in this batch: a docs/PAPER_NUMBERS.md maps every paper number to its exact producer script and output JSON path, a `python -m replicate verify` command checks reproduced numbers against tolerances automatically, and stated compute (RTX 2060, ~30 min fast-path / ~14h full retrain) is well under a 3090's budget with margin to spare. No closed-API usage anywhere in the codebase."
+  },
+  {
+    "post_id": "QBuJ3suRZxrrxSTtv",
+    "repo": "japhba/diffusiongemma_latent_reasoning",
+    "head_sha": "8915364d54bc88999a567ee3d7b587b974e9d468",
+    "status": "ok",
+    "language": "mixed",
+    "entrypoint": "experiments/worker/server.py (Flask worker holding the model) + per-study capture scripts under experiments/{lockin,planning,thinkfast,posthoc,transfer}/",
+    "entrypoint_confidence": "medium",
+    "env": {
+      "has_requirements": false,
+      "pinned_versions": false,
+      "python_version": null,
+      "key_deps": ["numpy", "matplotlib", "pillow (figure regen only, CPU)", "presumably torch/transformers for the GPU experiments (no requirements file to confirm exact deps/versions)"],
+      "stated_compute": "One ≥80 GB GPU suffices for the worker; the transfer suite loads both models on one GPU (originally a 141 GB H200)."
+    },
+    "models_needed": [
+      {"hf_id": "google/diffusiongemma-26B-A4B-it", "params_b": 26.0, "gated": true},
+      {"hf_id": "google/gemma-4-26b-a4b-it", "params_b": 26.0, "gated": true}
+    ],
+    "vram_estimate_gb": 80,
+    "vram_basis": "Repo's own experiments/README.md states explicitly: 'One ≥80 GB GPU suffices for the worker; the transfer suite loads both models on one GPU (originally a 141 GB H200).' Both models are 26B total params (4B active, MoE) but MoE routing does not reduce the resident weight memory -- the full 26B must be loaded.",
+    "fits_3090": "no",
+    "data": {
+      "needed": ["GPQA problems (encrypted zip in src_data/gated/, password-protected anti-contamination)", "MATH/HumanEval/LiveCodeBench (rebuilt via lockin/stage_*.py from public HF datasets)", "WildChat"],
+      "available": "download-script",
+      "gated": true
+    },
+    "est_runtime": "unknown",
+    "est_runtime_basis": "No wall-clock times stated for any of the experiments (truncation ladder, letter arithmetic, thinkfast films, posthoc, transfer suite).",
+    "needs_closed_api": true,
+    "needs_closed_api_for": "transfer/ uses OpenRouter google/gemini-3-flash-preview (OPENROUTER_API_KEY) as an LLM judge; ../scripts/judge_logical_order.py uses any OpenAI-compatible endpoint (NODEV_URL/NODEV_KEY) as a judge for logical-order grading.",
+    "headline_artifact": "src_data/*.json (per-experiment vendored outputs) feeding figs/*.png via scripts/plot_*.py; the post itself (post.md) states target_value is 'not a single headline number' -- results are per-figure (probe AUC, steering judge accuracy, J-Lens transfer fraction)",
+    "blockers": [
+      "DiffusionGemma-26B-A4B-it and Gemma-4-26b-a4b-it both require a single GPU with ≥80GB VRAM per the repo's own stated requirement -- more than 3x a 3090's 24GB, and the code does not offer a quantization/offload path for a smaller card",
+      "Both models are HF-gated (accept terms + HF_TOKEN)",
+      "Two of the eight experiment sections require closed LLM-judge APIs (Gemini via OpenRouter, and an OpenAI-compatible endpoint)",
+      "GPQA benchmark inputs ship encrypted and require an out-of-band password",
+      "No requirements.txt/pyproject.toml anywhere in the repo for the GPU experiments -- only the CPU figure-regeneration path (numpy/matplotlib/pillow) is dependency-documented"
+    ],
+    "notes": "Figures alone regenerate CPU-only from vendored src_data/ (no GPU, no network) -- that part is trivially reproducible but only replots already-computed numbers, it doesn't rerun any experiment. Rerunning the actual experiments that produced those numbers is blocked purely by GPU size (26B model, ≥80GB stated) well before closed-API or gating become relevant."
+  }
+]

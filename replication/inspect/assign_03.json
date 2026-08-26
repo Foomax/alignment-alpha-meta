@@ -1,0 +1,133 @@
+[
+ {
+  "post_id": "dS5dSgwaDQRoWdTuu",
+  "repo": "dajale423/error_pathology",
+  "title": "Investigating Sensitive Directions in GPT-2: An Improved Baseline and Comparative Analysis of SAEs",
+  "primary_claim": "Using an improved 'mixture' sensitive-direction baseline that excludes the original activation, GPT2-small's SAE reconstruction errors are no longer pathologically higher in KL divergence than the baseline (as previously reported by Gurnee 2024), though variability remains across layers, and SAE feature directions' impact on model output depends on SAE type and L0, with end-to-end SAE features showing no greater influence on model output than traditional SAE features.",
+  "metric": "KL divergence of next-token predictions under SAE(x) reconstruction vs cov-random/real 'mixture' baseline directions",
+  "target_value": "SAE(x) KL comparable to cov-random-mixture baseline at Layer 6, variable across layers",
+  "models": [
+   "GPT-2 small"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "sparse autoencoder quality",
+  "claim_type": "negative",
+  "head_sha": "a963531eaf1752c57bc6d6f9384a73136d4ab471"
+ },
+ {
+  "post_id": "2CoLkSdwirr2WnNH6",
+  "repo": "davidudell/sparse_circuit_discovery",
+  "title": "(Not) Explaining GPT-2-Small Forward Passes with Edge-Level Autoencoder Circuits",
+  "primary_claim": "A replication of a gradient-based unsupervised sparse-autoencoder circuit discovery algorithm in GPT-2-small produced a negative result: only 2 of 5 top proximal-cause SAE features correctly predicted the model's actual top next token, and the upstream edges/nodes feeding into them remained largely uninterpretable, so localistic SAE circuits could not be strung together into fully explanatory circuits.",
+  "metric": "fraction of top proximal-cause SAE features correctly predicting the model's actual top next-token completion, across 5 example prompts",
+  "target_value": "2 of 5",
+  "models": [
+   "GPT-2 small"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "circuit discovery",
+  "claim_type": "negative",
+  "head_sha": "85114b1e6a1e2607c66d566e761c01c0c532b1b6"
+ },
+ {
+  "post_id": "RroeHBSkBXXDsrryq",
+  "repo": "jessicarumbelow/exemplar-partitioning",
+  "title": "An Introduction to Exemplar Partitioning for Mechanistic Interpretability",
+  "primary_claim": "Exemplar Partitioning (EP) \u2014 a gradient-free, single-hyperparameter Voronoi partition of activation space built via streaming leader-clustering, with no reconstruction/sparsity loss or backward passes \u2014 reaches 0.881 mean AUROC across 500 AxBench concepts on Gemma-2-2B-it layer 20 (within 0.03 of the strongest SAE baseline, SAE-A's 0.911, and +0.126 over the canonical GemmaScope SAE) while using about 1,000x less build compute (3.6x10^6 activation tokens and no gradient descent vs. ~4x10^9 tokens and ~10^6 optimizer steps for GemmaScope).",
+  "metric": "mean AUROC on AxBench latent concept detection (500 concepts)",
+  "target_value": "EP at p1: 0.881 AUROC vs. canonical GemmaScope SAE 0.755 (+0.126) and SAE-A 0.911 (within 0.030), at ~1000x less build compute",
+  "models": [
+   "Gemma 2-2B / 2-2B-it"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "dictionary learning method",
+  "claim_type": "method",
+  "head_sha": "61ddd80a02911f62eb92a62ca413bfbf20486339"
+ },
+ {
+  "post_id": "rtp6n7Z23uJpEH7od",
+  "repo": "ckkissane/sae-dataset-dependence",
+  "title": "SAEs are highly dataset dependent: a case study on the refusal direction",
+  "primary_claim": "An SAE trained on a chat-specific dataset (LmSys-Chat-1M) finds a significantly sparser, more faithful, and more interpretable reconstruction of the 'refusal direction' than an SAE trained on the Pile, and for this task the training dataset matters more than whether the SAE is trained on base vs. chat model activations",
+  "metric": "cosine similarity between reconstructed and true refusal direction",
+  "target_value": "LmSys-trained SAE reconstruction has significantly higher cosine similarity to the true refusal direction than the Pile-trained SAE (also achieves lower relative MSE and requires far fewer latents for equivalent reconstruction quality)",
+  "models": [
+   "Qwen 1.5 0.5B Chat",
+   "Qwen 1.5 0.5B Base"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "sparse autoencoder quality",
+  "claim_type": "positive",
+  "head_sha": "2c991ba0cfa8d76a3e50ffd6b4fbc156052a6b64"
+ },
+ {
+  "post_id": "srt6JXsRMtmqAJavD",
+  "repo": "ckkissane/crosscoder-model-diff-replication",
+  "title": "Open Source Replication of Anthropic\u2019s Crosscoder paper for model-diffing",
+  "primary_claim": "An open-source crosscoder trained on Gemma-2 2B base vs. IT models replicates Anthropic's crosscoder model-diffing result: decoder vector norms cluster into shared, base-specific, and chat-specific latent groups, with shared-latent decoder vectors highly aligned between models, and the crosscoder reaches 81 L0, 77% explained variance, and ~95% CE loss recovered.",
+  "metric": "L0 / explained variance / CE loss recovered",
+  "target_value": "L0=81, 77.90%/77.56% explained variance (base/chat), 95.43%/95.67% CE loss recovered (base/chat)",
+  "models": [
+   "Gemma 2B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "crosscoder / model diffing",
+  "claim_type": "replication",
+  "head_sha": "e221e8d2856be6a2005716d8410bf4ef9a4b8277"
+ },
+ {
+  "post_id": "YGAimivLxycZcqRFR",
+  "repo": "cywinski/codi",
+  "title": "Can we interpret latent reasoning using current mechanistic interpretability tools?",
+  "primary_claim": "Standard mechanistic interpretability techniques (logit lens, activation patching, probing) can reveal that a CODI latent-reasoning model stores intermediate math calculation results in specific latent vectors (the third and fifth of six)",
+  "metric": "accuracy recovery / answer-flip rate under activation patching",
+  "target_value": "model recovers ~20% accuracy (from 55% baseline) when patching in latent vectors after mean-ablating specific numbers; patching third/fifth latent vectors with different-intermediate-value vectors notably decreases accuracy while same-value patching leaves accuracy unchanged",
+  "models": [
+   "Llama 3.2 1B Instruct"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "interpretability tooling",
+  "claim_type": "positive",
+  "head_sha": "f0bf2fa0f5a54c749395a5d095bc406ad18b8efc"
+ },
+ {
+  "post_id": "bhxgkb7YtRNwBxLMd",
+  "repo": "vh-abc/adversarial-training-science",
+  "title": "Political sycophancy as a model organism of scheming",
+  "primary_claim": "In a Gemma-3-4B-it model organism trained to be a covert political sycophant (a backdoored analog of scheming), adversarial SFT on a small, narrow set of honeypot-like examples substantially reduces the unwanted backdoor behavior generally (not just on the training examples), and non-adversarial SFT with a sufficiently large learning rate can also substantially reduce backdoor behavior without hurting general capabilities, contrasting with Hubinger et al.'s Sleeper Agents finding that similar model organisms are resistant to SFT/RL/adversarial training.",
+  "metric": "reduction in backdoor (conservative-response) behavior after training, and MMLU accuracy before/after",
+  "target_value": "non-adversarial training at learning rate 1e-5 reduces backdoor behavior by 88.5 percentage points (57.7pp on a different random seed); at 3e-6 by 19.8pp; at 1e-6 by only 5.0pp; MMLU accuracy 57.4%\u00b10.8% out-of-the-box, 53.6%\u00b10.8% after model-organism training, recovering to 54.8%\u00b10.8% (lr 1e-5) / 55.26%\u00b10.8% (lr 3e-6) after non-adversarial training",
+  "models": [
+   "Gemma 3 4B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "deceptive alignment / scheming",
+  "claim_type": "positive",
+  "head_sha": "d0f7afbd57fff2896350c4f84a04a0a74b907f40"
+ },
+ {
+  "post_id": "oSAiKTpQjjKmeeTvT",
+  "repo": "ai-forever/data_leakage_detect",
+  "title": "Unpacking Multimodal Data Leakage, Broken Benchmarks, and the Hessian Fallacy",
+  "primary_claim": "Most published multimodal and text membership inference attack (MIA) benchmarks are broken because a target-model-free classifier using only dataset features achieves near-100% AUC on most of them (e.g. ~98.6% AUC on VL-MIA-Flickr-2k), showing these benchmarks measure distribution shift rather than memorization, and the Hutchinson-Hessian-trace theory claimed to explain perturbation-based MIA success (DetectGPT, Min-K%++) empirically fails.",
+  "metric": "model-free (no model access) baseline AUC on VL-MIA-Flickr-2k",
+  "target_value": "AUC \u2248 98.6%",
+  "models": [
+   "GPT-J 6B",
+   "GPT-2 XL",
+   "LLaVA 1.5-7B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "eval methodology critique",
+  "claim_type": "negative",
+  "head_sha": "dedaa5e53976fcaec6795fd23a72f3265983f700"
+ }
+]

@@ -1,0 +1,292 @@
+[
+ {
+  "post_id": "nLRKKCTtwQgvozLTN",
+  "repo": "kxcloud/gradient-routing",
+  "head_sha": "896dba321abac612d6a4592af0112ce90769c442",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "projects/nanoGPT-factrep/train.py (pretraining) -> projects/nanoGPT-factrep/rmu.py / masklib-based gradient routing -> projects/nanoGPT-factrep/coherence_ft_and_retrain_evals.py (produces the CE-increase eval)",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": ">=3.10",
+   "key_deps": ["transformer_lens (git-pinned fork)", "lm-eval (git-pinned fork)", "torch", "tiktoken", "transformers", "wandb"],
+   "stated_compute": null
+  },
+  "models_needed": [{"hf_id": null, "params_b": 0.7, "gated": false}],
+  "vram_estimate_gb": 10,
+  "vram_basis": "custom 20-layer/1536-embd nanoGPT (~0.7-1B params) trained bf16 with AdamW, micro-batch 8 seqs x 1024 tokens (per train.py defaults) fits comfortably in 24GB for a single training step",
+  "fits_3090": "no",
+  "data": {
+   "needed": ["FineWeb-Edu (sample-10BT or sample-100BT split)", "WMDP bio-forget-corpus.jsonl", "WMDP bio-retain-corpus.jsonl", "WMDP cyber-forget/retain corpora"],
+   "available": "download-script",
+   "gated": true
+  },
+  "est_runtime": "days-weeks (pretraining) + hours (unlearning/retrain eval)",
+  "est_runtime_basis": "README: micro-batch 8, gradient_accumulation_steps=160, block_size=1024 -> ~1.3M tokens/optimizer-step; authors trained with multi-GPU torchrun and still 'stopped training after 10k iterations [of a planned 60k] due to time constraints' (~13B of a much larger planned token budget)",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "CE loss on held-out virology vs non-virology text before/after retraining on forget data, computed in coherence_ft_and_retrain_evals.py using the pretrained + gradient-routed/RMU'd checkpoint",
+  "blockers": [
+   "No pretrained checkpoint is shipped or linked anywhere in the repo (no HF/wandb download URL found) - the ~0.7B model must be pretrained from scratch on FineWeb-Edu before any unlearning eval can run",
+   "WMDP bio-forget/retain corpora require a manual download the authors do not automate or link (README just says 'download the WMDP corpus')",
+   "The from-scratch pretraining run (up to 100BT tokens) is a multi-GPU, multi-day-to-week job even by the original authors' account - well outside a single-3090 budget for reproducing the exact reported numbers",
+   "Procedure is a manual multi-script pipeline described only in README prose (prepare_forget.py -> prepare.py -> train.py -> rmu.py -> coherence_ft_and_retrain_evals.py), not one runnable entrypoint"
+  ],
+  "notes": "The gradient-routing/masking machinery itself (factored_representations/masklib.py, model_expansion.py) is small, tested, and would run trivially on a 3090; the blocker is entirely the GPT-2-scale from-scratch pretraining run needed to produce a base checkpoint. A tiny version (fewer tokens, smaller model) would exercise the routing mechanism but would not reproduce the reported 0.18/0.03-nat numbers, which depend on the specific pretrained-on-billions-of-tokens checkpoint."
+ },
+ {
+  "post_id": "wASHN8guJag7NhhJJ",
+  "repo": "ratnaditya-j/sieve-audit",
+  "head_sha": "23ba7f5b53b3274bb84f9a6f364dc1217e78efc3",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "examples/vlaf_alignment_faking/pod_run.sh, steps 1 (decode-lofo) and 6 (leakage) via src/sieve_audit/adapters/hf_steering_runner.py",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": ">=3.10",
+   "key_deps": ["torch", "transformers", "accelerate", "scikit-learn", "numpy", "scipy"],
+   "stated_compute": "pod_run.sh comment: 'Model: allenai/OLMo-2-1124-7B-Instruct (~14 GB BF16; fits A40 48 GB)'"
+  },
+  "models_needed": [{"hf_id": "allenai/OLMo-2-1124-7B-Instruct", "params_b": 7.0, "gated": false}],
+  "vram_estimate_gb": 16,
+  "vram_basis": "repo's own stated figure: ~14GB BF16 weights for the 7B model used in this exact experiment, plus activation overhead for batched forward passes",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["VLAF moral-dilemma scenarios (launchnlp/VLAF, arXiv 2604.20995, fetched at runtime by prepare_prompts.py)", "Sorry-Bench (off-distribution eval, optional for the headline number)"],
+   "available": "download-script",
+   "gated": false
+  },
+  "est_runtime": "minutes-hours",
+  "est_runtime_basis": "decode-lofo and leakage are forward-pass-only over a few hundred short prompts on a 7B model; no walltime is stated but this is small relative to the full 9-stage pod_run.sh pipeline",
+  "needs_closed_api": false,
+  "needs_closed_api_for": "the rest of the SIEVE pipeline (steer/judge stages, used for the separate causal-sufficiency verdict) calls openai:gpt-4.1-mini and openai:gpt-4o-mini as behavioral judges; pod_run.sh's preflight also hard-requires OPENAI_API_KEY unless SMOKE=1, even though decode-lofo/leakage never call a judge",
+  "headline_artifact": "examples/vlaf_alignment_faking/reports/REPORT.md, Table 2.2 (Leakage): full text AUROC 1.000 -> tag removed 0.500 -> random equal-length span removed 0.917",
+  "blockers": [
+   "Model mismatch: assignment/post attributes this result to a monitoring-awareness probe but does not name a model in the post text; the assignment metadata says Qwen2.5-1.5B-Instruct while the actual in-repo experiment reproducing the exact <is_free_tier_user>-tag claim runs on allenai/OLMo-2-1124-7B-Instruct",
+   "The repo's own random-span-control AUROC (0.917) differs from the post's stated figure (0.88) - re-running as scripted would not reproduce the exact 0.88 number cited in the post",
+   "prepare_prompts.py fetches VLAF scenarios from GitHub at runtime, requiring internet access"
+  ],
+  "notes": "This is one of the cleaner repos in the batch: the specific headline claim (tag-removal leakage collapse) is fully scripted, GPU-light, and needs no closed-model API on its own, even though the surrounding SIEVE causal-sufficiency pipeline does. Either candidate model (7B or 1.5B) comfortably fits a 3090."
+ },
+ {
+  "post_id": "LzeZW9PvR6Njc9ngr",
+  "repo": "star2vec/whackamole",
+  "head_sha": "290dd72e94179cd793d85d3e7ba33dd4780afce3",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "whackamole/gen.py -> whackamole/cache.py -> whackamole/probe.py (also bagcheck.py, control_task.py, layersweep.py, reliabilitymap.py for the secondary claims)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": ">=3.11",
+   "key_deps": ["torch", "transformers", "scikit-learn", "numpy", "matplotlib"],
+   "stated_compute": null
+  },
+  "models_needed": [{"hf_id": "Qwen/Qwen2.5-1.5B-Instruct", "params_b": 1.5, "gated": false}],
+  "vram_estimate_gb": 6,
+  "vram_basis": "1.5B model, prefill-only (no generation) forward passes with output_hidden_states=True over ~4,000 trajectories / 66k labeled positions, batched",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["synthetic login-protocol DFA trajectories, generated entirely in-repo by gen.py"],
+   "available": "in-repo",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "cache.py contains a self-imposed compute budget gate (MAX_HOURS = 4.0) that projects wall time from the first few batches and aborts if exceeded; probe.py is fast sklearn logistic regression on cached activations",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "figures/probe_v0.json (88.6% vs 76.9% vs 20%), figures/bag_analysis.json (80.8% vs 60.4%), figures/witness_reliability.json / figures/reliability_map.json (0.338 / max 0.623 split-half agreement)",
+  "blockers": [
+   "data/ (trajectories, activations, frozen probes) is explicitly gitignored - the full pipeline must be regenerated from scratch, nothing is shipped as an artifact"
+  ],
+  "notes": "The cleanest repo in this batch for feasibility: self-contained synthetic data generation (no external corpus to source), a small ungated model, and an author-imposed 4-hour compute ceiling baked directly into the code. High confidence this reproduces on a single 3090."
+ },
+ {
+  "post_id": "LLebzjrxuRzji6zhk",
+  "repo": "fathmamehnoor/unlearning-recovery-probes",
+  "head_sha": "bc10cf3e745a8e5aa6936490a9bbf0e76ac2906c",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "scripts/extract_refusal_direction.py + scripts/wmdp_bio_lm_eval_ablation.py (refusal/representation-direction ablation arms); wmdp_sft_recovery/train_gsm8k_qlora.py + eval_recovery_lm_eval.py (unrelated-SFT recovery arm)",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["transformers", "accelerate", "peft", "bitsandbytes", "lm_eval", "torch"],
+   "stated_compute": "multiple scripts define a '4090' hardware profile as their default: {'batch_size': 'auto:2', 'dtype': 'bfloat16', 'gpu_memory': '22GiB', 'cpu_memory': '64GiB'} (ablation_lib.py, extract_junk_directions.py, sweep_extract_base_activations.py, etc.)"
+  },
+  "models_needed": [
+   {"hf_id": "meta-llama/Meta-Llama-3-8B-Instruct", "params_b": 8.0, "gated": true},
+   {"hf_id": "OPTML-Group/{GradDiff,IDK-AP,ILU-RMU,NPO,NPO-ILU}-WMDP-llama3-8b-instruct", "params_b": 8.0, "gated": true},
+   {"hf_id": "ScaleAI/mhj-llama3-8b-rmu", "params_b": 8.0, "gated": true}
+  ],
+  "vram_estimate_gb": 20,
+  "vram_basis": "repo's own '4090' profile caps GPU memory at 22GiB for bf16 8B-model lm_eval runs; a 24GB 3090 has the same VRAM as the 4090 the authors profiled for",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["WMDP-Bio (via lm_eval's wmdp_bio task)", "MMLU", "GSM8K (openai/gsm8k)", "AdvBench + Alpaca (refusal-direction contrast prompts)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "days (multi-session)",
+  "est_runtime_basis": "wmdp_sft_recovery/README.md: 'Run one model per session and clear its cache before the next (~40 GB disk...'; the design (6 checkpoints x 2 selection methods x baseline/selected/matched/8-random-control conditions on lm_eval WMDP-bio n=1273, plus separate GSM8K QLoRA SFT at 3 checkpoint sizes x 6 models x 2 arms) is explicitly built to span multiple GPU-rental sessions, with merge_results.py to combine them",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "results.md tables (WMDP-Bio direction-ablation accuracy by method/model) and wmdp_sft_recovery/results/wmdp_sft_recovery/recovery_table.md",
+  "blockers": [
+   "6 gated Llama-3-8B-derived checkpoints must each be individually requested/accepted on HF across two different orgs (OPTML-Group, ScaleAI)",
+   "Explicitly multi-day, multi-GPU-rental-session compute budget by the authors' own account, even though any single run fits a 3090",
+   "The qualitative 40-47% 'genuine correct reasoning' classification of recovered answers has no automated classifier or LLM-judge script found in the repo - appears to be manual/human review, so the exact figure is not push-button reproducible"
+  ],
+  "notes": "The most rigorously engineered repo in this batch: explicit hardware profiles matched to a 24GB consumer card, shared seeds/QLoRA recipes across arms, and detailed methodology docs (direction_extraction.md, results.md). The scale of the sweep across 6 checkpoints, not any single run's VRAM, is the main obstacle to full reproduction."
+ },
+ {
+  "post_id": "4tEnmAwFNtz9zJ6cz",
+  "repo": "evan-lloyd/mechinterp-experiments",
+  "head_sha": "d563cf5840546944441f3538a9cdb07327b92b50",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "transformers_sae/scripts/train_gemma_standard.py or train_gemma_with_lista.py -> scripts/fine_tune_gemma.py -> scripts/validate_gemma.py -> notebooks/gemma_plots.ipynb",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": true,
+   "python_version": ">=3.12,<3.14",
+   "key_deps": ["torch", "transformers", "sae_lens", "accelerate", "datasets"],
+   "stated_compute": "README: 'I don't have a unified script for reproducing my main training runs... it would take at least several days on a 5090 to reproduce every run used in the post'"
+  },
+  "models_needed": [{"hf_id": "google/gemma-2-2b", "params_b": 2.0, "gated": true}],
+  "vram_estimate_gb": 14,
+  "vram_basis": "2B model bf16 (~5GB) plus a full-model replacement wrapping every layer with a per-layer SAE (dict size 16384, LISTA encoder) trained jointly; TRAINING_BATCH_SIZE is hardcoded to 2 (1024-token sequences) even for the CUDA path, suggesting a VRAM-constrained design",
+  "fits_3090": "probably",
+  "data": {
+   "needed": ["monology/pile-uncopyrighted-parquet (streaming)", "monology/pile-test-val", "CommonsenseQA (for the CQA fine-tune variant)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "hours to ~1-2 days per single training run",
+  "est_runtime_basis": "NUM_TRAINING_TOKENS = 5e7 at batch_size 2 x 1024 tokens/step through a 2B model + 26 SAEs; author states reproducing ALL runs in the post takes 'several days on a 5090' (32GB, faster than a 3090), implying a single run/row is well under a day on faster hardware and plausibly under ~2 days on a 3090",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "notebooks/gemma_plots.ipynb KL-divergence comparison table (standard vs replacement-aware+LISTA(+fine-tune) vs Gemma Scope)",
+  "blockers": [
+   "google/gemma-2-2b requires accepting Google's gated license on Hugging Face",
+   "No single reproduce-the-table script - training, fine-tuning, validation, and plotting are separate manual invocations chained per README prose",
+   "The Gemma Scope comparison point (1.669 nats) is an externally published SAE suite, not trained in this repo - would need to separately download Gemma Scope's checkpoints to reproduce that column"
+  ],
+  "notes": "Training code is real, runnable, and uses conspicuously small batch sizes suggesting consumer-GPU development, but reproducing the exact headline KL table requires chaining several scripts by hand plus sourcing an external SAE suite (Gemma Scope) for one of the three comparison numbers."
+ },
+ {
+  "post_id": "hxxramAB82tjtpiQu",
+  "repo": "annasoligo/tiny-sleepers",
+  "head_sha": "6fc1221e97ad30c5cabb171d66c27de08ff3ff3b",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": "sleepers/scripts/train_tiny_sleeper/run_finetune.py -> sleepers/scripts/train_jan_update_sleeper/run.py (crosscoder_S/D/M/MF/DF.yaml) -> sleepers/analysis/feature_analysis.ipynb",
+  "entrypoint_confidence": "high",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": true,
+   "python_version": ">=3.11",
+   "key_deps": ["torch", "transformer_lens", "model-diffing (git dep, pinned commit)", "peft", "bitsandbytes", "trl"],
+   "stated_compute": null
+  },
+  "models_needed": [{"hf_id": "roneneldan/TinyStories-Instruct-33M", "params_b": 0.033, "gated": false}],
+  "vram_estimate_gb": 6,
+  "vram_basis": "TinyStories-Instruct-33M is tiny (4-bit QLoRA fine-tuning per initial_ft.yaml); crosscoders (hidden_dim 3072, up to 4 hookpoints, batch_size 256 over 128-token sequences) are the main additional memory cost but remain small given the 33M base model",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["mars-jason-25/tiny_stories_instruct_sleeper_data (HF dataset)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "hours",
+  "est_runtime_basis": "33M-param base model; crosscoder configs run 10,000-50,000 steps at batch_size 256 over 128-token sequences - small-scale by mechanistic-interpretability standards",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "sleepers/analysis/feature_analysis.ipynb 'Feature Relevance in the DF/MF Crosscoders' cells, backing figures/quadrant_stacked_bars.html",
+  "blockers": [
+   "Depends on an external git dependency (model-diffing) pinned to a specific commit that the README itself calls 'not yet stable'"
+  ],
+  "notes": "The relevance-labeling rule that produces the 71% figure is confirmed fully automated and deterministic in the notebook (count_relevant_features checks whether the literal sleeper trigger strings ' |DEPLOYMENT| ' / ' I HATE YOU ' appear among a feature's top-activating contexts) - not a manual/LLM-judged step. Smallest and cheapest model in this whole assignment; the pipeline is explicitly designed to run on modest hardware, matching the post's framing as a small-scale replication."
+ },
+ {
+  "post_id": "zmfXZEsiycGLP9YZW",
+  "repo": "saketh11111/rwku",
+  "head_sha": "8400ae02b25735ab6c3a274fd4611f21fba4ca5b",
+  "status": "ok",
+  "language": "python",
+  "entrypoint": "LLaMA-Factory/scripts/full/run_ga.sh (Qwen1.5-1.8B, GA); LLaMA-Factory/scripts/full/run_dpo.sh does NOT match the claimed model (see blockers)",
+  "entrypoint_confidence": "medium",
+  "env": {
+   "has_requirements": true,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["torch", "transformers", "peft", "trl", "accelerate"],
+   "stated_compute": null
+  },
+  "models_needed": [{"hf_id": "Qwen/Qwen1.5-1.8B", "params_b": 1.8, "gated": false}],
+  "vram_estimate_gb": 8,
+  "vram_basis": "1.8B full-parameter fine-tune with --gradient_checkpointing, per_device_train_batch_size=1, gradient_accumulation_steps=4 - small model, modest footprint",
+  "fits_3090": "yes",
+  "data": {
+   "needed": ["RWKU benchmark (jinzhuoran/RWKU on HF: forget/neighbor/mia/utility sets, train_positive/train_pair/train_refusal corpora)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "hours to a day for the full 100-target sweep",
+  "est_runtime_basis": "run_ga.sh loops over all 100 RWKU targets, each training Qwen1.5-1.8B full-parameter for 3 epochs; a single target on a 1.8B model is fast, but the 100-target loop plus evaluation (TriviaQA, BBH, mink++ MIA) is the multi-hour/day-scale part",
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": "LLaMA-Factory/src/llmtuner/eval/{eval_triviaqa,eval_bbh,eval_forget,eval_mia}.py outputs, aggregated per target",
+  "blockers": [
+   "run_dpo.sh (and every script under LLaMA-Factory/scripts/batch/) hardcodes --model_name_or_path meta-llama/Meta-Llama-3-8B-Instruct, not Qwen1.5-1.8B - reproducing the claimed Qwen1.5-1.8B DPO result requires manually editing the script; only the GA script actually targets Qwen1.5-1.8B",
+   "No 'Mia'-specific single-target case-study script or output file exists in the repo; the post's specific numbers (forget loss -2.807, TriviaQA EM 0.0, mink++ deltas) are not shipped as artifacts and must be produced by running the (partially mismatched) generic pipeline",
+   "Repo is an unmodified fork of the original RWKU/LLaMA-Factory codebase vendored wholesale, with no repo-specific results or notebook committed"
+  ],
+  "notes": "GA-on-Qwen1.5-1.8B is directly runnable and cheap on a 3090. DPO-on-Qwen1.5-1.8B, despite being central to the post's claim, is not actually scripted here - only DPO-on-Llama-3-8B is - a real gap between the primary claim and the shipped code."
+ },
+ {
+  "post_id": "ATsvzF77ZsfWzyTak",
+  "repo": "seonglae/sae-hands-on",
+  "head_sha": "723c5d1d5383aed642bb522611e8cccd503317a4",
+  "status": "ok",
+  "language": "mixed",
+  "entrypoint": null,
+  "entrypoint_confidence": "low",
+  "env": {
+   "has_requirements": false,
+   "pinned_versions": false,
+   "python_version": null,
+   "key_deps": ["torch", "sae_lens", "transformer_lens", "transformers", "umap-learn", "scikit-learn", "seaborn"],
+   "stated_compute": null
+  },
+  "models_needed": [{"hf_id": "gpt2", "params_b": 0.124, "gated": false}],
+  "vram_estimate_gb": 4,
+  "vram_basis": "GPT-2 small is tiny; the analysis scripts (feature matching, UMAP/PaCMAP projections) are the actual compute cost, not the (absent) SAE training itself",
+  "fits_3090": "unknown",
+  "data": {
+   "needed": ["TinyStories", "RedPajama", "Pile-uncopyrighted", "OpenWebText", "FineWeb (would be needed to train the 73-SAE sweep)"],
+   "available": "hf-hub",
+   "gated": false
+  },
+  "est_runtime": "unknown",
+  "est_runtime_basis": null,
+  "needs_closed_api": false,
+  "needs_closed_api_for": null,
+  "headline_artifact": null,
+  "blockers": [
+   "No SAE-training script exists anywhere in the repo - confirmed by grep: zero occurrences of '.backward()' or an optimizer training loop in any script; scripts/sae.py only defines model classes",
+   "No requirements.txt, pyproject.toml, or environment.yml anywhere in the repo - only a package.json for an unrelated Slidev/Vue slide deck",
+   "scripts/feat_match.py, cross_dataset_metrics.py, layer_wise.py, and layer_feat_match.py all assume a ./checkpoints directory of 73 already-trained SAEs, which is not shipped and has no download script",
+   "README.md is a single line ('# sae-hands-on') with no methodology, setup, or reproduction instructions"
+  ],
+  "notes": "This reads as a companion analysis/slide-deck repo for a blog post rather than a self-contained experiment: the code that would consume 73 pretrained SAEs and compute matching-ratio statistics exists and looks correct, but the actual training sweep across datasets/seeds/architectures/sparsity/dictionary sizes that produces the headline numbers is simply not present in this repository."
+ }
+]

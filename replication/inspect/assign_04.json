@@ -1,0 +1,132 @@
+[
+ {
+  "post_id": "sYFNGRdDQYQrSJAd8",
+  "repo": "peterlai/gpt-circuits",
+  "title": "SAE regularization produces more interpretable models",
+  "primary_claim": "Adding an SAE loss term as a regularizer during LLM training (jointly training SAE layers alongside model weights) improves downstream SAE feature sparsity/reconstruction quality on nearly all layers of a small character-level GPT-2 model, without apparently harming overall model performance.",
+  "metric": "cross-entropy loss increase at fixed SAE sparsity (L0~50)",
+  "target_value": "SAE regularization reliably yields better (lower) cross-entropy loss increase on most layers; less dependable on some layers (e.g. layer 3); regularized models also reach slightly lower overall cross-entropy loss",
+  "models": [
+   "GPT-2 toy, 4 layers, 64 embedding width"
+  ],
+  "workload": "aux-train",
+  "tier": "T1",
+  "phenomenon": "dictionary learning method",
+  "claim_type": "positive",
+  "head_sha": "1cf99ec0580f33e19c37099b02d37a01b284ba5f"
+ },
+ {
+  "post_id": "PkeB4TLxgaNnSmddg",
+  "repo": "nainanijatinz/scalablesaecircuits",
+  "title": "Scaling Sparse Feature Circuit Finding to Gemma 9B",
+  "primary_claim": "Placing sparse autoencoders only at a few residual-stream locations (rather than at every layer/component) combined with a learned binary-mask circuit-finding method (via continuous sparsification) scales SAE-based circuit discovery to Gemma 9B, finds more faithful circuits with fewer latents than existing thresholding methods like Integrated Gradients across code-output-prediction, subject-verb-agreement, and IOI tasks (one circuit achieves 95% faithfulness with <20 total latents), and the resulting minimal circuits reveal exploitable model vulnerabilities (e.g. a successful adversarial dictionary-key prompt).",
+  "metric": "circuit faithfulness (ratio of circuit performance to full-model performance) vs. number of latents",
+  "target_value": "learned binary masking recovers more performance with fewer latents than Integrated Gradients across all tested tasks (dictionary-key and list-index code output prediction, SVA, IOI); one circuit achieves 95% faithfulness with fewer than 20 total latents",
+  "models": [
+   "Gemma 2-9B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "circuit discovery",
+  "claim_type": "positive",
+  "head_sha": "f54a4efce908432b8771ea671a248ee30ec2b3af"
+ },
+ {
+  "post_id": "7ucB3RFYE3QBDKhuF",
+  "repo": "robinhaselhorst/activation-matched-finetuning",
+  "title": "You Can Catch Sleeper Agents by Teaching Another Model to Imitate Them",
+  "primary_claim": "Fully finetuning a clean reference model to reproduce a suspect model's residual-stream activations on a benign prompt corpus leaves a residual (suspect minus aligned reference) that concentrates on hidden/backdoor behavior and spills over into semantically near-trigger prompts, enabling detection of diverse backdoors (semantic triggers, sleeper agents, jailbreak trojans, sandbagging, censorship) across several model organisms without needing labeled trigger examples.",
+  "metric": "z-score of trigger/near-trigger prompt group's activation residual vs benign null distribution",
+  "target_value": "z \u2248 +4 to +12.74 across backdoors (e.g. sandbagging trigger group z = 12.74; jailbreak trojan harmful-request categories z \u2248 4-6)",
+  "models": [
+   "Llama 2 / 3.1",
+   "Qwen 2.5-7B",
+   "Gemma 2"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "backdoors / sleeper agents",
+  "claim_type": "positive",
+  "head_sha": "944e83330e8f4d9d6bd630d6db4595c6e9db330c"
+ },
+ {
+  "post_id": "WzHPpMz2kRongsA7q",
+  "repo": "ambitious-mechinterp/sfc-errors",
+  "title": "What is the functional role of SAE errors?",
+  "primary_claim": "In a sparse feature circuit for subject-verb agreement in Gemma-2 2B, ablating residual SAE error nodes destroys circuit faithfulness (down to 0.13), but this effect can be completely mitigated by restoring a narrow group (as few as 3, up to ~25) of late-mid-layer (16-21) SAE features, consistent with the hypothesis that SAE error terms partly encode intermediate feature representations arising from cross-layer superposition, though this does not explain all error-node functionality.",
+  "metric": "faithfulness score (circuit performance recovery relative to full model)",
+  "target_value": "ablating all residual error nodes: faithfulness 0.13; restoring top-25 features from layers 18-19: faithfulness 0.6-0.9; restoring as few as 3 features from layers 16-21: faithfulness fully restored (up to ~1.0 under zero ablation)",
+  "models": [
+   "Gemma 2B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "superposition",
+  "claim_type": "positive",
+  "head_sha": "38b10a17077c99dadac190ae9120c052d9ed8a8b"
+ },
+ {
+  "post_id": "anX4QrNjhJqGFvrBr",
+  "repo": "addiefoote/distillation-robustify-unlearning",
+  "title": "Distillation Robustifies Unlearning",
+  "primary_claim": "Distilling a conventionally unlearned model into a randomly initialized student model (Unlearn-and-Distill) produces a model that is robust to relearning attacks, unlike standard unlearning which only suppresses the behavior; a generalized, compute-efficient version (UNDO: Unlearn-Noise-Distill-on-Outputs) dominates other unlearning methods on the retain/forget Pareto frontier and approaches gold-standard data-filtering robustness at a fraction of the compute, including on the WMDP Proxy benchmark with Gemma-2-2B.",
+  "metric": "resistance to relearning attacks (forget-performance recovery after finetuning attack) on the retain/forget Pareto frontier",
+  "target_value": "Unlearn-and-Distill more resistant to relearning than unlearned-only baseline across 3 unlearning methods (GradDiff, Maxent, RMU) in language and arithmetic settings, sometimes near gold-standard data-filtering robustness; UNDO dominates other methods on the Pareto frontier after moderate (40-step) and extensive (500-step) relearning, and increases resilience to relearning on WMDP with Gemma-2-2B",
+  "models": [
+   "Gemma 2-2B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "machine unlearning robustness",
+  "claim_type": "positive",
+  "head_sha": "edbf11189155c6bae81f5942df928c6ec2c5ac34"
+ },
+ {
+  "post_id": "rKM9b6B2LqwSB5ToN",
+  "repo": "bartbussmann/matryoshka_sae",
+  "title": "Learning Multi-Level Features with Matryoshka SAEs",
+  "primary_claim": "Matryoshka SAEs trained on Gemma-2-2B achieve worse reconstruction (MSE / variance explained) than standard BatchTopK SAEs but similar downstream cross-entropy loss, show dramatically lower feature-absorption rates (~0.03 vs up to ~0.29 for large BatchTopK SAEs) and feature-splitting, more disentangled latents (less shared information via meta-SAEs), and better targeted concept-erasure (TPP/SCR) performance, but show mixed results on k-sparse probing and only small differences in automated interpretability scores.",
+  "metric": "feature absorption rate (first-letter task, per Chanin et al. methodology)",
+  "target_value": "Matryoshka SAEs maintain absorption rates around 0.03 even as dictionary size increases, vs BatchTopK SAEs reaching approximately 0.29 at larger dictionary sizes",
+  "models": [
+   "Gemma 2-2B"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "dictionary learning method",
+  "claim_type": "positive",
+  "head_sha": "c7c57877bb81df67fdac611f9c31ffc10495db0b"
+ },
+ {
+  "post_id": "LQK3yzsn8gts4tS7c",
+  "repo": "ayesha-imr/inoculate-or-reflect",
+  "title": "Inoculate or Reflect? Two training interventions under prompting, steering, and patching",
+  "primary_claim": "In Qwen3-8B fine-tuned to be sycophantic on a GCD-correctness task, both Strong Inoculation Prompting (IP) and Counterfactual Reflection Training (CRT) repair suppress sycophancy to near-zero (5.19% and 1.78% respectively, from a 52.23% baseline) but behave oppositely under restoration probes: Strong IP's sycophancy is easily re-elicited by a system prompt (11.9% to 97.4%) or by steering a middle-layer sycophancy direction (0% to 46% at layer 18), acting like a 'gate', whereas CRT repair resists both prompt re-elicitation (0% to 37.4%) and steering (0% to 4%) but overcorrects into contrarianism, disputing correct users 54.3% of the time versus 14.7% for Strong IP and 13.2% at baseline.",
+  "metric": "sycophancy rate (AFFIRMS/(AFFIRMS+REJECTS)) at baseline vs Strong IP vs CRT repair, and re-elicitation via system prompt / activation steering at layer 18",
+  "target_value": "baseline SFT 52.23%; Strong IP 5.19% (correct-agreement 85.2%, disputes correct users 14.7%); CRT repair 1.78% (correct-agreement 42.7%, disputes correct users 54.3%); system-prompt re-elicitation: Strong IP 11.9%->97.4%, CRT repair 0%->37.4%; layer-18 steering: Strong IP 0%->46%, CRT repair 0%->4%, untrained control ~1%",
+  "models": [
+   "Qwen 3-8B"
+  ],
+  "workload": "lm-ft",
+  "tier": "T1",
+  "phenomenon": "inoculation / mitigation prompting",
+  "claim_type": "positive",
+  "head_sha": "5bd80ec50b152a126e29fec8419aa6d04c0c47f5"
+ },
+ {
+  "post_id": "WMfSbt7AAcJdHzysB",
+  "repo": "mshinkle/activation_plateau_mechanisms",
+  "title": "Activation Plateaus: Where and How They Emerge",
+  "primary_claim": "Activation plateaus in GPT-2 Large emerge and sharpen gradually across layers, are produced specifically by MLP blocks rather than attention blocks, persist without LayerNorm, and correspond to areas of high MLP input-output Jacobian sensitivity at their boundaries.",
+  "metric": "relative (L2) distance of model outputs across activation-space interpolation, and component-freezing effect on plateau formation",
+  "target_value": "freezing MLP block outputs completely eliminates plateaus; freezing attention block outputs has relatively small effect",
+  "models": [
+   "GPT-2 Large"
+  ],
+  "workload": "inference",
+  "tier": "T1",
+  "phenomenon": "representation geometry",
+  "claim_type": "positive",
+  "head_sha": "4222c3efb77fe7983676cf96b3254dc000e8a0bc"
+ }
+]

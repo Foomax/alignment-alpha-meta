@@ -1,0 +1,59 @@
+{
+ "slug": "automated-circuit-interpretation-via-probe-promp--peppinob-ol",
+ "post_id": "zQqGhKPqaCBZZDCge",
+ "title": "Automated Circuit Interpretation via Probe Prompting",
+ "date": "2025-11-01",
+ "repo": "peppinob-ol/attribution-graph-probing",
+ "head_sha": "bbff7525d59a8fea7b10052739494cf7d3363cc1",
+ "entrypoint": "scripts/research/graph_subgraph_scores.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "numpy",
+  "pandas",
+  "scipy",
+  "torch",
+  "circuit-tracer (git+https://github.com/safety-research/circuit-tracer.git@v0.3.1, only needed for the separate Stage-3 causal-validation script)",
+  "requests",
+  "openai (only used by the optional Streamlit EDA app)"
+ ],
+ "models": [
+  "Gemma-2 2B (CLT-HP transcoder)"
+ ],
+ "phenomenon": "attribution / attribution patching",
+ "contested": false,
+ "claim_type": "method",
+ "primary_claim": "An automated 'probe-prompting' pipeline that measures feature activation responses to concept-varying prompts and groups features into concept-aligned supernodes achieves 0.53 Replacement / 0.83 Completeness on Neuronpedia metrics for 'capitals' attribution-graph circuits in Gemma-2-2B, outperforming geometric (cosine-only, layer-adjacency) clustering baselines on behavioral-coherence interpretability metrics, with entity-swap tests showing early-layer features generalize much more (~80-92% overlap) than late-layer features (~0-50%).",
+ "quote": "our concept-aligned subgraphs attain ~0.53 Replacement and ~0.83 Completeness on Neuronpedia metrics, averaged across runs, and outperform geometric clustering on behavior-based interpretability metrics.",
+ "metric": "Replacement / Completeness scores (Neuronpedia) for concept-aligned subgraphs vs. geometric clustering baselines",
+ "target_value": "concept-aligned subgraphs average 0.5394 Replacement and 0.8257 Completeness across 5 prompts, outperforming cosine-only and layer-adjacency clustering on behavioral metrics like Peak Token Consistency (0.425 vs. 0.183/0.301) and Activation Pattern Similarity (0.762 vs. 0.130/0.415)",
+ "target_numeric": 0.5394,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 9 numbers; compare the components by hand",
+ "vram_estimate_gb": 0,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "Neuronpedia attribution-graph JSON files for the 5 probe-prompting domains (capitals/USA-states, books, products, paintings, sounds)",
+   "node_grouping classification CSVs (supernode assignments)"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "To regenerate the attribution graphs from scratch (rather than reuse what's already committed under output/graph_data/), scripts/00_neuronpedia_graph_generation.py and 01_probe_prompts.py call Neuronpedia's hosted graph-generation/activation API (needs NEURONPEDIA_API_KEY) rather than running circuit-tracer locally -- this is an external paid service, not local GPU compute",
+  "requirements.txt uses loose >= pins for most packages; only circuit-tracer is pinned to an exact git tag",
+  "The repo checkout is ~5.7GB (mostly output/ batch results, some of it duplicated), well within the 150GB disk budget but worth noting"
+ ],
+ "inspector_notes": "Surprising finding: the exact headline Replacement/Completeness numbers need zero GPU and zero API calls to reproduce, because the attribution-graph JSON and feature-grouping CSVs that graph_subgraph_scores.py consumes are already committed in the repo's output/ directory. Only from-scratch graph regeneration would touch Neuronpedia's (non-OpenAI/Anthropic/Google) hosted API; a separate, much larger Stage-3 causal-validation pipeline (33k steering runs) does use a local Gemma-2-2b + CLT via circuit-tracer on a GPU, but is not required for this specific claim.",
+ "headline_artifact": "output/research/graph_subgraph_scores.csv -- per-entity Replacement/Completeness scores that the post averages to 0.5394 Replacement / 0.8257 Completeness across 5 prompts; the entity-swap generalization numbers come from the similarly CPU-only scripts/experiments/cross_prompt_robustness.py operating on the same committed probe-activation CSVs.",
+ "selector_tier": "T1",
+ "selector_score": 3.5
+}

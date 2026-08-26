@@ -1,0 +1,54 @@
+{
+ "slug": "activation-plateaus-where-and-how-they-emerge--mshinkle",
+ "post_id": "WMfSbt7AAcJdHzysB",
+ "title": "Activation Plateaus: Where and How They Emerge",
+ "date": "2025-10-17",
+ "repo": "mshinkle/activation_plateau_mechanisms",
+ "head_sha": "4222c3efb77fe7983676cf96b3254dc000e8a0bc",
+ "entrypoint": "full_experiment.sh (runs scripts/interpolate_and_record_activations.py plain / --freeze_attention / --freeze_mlp, then all scripts/*_plots.py and jacobians_*.py)",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformer-lens==2.16.1",
+  "torch==2.8.0+cu128",
+  "transformers==4.56.2"
+ ],
+ "models": [
+  {
+   "hf_id": "gpt2-large",
+   "params_b": 0.774,
+   "gated": false
+  }
+ ],
+ "phenomenon": "representation geometry",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Activation plateaus in GPT-2 Large emerge and sharpen gradually across layers, are produced specifically by MLP blocks rather than attention blocks, persist without LayerNorm, and correspond to areas of high MLP input-output Jacobian sensitivity at their boundaries.",
+ "quote": "activation plateaus emerge and sharpen gradually across model layers, with later layers having a slightly weaker\u2014but similar\u2014effect.",
+ "metric": "relative (L2) distance of model outputs across activation-space interpolation, and component-freezing effect on plateau formation",
+ "target_value": "freezing MLP block outputs completely eliminates plateaus; freezing attention block outputs has relatively small effect",
+ "target_numeric": null,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is not a single scalar; judge by hand",
+ "vram_estimate_gb": 3,
+ "fits_3090": "yes",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "none \u2014 uses a single hardcoded shared_context prompt ('The house was') and two hardcoded token pairs from config.yaml"
+  ],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [],
+ "inspector_notes": "Cleanest and cheapest repo in this batch: small pretrained model, fully pinned dependencies (exact versions incl. CUDA build tags), no external data, and a single shell script (full_experiment.sh) reproduces the entire pipeline exactly as configured in config.yaml (model_name: gpt2-large).",
+ "headline_artifact": "plots/ directory: step-size, relative-distance, and Jacobian plots comparing normal vs. attention-frozen vs. MLP-frozen interpolation runs (the 'freezing MLP eliminates plateaus, freezing attention does not' result)",
+ "selector_tier": "T1",
+ "selector_score": 6.75
+}

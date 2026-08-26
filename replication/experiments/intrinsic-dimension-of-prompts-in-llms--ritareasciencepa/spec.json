@@ -1,0 +1,112 @@
+{
+ "slug": "intrinsic-dimension-of-prompts-in-llms--ritareasciencepa",
+ "post_id": "oBpjE4BDJf6qzz4E5",
+ "title": "Intrinsic Dimension of Prompts in LLMs",
+ "date": "2025-02-14",
+ "repo": "ritareasciencepark/token_geometry",
+ "head_sha": "02148974cd39ff7f186e734dd1e9113ed42ee614",
+ "entrypoint": "src/extract_id.py (ID vs. loss); src/benchmarks/compute_entropy.py (TunedLens entropy, undocumented in README)",
+ "entrypoint_confidence": "medium",
+ "python_version": "3.11",
+ "key_deps": [
+  "torch",
+  "transformers",
+  "datasets",
+  "dadapy",
+  "skdim",
+  "joblib",
+  "tuned_lens (only for compute_entropy.py)"
+ ],
+ "models": [
+  {
+   "hf_id": "gpt2",
+   "params_b": 0.124,
+   "gated": false
+  },
+  {
+   "hf_id": "gpt2-large",
+   "params_b": 0.774,
+   "gated": false
+  },
+  {
+   "hf_id": "gpt2-xl",
+   "params_b": 1.5,
+   "gated": false
+  },
+  {
+   "hf_id": "EleutherAI/pythia-160m-deduped",
+   "params_b": 0.16,
+   "gated": false
+  },
+  {
+   "hf_id": "EleutherAI/pythia-410m-deduped",
+   "params_b": 0.41,
+   "gated": false
+  },
+  {
+   "hf_id": "EleutherAI/pythia-1.4b-deduped",
+   "params_b": 1.4,
+   "gated": false
+  },
+  {
+   "hf_id": "EleutherAI/pythia-2.8b-deduped",
+   "params_b": 2.8,
+   "gated": false
+  },
+  {
+   "hf_id": "EleutherAI/pythia-6.9b-deduped",
+   "params_b": 6.9,
+   "gated": false
+  },
+  {
+   "hf_id": "facebook/opt-6.7b",
+   "params_b": 6.7,
+   "gated": false
+  },
+  {
+   "hf_id": "mistralai/Mistral-7B-v0.1",
+   "params_b": 7.0,
+   "gated": false
+  },
+  {
+   "hf_id": "meta-llama/Meta-Llama-3-8B",
+   "params_b": 8.0,
+   "gated": true
+  }
+ ],
+ "phenomenon": "representation geometry",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "The intrinsic dimension of token representations within a prompt correlates positively with next-token surprisal (cross-entropy loss) across layers in GPT-2, Pythia, Llama, and OPT, and correlates positively with TunedLens latent-prediction entropy in GPT-2 and Pythia, though Llama shows a moderate negative correlation around layer 20 instead.",
+ "quote": "All four models have a high positive correlation across the layers of the model, implying that prompts with a higher average surprisal have a higher intrinsic dimension.",
+ "metric": "Pearson correlation (rho) between intrinsic dimension and TunedLens latent prediction entropy",
+ "target_value": "rho > 0.5 for GPT-2 (early layers) and Pythia (middle layers onward); rho ~ -0.5 for Llama around layer 20; no positive correlation for Llama/OPT until late layers",
+ "target_numeric": 0.5,
+ "direction": "0",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 4 numbers; compare the components by hand",
+ "vram_estimate_gb": 28,
+ "fits_3090": "tight",
+ "est_runtime": "unknown",
+ "est_runtime_class": "unknown",
+ "budget_minutes": 90,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "Pile-10K (NeelNanda/pile-10k), filtered to 2244 prompts of >=1024 tokens; indices bundled as filtered_indices.npy / subset_indices.npy"
+  ],
+  "available": "hf-hub",
+  "gated": false
+ },
+ "blockers": [
+  "No requirements.txt/pyproject.toml/environment.yml anywhere in the repo \u2014 dependency versions (torch, transformers, dadapy, skdim, tuned_lens) are entirely unpinned.",
+  "The 7-8B models used for the headline Llama-3-8B correlation need a one-line dtype change (fp32\u2192bf16) to fit a single 24GB 3090, since the repo's default load is fp32.",
+  "compute_entropy.py, the only script referencing TunedLens (needed for the specific rho vs. TunedLens-entropy metric in the assignment), is not mentioned in the README, is hardcoded to Llama-3-8B only (not GPT-2/Pythia/OPT), and has an apparent bug on the line `benign, jailbreak = []`."
+ ],
+ "inspector_notes": "The published, README-documented pipeline (extract_id.py + post_process/) reproduces the ID-vs-loss-surprisal correlation cleanly and ships precomputed .npy results for all listed models. The TunedLens-entropy correlation specifically (part of this assignment's target metric) relies on a separate, undocumented, buggy, Llama-3-8B-only script.",
+ "headline_artifact": "results/Pile-Structured/<model>/gride.npy (intrinsic dimension per layer) correlated against loss.npy via post_process/plot_id_loss_correlation.py; TunedLens entropy specifically comes from src/benchmarks/compute_entropy.py (not documented in the README, hardcoded to meta-llama/Meta-Llama-3-8B only, and appears to contain a bug: `benign, jailbreak = []` will raise on unpacking).",
+ "selector_tier": "T1",
+ "selector_score": 5.96
+}

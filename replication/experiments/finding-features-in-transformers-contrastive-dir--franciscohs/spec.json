@@ -1,0 +1,69 @@
+{
+ "slug": "finding-features-in-transformers-contrastive-dir--franciscohs",
+ "post_id": "QrPxNDprJwXiE73Py",
+ "title": "Finding features in Transformers: Contrastive directions elicit stronger low-level perturbation responses than baselines",
+ "date": "2026-03-20",
+ "repo": "franciscohs/contrastive-vs-sae-perturbation",
+ "head_sha": "4fbe15471fdc5dc3474a8115dad0e721870e04fe",
+ "entrypoint": "generate_figures.py",
+ "entrypoint_confidence": "high",
+ "python_version": "3.11",
+ "key_deps": [
+  "transformers",
+  "accelerate",
+  "sae_lens",
+  "torch",
+  "datasets",
+  "huggingface_hub"
+ ],
+ "models": [
+  {
+   "hf_id": "google/gemma-2-9b",
+   "params_b": 9.0,
+   "gated": true
+  },
+  {
+   "hf_id": "meta-llama/Llama-3.1-8B",
+   "params_b": 8.0,
+   "gated": true
+  },
+  {
+   "hf_id": "Qwen/Qwen3-1.7B",
+   "params_b": 1.7,
+   "gated": false
+  }
+ ],
+ "phenomenon": "sparse autoencoder quality",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Contrastive (difference-of-means) feature directions elicit a downstream perturbation response at much smaller magnitudes than SAE feature directions, which behave similarly to random directions, across multiple models and experimental setups, suggesting SAE directions are not treated specially by the model.",
+ "quote": "Contrastive (difference-of-means, English\u2192Mandarin) feature directions elicit a downstream response at much smaller perturbation magnitudes than SAE directions, which behave similarly to random directions. This holds across multiple models and experimental setups.",
+ "metric": "perturbation magnitude (angle in degrees) needed to elicit downstream response (L2 distance / KL divergence / cosine distance)",
+ "target_value": "contrastive directions break through the suppression 'activation plateau' at much smaller magnitudes than SAE or random directions; SAE directions behave similarly to random directions",
+ "target_numeric": null,
+ "direction": "+",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is not a single scalar; judge by hand",
+ "vram_estimate_gb": 24,
+ "fits_3090": "tight",
+ "est_runtime": "hours",
+ "est_runtime_class": "hours",
+ "budget_minutes": 240,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [
+   "FineWeb (random-direction baseline, streamed via datasets)",
+   "bilingual/gender/programming paired prompts (included as data/*.py)",
+   "Gemma Scope / Llama Scope / Qwen3 SAEs (via SAELens from HF Hub)"
+  ],
+  "available": "hf-hub",
+  "gated": true
+ },
+ "blockers": [],
+ "inspector_notes": "Unusually reproducible repo: precomputed sweep data (.pkl) and plots for all 9 figures are already committed, so figures regenerate without any GPU via --plot alone; full from-scratch reproduction needs gated HF access to Gemma-2-9B and Llama-3.1-8B.",
+ "headline_artifact": "results/gemma-9b-en-zh/plot_complete.png and plot_simplified.png (English/Mandarin contrast, L2 metric, layer 2) \u2014 the paper's main figure",
+ "selector_tier": "T1",
+ "selector_score": 6.73
+}

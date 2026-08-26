@@ -1,0 +1,31 @@
+{
+ "post_id": "nWiwv4GN8aYqpnZKE",
+ "repo": "wassname/antipasto",
+ "head_sha": "5e0f8517f360751220bf0348586952ff0e240907",
+ "attempted_at": "2026-08-26",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": false,
+ "claimed_value": "31.2\u00b15.3 (AntiPaSTO) vs 13.0 (engineered prompting) vs 4.5 (prompting) vs 0.0 (RepEng/ActAdd mean-diff)",
+ "observed_value": "2.0",
+ "delta": -29.2,
+ "tolerance_used": "manual",
+ "blocking_reason": "none",
+ "env_fixes": [
+  "HF_HUB_DISABLE_XET=1 + clear .incomplete blob: xet download of gemma-3-1b-it model.safetensors hung at 1,999,811,208 bytes for 38 min with no socket traffic; plain-HTTP re-download took 340 s",
+  "baselines_gemma1b.py wrapper: run nbs/eval_baseline_{prompting,repeng}.py unmodified but with the module-level model list pointed at google/gemma-3-1b-it (as shipped --quick evaluates EVAL_BASELINE_MODELS[:1]=Qwen3-0.6B, and eval_baseline_repeng.py loops all 10 models even in quick mode)",
+  "eval batch_size 8 instead of the scripts' hard floor max(32, bs): fp32 logits for calc_nll (32 x ~320 tok x 262k vocab) OOM on 24 GB",
+  "removed stale outputs/baselines/repeng/google_gemma-3-1b-it.parquet: the repeng script computes cache_path before appending _QUICK, so the quick run was silently reused by the full run",
+  "PYTORCH_ALLOC_CONF=expandable_segments:True for the baseline evals (first repeng attempt OOM'd with 9 GB reserved-but-unallocated)"
+ ],
+ "wallclock_minutes": 229.0,
+ "peak_vram_gb": 22.9,
+ "seeds_run": 3,
+ "notes": "TOLERANCE (from prompt): AntiPaSTO reproduces if 3-seed mean Steer F1 in [25.9, 36.5]; ORDERING reproduces if AntiPaSTO > Eng.prompt > Prompting > ActAdd. RESULT: seeds 42/43/44 Steer F1 = 1.8 / 0.4 / 3.8, mean 2.0 sd 1.7 -> magnitude NOT reproduced. Baselines (full 1360 dilemmas, same model, repo scripts): prompting 13.5 (paper 4.5; script loads gemma-1b in nf4 4-bit), repeng/ActAdd 0.0 (paper 0.0). Ordering observed: prompting > AntiPaSTO > ActAdd -> ordering NOT reproduced (engineered-prompt baseline not run). CONFIG DRIFT: pinned HEAD gemma1b-24gb preset = lr 5e-4, r 64, n_modules 256, max_samples 3000 (1033 pairs), bs 24; paper v5 states lr 1e-3, r 128, n_modules 64, 800 pairs, bs 8 (eff 32); no commit in the repo history ever had the paper values as defaults; recent commits ('smaller init', 'fixes', 'asym_coh_ratio') changed defaults after the paper runs. Not a seed fluke: SVD bases identical across seeds, adapter rotation generators agree at cos-sim 0.78/0.87/0.68 (random ~0.02). Steering direction is correct but weak: Value/Honesty logratio monotone in coeff for all seeds (e.g. 0.56 -> 2.98 -> 3.31); pmass 0.959 at all coeffs (gate is 0.95, so no pmass penalty). Per-axis Steer F1 (paper Table 4 axes, n=378/216/72 rows): Honesty 1.8/0.4/3.8, Responsible 0/0/0, Traditional 0/0/0; Ambitious and Friendly have n=8 and n=4 -> not interpretable. --quick baselines give NaN Steer F1 by construction (64-dilemma subset has no arbitrary-cluster dilemmas), hence full runs. Env: torch 2.9.1+cu128 / transformers 4.57.1 / peft 41091ec exactly as uv.lock; smoke test test_train_rnd passed (3m25s). peak_vram_gb in this entry (22.9) is the whole-GPU reading during the failed batch-32 baseline; training itself peaked ~14 GB. Wallclock 229 min of 240 incl. 50 min lost to the xet hang; each seed 47 min train+eval.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}

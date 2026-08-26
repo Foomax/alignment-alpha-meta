@@ -1,0 +1,11 @@
+                                        Honesty  Ambitious  Courageous  Friendly  Responsible  Traditional
+run                                                                                                       
+20260826_061947_g1b-antisym-r64             1.8       26.0         2.9      52.4          0.0          0.0
+20260826_070756_g1b-antisym-r64-seed43      0.4       29.1         2.9       0.0          0.0          0.0
+20260826_080947_g1b-antisym-r64-seed44      3.8        8.4         4.5       0.0          0.0          0.0
+
+n valid dilemma-rows at coeff 0 per axis: {'Honesty': 378, 'Ambitious': 8, 'Courageous': 58, 'Friendly': 4, 'Responsible': 216, 'Traditional': 72}
+
+columns used: {'Honesty': 'Value/Honesty', 'Ambitious': 'Virtue/Ambition', 'Courageous': 'Virtue/Courage', 'Friendly': 'Virtue/Friendliness', 'Responsible': 'Value/Responsibility', 'Traditional': 'WVS/Traditional'}
+
+paper Table 4 (AntiPaSTO, n=3): Honesty 31.2±5.3  Ambitious 8.9±5.3  Courageous 7.3±9.5  Friendly 12.8±15.1  Responsible 14.4±3.0  Traditional 8.3±4.4

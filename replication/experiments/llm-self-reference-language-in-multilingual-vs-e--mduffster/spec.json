@@ -1,0 +1,86 @@
+{
+ "slug": "llm-self-reference-language-in-multilingual-vs-e--mduffster",
+ "post_id": "kCCsrJeJiZRsgGbWt",
+ "title": "LLM Self-Reference Language in Multilingual vs English-Centric Models",
+ "date": "2025-10-22",
+ "repo": "mduffster/self-referent-test",
+ "head_sha": "3c5ca9a739c20bd1cca1b4d6848575610b84751c",
+ "entrypoint": "run_pipeline.py (drives activation_analysis.py then compare_base_instruct.py per model family)",
+ "entrypoint_confidence": "high",
+ "python_version": "3.12",
+ "key_deps": [
+  "torch==2.8.0",
+  "transformer-lens==2.16.1",
+  "transformers==4.57.1",
+  "accelerate==1.10.1",
+  "numpy",
+  "pandas",
+  "matplotlib",
+  "scipy"
+ ],
+ "models": [
+  {
+   "hf_id": "mistralai/Mistral-7B-v0.1",
+   "params_b": 7,
+   "gated": false
+  },
+  {
+   "hf_id": "mistralai/Mistral-7B-Instruct-v0.1",
+   "params_b": 7,
+   "gated": false
+  },
+  {
+   "hf_id": "Qwen/Qwen2.5-7B",
+   "params_b": 7,
+   "gated": false
+  },
+  {
+   "hf_id": "Qwen/Qwen2.5-7B-Instruct",
+   "params_b": 7,
+   "gated": false
+  },
+  {
+   "hf_id": "meta-llama/Llama-3.1-8B",
+   "params_b": 8,
+   "gated": true
+  },
+  {
+   "hf_id": "meta-llama/Llama-3.1-8B-Instruct",
+   "params_b": 8,
+   "gated": true
+  }
+ ],
+ "phenomenon": "representation geometry",
+ "contested": true,
+ "claim_type": "positive",
+ "primary_claim": "Instruction tuning compresses attention-entropy-based self-referent processing toward neutral fact-retrieval processing in English-centric models (Llama, Mistral), while a multilingual model (Qwen) largely preserves the distinct attention pattern between self-referent and neutral prompts after instruction tuning.",
+ "quote": "English-centric models (Mistral, Llama) show compression of layer-wise self-referent processing attention patterns toward neutral fact-retrieval patterns, while a multilingual model (Qwen) preserves the distinct attention patterns",
+ "metric": "mean change in Role-Focus Coefficient (\u0394RFC) from base to instruct, by model",
+ "target_value": "Llama 3.1 8B: -0.023 (68.8% of layers compress); Mistral 7B: -0.093 (81.2% compress); Qwen 2.5 7B: +0.048 (28.6% compress, 50% near zero)",
+ "target_numeric": 3.1,
+ "direction": "na",
+ "uncertainty_reported": "none",
+ "tolerance": "manual",
+ "tolerance_rationale": "headline is a compound of 12 numbers; compare the components by hand",
+ "vram_estimate_gb": 30,
+ "fits_3090": "tight",
+ "est_runtime": "minutes",
+ "est_runtime_class": "minutes",
+ "budget_minutes": 45,
+ "budget_override_reason": null,
+ "seeds_to_run": 1,
+ "data": {
+  "needed": [],
+  "available": "in-repo",
+  "gated": false
+ },
+ "blockers": [
+  "dtype hardcoded to torch.float32 in activation_analysis.py -- must be edited to bf16/fp16 for an 8B model to fit in 24GB VRAM",
+  "meta-llama/Llama-3.1-8B(-Instruct) are gated models",
+  "Repo only verified on CPU (Mac); no GPU run reported anywhere to sanity-check the VRAM estimate"
+ ],
+ "inspector_notes": "Six model loads (3 families x base/instruct) are needed to reproduce the full cross-model table; each load is single-model, inference-only attention-pattern extraction, so a one-line dtype fix (fp32 -> bf16) makes this comfortably fit a 3090.",
+ "headline_artifact": "Delta-RFC (mean, % layers compressing) table per model family, produced by compare_base_instruct.py from the NPZ attention-pattern dumps written by activation_analysis.py.",
+ "selector_tier": "T1",
+ "selector_score": 3.6
+}
