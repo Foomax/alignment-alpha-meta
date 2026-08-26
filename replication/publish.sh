@@ -14,6 +14,9 @@
 set -euo pipefail
 REP="$(cd "$(dirname "$0")" && pwd)"; slug="$1"; msg="${2:-replication update $(date -Is)}"
 EXP="$REP/experiments/$slug"; SRC="$EXP/src"
+# Only these experiments are published to forks (user decision 2026-08-27: no blanket forking). Others: artefacts go to the meta repo only.
+ALLOW="antipasto-self-supervised-honesty-steering-via-a--wassname adding-noise-to-a-sandbagging-model-can-reveal-i--lovkush-a cross-model-activation-generalizability-isn-t-st--jaehoonlee0829"
+case " $ALLOW " in *" $slug "*) ;; *) echo "publish.sh: $slug is not in the fork allowlist; nothing pushed"; exit 0;; esac
 [ -d "$SRC/.git" ] || { echo "no src checkout for $slug"; exit 2; }
 repo=$(python3 -c "import json;print(json.load(open('$EXP/spec.json'))['repo'])"); name=${repo#*/}
 sha=$(python3 -c "import json;print(json.load(open('$EXP/spec.json'))['head_sha'])")
