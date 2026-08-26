@@ -5,6 +5,7 @@
 set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"; SRC="$HERE/src"; VENV="$HERE/.venv"; LOG="$HERE/run.log"
 export WANDB_MODE=disabled HF_HUB_DISABLE_TELEMETRY=1 HF_HUB_DISABLE_XET=1 PYTHONUNBUFFERED=1 TOKENIZERS_PARALLELISM=false
+export PYTHONPATH="$SRC"   # env fix: scripts/*.py import `src.*` relative to the repo root
 BUDGET_MIN=240
 log() { echo "== $(date -Is) $*" | tee -a "$LOG"; }
 

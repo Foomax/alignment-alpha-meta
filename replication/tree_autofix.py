@@ -30,6 +30,7 @@ text = ""
 for f in sys.argv[1:]:
     try: text += open(f, errors="replace").read()
     except OSError: pass
+text = re.sub(r"\x1b\[[0-9;]*[A-Za-z]", "", text)  # nbconvert/IPython tracebacks carry ANSI colour codes
 pk = []
 for m in re.finditer(r"(?:ModuleNotFoundError|ImportError): No module named '?([A-Za-z0-9_\.]+)'?", text):
     top = m.group(1).split(".")[0]
