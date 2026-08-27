@@ -63,3 +63,5 @@ publish.sh: investigating-sensitive-directions-in-gpt-2-an-i--dajale423 is not i
 publish.sh: saes-are-highly-dataset-dependent-a-case-study-o--ckkissane is not in the fork allowlist; nothing pushed
 == 2026-08-27T15:24:50+08:00 publish can-we-interpret-latent-reasoning-using-current---cywinski
 publish.sh: can-we-interpret-latent-reasoning-using-current---cywinski is not in the fork allowlist; nothing pushed
+== 2026-08-27T15:24:52+08:00 publish unpacking-multimodal-data-leakage-broken-benchma--ai-forever
+publish.sh: unpacking-multimodal-data-leakage-broken-benchma--ai-forever is not in the fork allowlist; nothing pushed
