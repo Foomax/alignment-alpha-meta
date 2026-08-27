@@ -47,3 +47,6 @@
 == 2026-08-27T22:19:27+08:00 NODE R28-exploring-how-othellogpt-computes-its-world-mode--jim-maar START (late rerun)
 == RUN-EXIT 1 after 0 min
 == 2026-08-27T22:26:54+08:00 NODE R28-exploring-how-othellogpt-computes-its-world-mode--jim-maar EXIT 1 after 0 min (late rerun) | disk free after: 49 GB
+== 2026-08-27T22:26:54+08:00 NODE R30-do-k-sparse-autoencoders-reveal-thinking-pattern--artmtt START (late rerun)
+== RUN-EXIT 1 after 0 min
+== 2026-08-27T22:27:06+08:00 NODE R30-do-k-sparse-autoencoders-reveal-thinking-pattern--artmtt EXIT 1 after 0 min (late rerun) | disk free after: 49 GB
