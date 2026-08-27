@@ -59,3 +59,5 @@ publish.sh: features-of-saes-are-universal-but-only-up-to-an--jordanmccann is no
 publish.sh: == 2026-08-27T12:51:11+08:00 NODE 01-cross-model-geometry (attempt 2) EXIT 124 is not in the fork allowlist; nothing pushed
 == 2026-08-27T15:24:45+08:00 publish investigating-sensitive-directions-in-gpt-2-an-i--dajale423
 publish.sh: investigating-sensitive-directions-in-gpt-2-an-i--dajale423 is not in the fork allowlist; nothing pushed
+== 2026-08-27T15:24:48+08:00 publish saes-are-highly-dataset-dependent-a-case-study-o--ckkissane
+publish.sh: saes-are-highly-dataset-dependent-a-case-study-o--ckkissane is not in the fork allowlist; nothing pushed
