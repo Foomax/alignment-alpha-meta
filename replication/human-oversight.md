@@ -92,3 +92,7 @@ When Qwen‑1.5B is asked to just repeat a word, the post says one particular at
 ## 12. `codi` (cywinski, "where does a latent‑reasoning model keep its intermediate numbers?") — reproduced (17:50)
 
 A model that "thinks" in six hidden vectors instead of words. The post says the third and fifth vectors hold the intermediate arithmetic: swap them for vectors from a problem with a *different* intermediate value and accuracy collapses; swap for *same*‑value vectors and nothing changes. We see exactly that: −30 and −22 points at those two positions, ≈0 everywhere else, and same‑value swaps ≈0 throughout. Baseline 52 % vs their 55 %. One number from a sibling script (the "recovers ~20 %" figure) is queued separately. First attempt died at the 45‑minute limit — the author's own timings say it needs ~50; the rerun took 52. **Needs you?** No.
+
+## 13. `matryoshka-saes` (noanabeshima) — reproduced on the toy model (17:58)
+
+Sparse autoencoders sometimes learn "holes": a feature for *child* concepts secretly also carries the *parent* concept. The post's trick (train on random prefixes of the dictionary) is claimed to remove the holes in a toy setting. Vanilla: all 9 child features show the hole (only 0.66–0.75 match to their true direction, 0.7 leaking to the parent). Matryoshka: every feature ≥ 0.92 to its own direction, nothing leaking. The second half of the post (real language‑model results) has no code in the repo, so it can't be checked. First attempt crashed on the author's own missing `import` — fixed in a copy. **Needs you?** No.
