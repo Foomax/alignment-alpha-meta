@@ -171,3 +171,5 @@ publish.sh: == 2026-08-27T18:57:40+08:00 NODE R19-mechanistic-interpretability-v
 publish.sh: == 2026-08-27T19:08:08+08:00 NODE R20-matryoshka-nlas-training-activation-verbalizers---syvb EXIT 2 after 0 min (prep failed) is not in the fork allowlist; nothing pushed
 == 2026-08-27T19:49:24+08:00 publish == 2026-08-27T19:49:24+08:00 NODE R21-competitive-ai-safety-is-the-loss-function-to-ma--patrickod32 EXIT 1 after 37 min (late rerun) | disk free after: 81 GB
 publish.sh: == 2026-08-27T19:49:24+08:00 NODE R21-competitive-ai-safety-is-the-loss-function-to-ma--patrickod32 EXIT 1 after 37 min (late rerun) | disk free after: 81 GB is not in the fork allowlist; nothing pushed
+== 2026-08-27T20:01:50+08:00 publish == 2026-08-27T20:01:50+08:00 NODE R23-can-we-teach-a-model-to-encode-a-semantic-featur--phusroyal EXIT 0 after 5 min (late rerun) | disk free after: 78 GB
+publish.sh: == 2026-08-27T20:01:50+08:00 NODE R23-can-we-teach-a-model-to-encode-a-semantic-featur--phusroyal EXIT 0 after 5 min (late rerun) | disk free after: 78 GB is not in the fork allowlist; nothing pushed
