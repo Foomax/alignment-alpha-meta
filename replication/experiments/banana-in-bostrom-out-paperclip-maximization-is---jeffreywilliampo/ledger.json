@@ -1,0 +1,25 @@
+{
+ "post_id": "Eft6ehAcvR8MxFbsR",
+ "repo": "jeffreywilliamportfolio/jlens-basin-swaps",
+ "head_sha": "1f68458b9dfc131d10a0e660ad0ad065b2628a75",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": false,
+ "claimed_value": "paperclip swap 3/3 per batch; doom ablation 3/3; doom string appears 20/20 at temp 0.1, 8/20 at 0.2, 5/20 at 0.3, 0/20 from 0.4 up",
+ "observed_value": "remote API: swap -> 'maximize the number of paperclips produced' (1/1 payload)",
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "api-key",
+ "env_fixes": [],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 2.0,
+ "seeds_run": 0,
+ "notes": "Entrypoint replays committed payloads against Neuronpedia's hosted lens API (anonymous rate-limited endpoint; docstring: 'No API key required'). The completion matches the post's paperclip basin, but the model runs on Neuronpedia's servers, so this is recorded as api-key (hosted inference) rather than a replication. The doom-ablation and temperature-count parts of the claim are not covered by the script. No local steering code in the repo.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}
