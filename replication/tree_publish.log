@@ -93,3 +93,5 @@ publish.sh: mechanistic-interpretability-via-learning-differ--ayoakin is not in 
 publish.sh: matryoshka-nlas-training-activation-verbalizers---syvb is not in the fork allowlist; nothing pushed
 == 2026-08-27T15:25:23+08:00 publish competitive-ai-safety-is-the-loss-function-to-ma--patrickod32
 publish.sh: competitive-ai-safety-is-the-loss-function-to-ma--patrickod32 is not in the fork allowlist; nothing pushed
+== 2026-08-27T15:25:25+08:00 publish exploring-vocabulary-alignment-of-neurons-in-lla--coolvision
+publish.sh: exploring-vocabulary-alignment-of-neurons-in-lla--coolvision is not in the fork allowlist; nothing pushed
