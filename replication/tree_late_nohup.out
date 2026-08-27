@@ -12,3 +12,5 @@
 /home/user/alignment-literature-meta-analysis/replication/tree_prep.sh: line 25: `hon "$venv/bin/python" -e "$src" 2>&1 | tail -3; fi'
 == 2026-08-27T19:08:08+08:00 NODE R20-matryoshka-nlas-training-activation-verbalizers---syvb EXIT 2 after 0 min (prep failed)
 == 2026-08-27T19:08:08+08:00 NODE R21-competitive-ai-safety-is-the-loss-function-to-ma--patrickod32 START (late rerun)
+== RUN-EXIT 1 after 37 min
+== 2026-08-27T19:49:24+08:00 NODE R21-competitive-ai-safety-is-the-loss-function-to-ma--patrickod32 EXIT 1 after 37 min (late rerun) | disk free after: 81 GB

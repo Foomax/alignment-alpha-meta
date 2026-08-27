@@ -1,15 +1,16 @@
 {
- "attempted": 13,
+ "attempted": 14,
  "installs": 13,
  "runs": 11,
  "claim_located": 12,
  "claim_reproduced": 10,
- "reproduction_rate_of_attempted": 0.769,
+ "reproduction_rate_of_attempted": 0.714,
  "reproduction_rate_of_located": 0.833,
  "failure_taxonomy": {
   "none": 11,
   "api-key": 1,
-  "unclear-entrypoint": 1
+  "unclear-entrypoint": 1,
+  "vram": 1
  },
  "median_wallclock_min": 8.0,
  "entries": [
@@ -99,6 +100,14 @@
    "runs": true,
    "claim_reproduced": true,
    "blocking_reason": "none",
+   "delta": null
+  },
+  {
+   "post_id": "aWYQHh2pEFCLYh85C",
+   "repo": "syvb/natural_language_autoencoders",
+   "runs": false,
+   "claim_reproduced": null,
+   "blocking_reason": "vram",
    "delta": null
   },
   {

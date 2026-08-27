@@ -169,3 +169,5 @@ publish.sh: == 2026-08-27T18:55:26+08:00 NODE R18-superweight-damage-repair-in-o
 publish.sh: == 2026-08-27T18:57:40+08:00 NODE R19-mechanistic-interpretability-via-learning-differ--ayoakin EXIT 1 after 0 min (late rerun) | disk free after: 86 GB is not in the fork allowlist; nothing pushed
 == 2026-08-27T19:08:08+08:00 publish == 2026-08-27T19:08:08+08:00 NODE R20-matryoshka-nlas-training-activation-verbalizers---syvb EXIT 2 after 0 min (prep failed)
 publish.sh: == 2026-08-27T19:08:08+08:00 NODE R20-matryoshka-nlas-training-activation-verbalizers---syvb EXIT 2 after 0 min (prep failed) is not in the fork allowlist; nothing pushed
+== 2026-08-27T19:49:24+08:00 publish == 2026-08-27T19:49:24+08:00 NODE R21-competitive-ai-safety-is-the-loss-function-to-ma--patrickod32 EXIT 1 after 37 min (late rerun) | disk free after: 81 GB
+publish.sh: == 2026-08-27T19:49:24+08:00 NODE R21-competitive-ai-safety-is-the-loss-function-to-ma--patrickod32 EXIT 1 after 37 min (late rerun) | disk free after: 81 GB is not in the fork allowlist; nothing pushed
