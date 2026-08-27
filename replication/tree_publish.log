@@ -243,3 +243,5 @@ publish.sh: == 2026-08-28T04:29:36+08:00 NODE R6c-can-we-interpret-latent-reason
 publish.sh: == 2026-08-28T05:10:14+08:00 NODE R12c-tracing-typos-in-llms-my-attempt-at-understandin--idostik EXIT 0 after 40 min (late rerun) | disk free after: 69 GB is not in the fork allowlist; nothing pushed
 == 2026-08-28T05:20:52+08:00 publish == 2026-08-28T05:20:52+08:00 NODE R18c-superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron EXIT 137 after 10 min (late rerun) | disk free after: 70 GB
 publish.sh: == 2026-08-28T05:20:52+08:00 NODE R18c-superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron EXIT 137 after 10 min (late rerun) | disk free after: 70 GB is not in the fork allowlist; nothing pushed
+== 2026-08-28T05:23:15+08:00 publish == 2026-08-28T05:23:15+08:00 NODE R4d-investigating-sensitive-directions-in-gpt-2-an-i--dajale423 EXIT 2 after 0 min (late rerun) | disk free after: 70 GB
+publish.sh: == 2026-08-28T05:23:15+08:00 NODE R4d-investigating-sensitive-directions-in-gpt-2-an-i--dajale423 EXIT 2 after 0 min (late rerun) | disk free after: 70 GB is not in the fork allowlist; nothing pushed

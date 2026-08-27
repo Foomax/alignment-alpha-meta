@@ -1,18 +1,18 @@
 {
- "attempted": 26,
- "installs": 25,
+ "attempted": 27,
+ "installs": 26,
  "runs": 17,
  "claim_located": 18,
  "claim_reproduced": 14,
- "reproduction_rate_of_attempted": 0.538,
+ "reproduction_rate_of_attempted": 0.519,
  "reproduction_rate_of_located": 0.778,
  "failure_taxonomy": {
   "none": 17,
   "runtime": 3,
   "env": 2,
   "unclear-entrypoint": 2,
-  "api-key": 1,
-  "vram": 1
+  "vram": 2,
+  "api-key": 1
  },
  "median_wallclock_min": 5.0,
  "entries": [
@@ -198,6 +198,14 @@
    "runs": true,
    "claim_reproduced": null,
    "blocking_reason": "unclear-entrypoint",
+   "delta": null
+  },
+  {
+   "post_id": "ifbNtv8QbNBrYFSSv",
+   "repo": "sunmoonron/super-weight-circuit-patching",
+   "runs": false,
+   "claim_reproduced": null,
+   "blocking_reason": "vram",
    "delta": null
   },
   {
