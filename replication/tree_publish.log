@@ -161,4 +161,5 @@ publish.sh: == 2026-08-27T17:55:53+08:00 NODE R8b-activation-plateaus-where-and-
 == 2026-08-27T17:55:53+08:00 publish == 2026-08-27T17:55:53+08:00 NODE R10b-developmental-stages-in-multi-problem-grokking--james-sullivan EXIT 2 after 0 min (late rerun)
 publish.sh: == 2026-08-27T17:55:53+08:00 NODE R10b-developmental-stages-in-multi-problem-grokking--james-sullivan EXIT 2 after 0 min (late rerun) is not in the fork allowlist; nothing pushed
 == 2026-08-27T17:55:54+08:00 publish == 2026-08-27T17:55:54+08:00 NODE R13b-the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia EXIT 1 after 0 min (late rerun)
-publish.sh: == 2026-08-27T17:55:54+08:00 NODE R13b-the-self
+publish.sh: == 2026-08-27T17:55:54+08:00 NODE R13b-the-self== 2026-08-27T18:11:37+08:00 publish == 2026-08-27T18:11:37+08:00 NODE R17-a-black-box-made-less-opaque-part-2--thebuleganteng EXIT 1 after 0 min (late rerun) | disk free after: 59 GB
+publish.sh: == 2026-08-27T18:11:37+08:00 NODE R17-a-black-box-made-less-opaque-part-2--thebuleganteng EXIT 1 after 0 min (late rerun) | disk free after: 59 GB is not in the fork allowlist; nothing pushed
