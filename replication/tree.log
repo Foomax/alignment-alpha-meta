@@ -21,3 +21,5 @@
 == 2026-08-27T14:02:09+08:00 NODE 7-unpacking-multimodal-data-leakage-broken-benchma--ai-forever EXIT 0 after 3 min | autofix rounds=0
 == 2026-08-27T14:02:09+08:00 NODE 8-activation-plateaus-where-and-how-they-emerge--mshinkle START
 == 2026-08-27T14:02:11+08:00 NODE 8-activation-plateaus-where-and-how-they-emerge--mshinkle EXIT 1 after 0 min | autofix rounds=1
+== 2026-08-27T14:02:11+08:00 NODE 9-comparing-the-effectiveness-of-top-down-and-bott--ak47na START
+== 2026-08-27T14:14:03+08:00 NODE 9-comparing-the-effectiveness-of-top-down-and-bott--ak47na EXIT 1 after 11 min | autofix rounds=4 installed: transformers jupyter nbconvert ipykernel vllm litellm
