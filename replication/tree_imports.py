@@ -13,9 +13,10 @@ stdlib = set(getattr(sys, "stdlib_module_names", set())) | {"__future__"}
 local = set()
 for dp, dn, fn in os.walk(root):
     if "/.git" in dp or "/.venv" in dp: continue
-    for d in dn: local.add(d)
+    for d in dn: local.add(d)                      # any directory name anywhere in the repo
     for f in fn:
-        if f.endswith(".py"): local.add(f[:-3])
+        if f.endswith(".py"): local.add(f[:-3])     # any module file name anywhere in the repo
+        if f.endswith((".ipynb", ".pyx", ".so")): local.add(f.rsplit(".", 1)[0])
 mods = set()
 def scan_source(src):
     try:
