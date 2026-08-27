@@ -1,18 +1,19 @@
 {
- "attempted": 30,
- "installs": 29,
- "runs": 18,
+ "attempted": 33,
+ "installs": 32,
+ "runs": 19,
  "claim_located": 19,
  "claim_reproduced": 14,
- "reproduction_rate_of_attempted": 0.467,
+ "reproduction_rate_of_attempted": 0.424,
  "reproduction_rate_of_located": 0.737,
  "failure_taxonomy": {
   "none": 18,
-  "env": 3,
+  "env": 5,
   "runtime": 3,
   "unclear-entrypoint": 2,
   "vram": 2,
   "api-key": 1,
+  "data": 1,
   "model-access": 1
  },
  "median_wallclock_min": 5.0,
@@ -114,6 +115,14 @@
    "delta": null
   },
   {
+   "post_id": "rwu73dCE3uWjieijK",
+   "repo": "uchicago-xlab/superposition-replication",
+   "runs": false,
+   "claim_reproduced": null,
+   "blocking_reason": "env",
+   "delta": null
+  },
+  {
    "post_id": "8zDjhJNoFhMuHB5Kc",
    "repo": "g-w1/gradient-routed-vae",
    "runs": false,
@@ -138,8 +147,24 @@
    "delta": null
   },
   {
+   "post_id": "nKRvp7LKgjJxbpykq",
+   "repo": "artmtt/sae-interpretability-small-reasoning-model",
+   "runs": true,
+   "claim_reproduced": null,
+   "blocking_reason": "data",
+   "delta": null
+  },
+  {
    "post_id": "iDyf7aBdvBp9jnfuY",
    "repo": "ibm/sae-steering",
+   "runs": false,
+   "claim_reproduced": null,
+   "blocking_reason": "env",
+   "delta": null
+  },
+  {
+   "post_id": "wezSznWnsMhpRF2QH",
+   "repo": "jim-maar/interpretability",
    "runs": false,
    "claim_reproduced": null,
    "blocking_reason": "env",
