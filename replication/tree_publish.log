@@ -115,3 +115,6 @@ publish.sh: do-k-sparse-autoencoders-reveal-thinking-pattern--artmtt is not in t
 publish.sh: automated-circuit-interpretation-via-probe-promp--peppinob-ol is not in the fork allowlist; nothing pushed
 == 2026-08-27T15:41:42+08:00 publish creating-interpretable-latent-spaces-with-gradie--g-w1
 publish.sh: creating-interpretable-latent-spaces-with-gradie--g-w1 is not in the fork allowlist; nothing pushed
+== 2026-08-27T15:41:44+08:00 tree done
+== 2026-08-27T16:05:46+08:00 publish == 2026-08-27T16:05:46+08:00 NODE R7-unpacking-multimodal-data-leakage-broken-benchma--ai-forever EXIT 0 after 23 min (rerun)
+publish.sh: == 2026-08-27T16:05:46+08:00 NODE R7-unpacking-multimodal-data-leakage-broken-benchma--ai-forever EXIT 0 after 23 min (rerun) is not in the fork allowlist; nothing pushed
