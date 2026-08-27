@@ -132,3 +132,5 @@ publish.sh: == 2026-08-27T16:50:51+08:00 NODE R10-developmental-stages-in-multi-
 publish.sh: == 2026-08-27T16:50:58+08:00 NODE R4-investigating-sensitive-directions-in-gpt-2-an-i--dajale423 EXIT 1 after 0 min (rerun) is not in the fork allowlist; nothing pushed
 == 2026-08-27T16:51:09+08:00 publish == 2026-08-27T16:51:09+08:00 NODE R8-activation-plateaus-where-and-how-they-emerge--mshinkle EXIT 0 after 0 min (rerun)
 publish.sh: == 2026-08-27T16:51:09+08:00 NODE R8-activation-plateaus-where-and-how-they-emerge--mshinkle EXIT 0 after 0 min (rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T17:43:49+08:00 publish == 2026-08-27T17:43:49+08:00 NODE R6-can-we-interpret-latent-reasoning-using-current---cywinski EXIT 0 after 52 min (rerun)
+publish.sh: == 2026-08-27T17:43:49+08:00 NODE R6-can-we-interpret-latent-reasoning-using-current---cywinski EXIT 0 after 52 min (rerun) is not in the fork allowlist; nothing pushed
