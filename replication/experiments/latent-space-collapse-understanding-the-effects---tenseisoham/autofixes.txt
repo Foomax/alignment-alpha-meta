@@ -1,0 +1,2 @@
+AUTOFIX round 1: uv pip install transformers jupyter nbconvert ipykernel
+AUTOFIX round 2: uv pip install datasets
