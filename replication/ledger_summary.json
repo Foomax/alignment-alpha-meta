@@ -1,15 +1,16 @@
 {
- "attempted": 17,
- "installs": 16,
+ "attempted": 18,
+ "installs": 17,
  "runs": 13,
  "claim_located": 15,
  "claim_reproduced": 12,
- "reproduction_rate_of_attempted": 0.706,
+ "reproduction_rate_of_attempted": 0.667,
  "reproduction_rate_of_located": 0.8,
  "failure_taxonomy": {
   "none": 14,
   "api-key": 1,
   "unclear-entrypoint": 1,
+  "runtime": 1,
   "vram": 1
  },
  "median_wallclock_min": 8.0,
@@ -92,6 +93,14 @@
    "runs": true,
    "claim_reproduced": true,
    "blocking_reason": "none",
+   "delta": null
+  },
+  {
+   "post_id": "ronAKFdTDE7tiZk2c",
+   "repo": "james-sullivan/arithmetictransformer",
+   "runs": false,
+   "claim_reproduced": null,
+   "blocking_reason": "runtime",
    "delta": null
   },
   {

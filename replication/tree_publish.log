@@ -187,3 +187,5 @@ publish.sh: == 2026-08-27T21:56:44+08:00 NODE R10b-developmental-stages-in-multi
 publish.sh: == 2026-08-27T21:57:04+08:00 NODE R13b-the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia EXIT 1 after 0 min (late rerun) | disk free after: 63 GB is not in the fork allowlist; nothing pushed
 == 2026-08-27T21:57:09+08:00 publish == 2026-08-27T21:57:09+08:00 NODE R14b-confirming-claims-of-superposition-and-adversari--uchicago-xlab EXIT 2 after 0 min (late rerun) | disk free after: 63 GB
 publish.sh: == 2026-08-27T21:57:09+08:00 NODE R14b-confirming-claims-of-superposition-and-adversari--uchicago-xlab EXIT 2 after 0 min (late rerun) | disk free after: 63 GB is not in the fork allowlist; nothing pushed
+== 2026-08-27T22:07:59+08:00 publish == 2026-08-27T22:07:59+08:00 NODE R25-jailbreak-patching-with-soo-style-conceptual-fus--shivasrightfoot EXIT 1 after 10 min (late rerun) | disk free after: 60 GB
+publish.sh: == 2026-08-27T22:07:59+08:00 NODE R25-jailbreak-patching-with-soo-style-conceptual-fus--shivasrightfoot EXIT 1 after 10 min (late rerun) | disk free after: 60 GB is not in the fork allowlist; nothing pushed
