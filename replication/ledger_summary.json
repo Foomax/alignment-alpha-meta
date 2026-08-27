@@ -1,19 +1,37 @@
 {
- "attempted": 2,
- "installs": 2,
- "runs": 2,
- "claim_located": 2,
- "claim_reproduced": 1,
- "reproduction_rate_of_attempted": 0.5,
- "reproduction_rate_of_located": 0.5,
+ "attempted": 13,
+ "installs": 13,
+ "runs": 11,
+ "claim_located": 12,
+ "claim_reproduced": 10,
+ "reproduction_rate_of_attempted": 0.769,
+ "reproduction_rate_of_located": 0.833,
  "failure_taxonomy": {
-  "none": 2
+  "none": 11,
+  "api-key": 1,
+  "unclear-entrypoint": 1
  },
- "median_wallclock_min": 229.0,
+ "median_wallclock_min": 8.0,
  "entries": [
+  {
+   "post_id": "jauWv9BEbdCYcRy2d",
+   "repo": "vaiyr/probe-necessity",
+   "runs": true,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
+   "delta": null
+  },
   {
    "post_id": "jZfNX4GJPdptxSxt4",
    "repo": "lovkush-a/arena-sandbagging-mi",
+   "runs": true,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
+   "delta": null
+  },
+  {
+   "post_id": "x2ZdCoqAaLedpjDk3",
+   "repo": "ameya-bit/quotesbyniche",
    "runs": true,
    "claim_reproduced": true,
    "blocking_reason": "none",
@@ -26,6 +44,78 @@
    "claim_reproduced": false,
    "blocking_reason": "none",
    "delta": -29.2
+  },
+  {
+   "post_id": "Eft6ehAcvR8MxFbsR",
+   "repo": "jeffreywilliamportfolio/jlens-basin-swaps",
+   "runs": true,
+   "claim_reproduced": false,
+   "blocking_reason": "api-key",
+   "delta": null
+  },
+  {
+   "post_id": "YGAimivLxycZcqRFR",
+   "repo": "cywinski/codi",
+   "runs": false,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
+   "delta": null
+  },
+  {
+   "post_id": "boB3hJiZijxM3J6Ed",
+   "repo": "ak47na/top_down_vs_bottom_up_mi",
+   "runs": false,
+   "claim_reproduced": null,
+   "blocking_reason": "unclear-entrypoint",
+   "delta": null
+  },
+  {
+   "post_id": "S9xyqRAziRMCcJQmz",
+   "repo": "jaehoonlee0829/cross-model-alignment-geometry",
+   "runs": true,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
+   "delta": null
+  },
+  {
+   "post_id": "nnHnNdHLhbrnmEXDr",
+   "repo": "coolvision/interp",
+   "runs": true,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
+   "delta": null
+  },
+  {
+   "post_id": "zKyKDre78napvtrEo",
+   "repo": "fractalmachinist/ioi",
+   "runs": true,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
+   "delta": 0.001
+  },
+  {
+   "post_id": "rs2BmwXWJEaEfNr2v",
+   "repo": "mild-rgb/qwen-2.5-1.5b-echo_repeat-investigation",
+   "runs": true,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
+   "delta": null
+  },
+  {
+   "post_id": "zbebxYCqsryPALh8C",
+   "repo": "noanabeshima/matryoshka-saes",
+   "runs": true,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
+   "delta": null
+  },
+  {
+   "post_id": "oSAiKTpQjjKmeeTvT",
+   "repo": "ai-forever/data_leakage_detect",
+   "runs": true,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
+   "delta": -97.6113
   }
  ]
 }
