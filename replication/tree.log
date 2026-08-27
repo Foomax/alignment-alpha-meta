@@ -31,3 +31,5 @@
 == 2026-08-27T14:16:11+08:00 NODE 12-tracing-typos-in-llms-my-attempt-at-understandin--idostik EXIT 1 after 0 min | autofix rounds=2 installed: jupyter nbconvert ipykernel
 == 2026-08-27T14:16:11+08:00 NODE 13-the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia START
 == 2026-08-27T14:16:43+08:00 NODE 13-the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia EXIT 1 after 0 min | autofix rounds=2 installed: sae-lens
+== 2026-08-27T14:16:43+08:00 NODE 14-confirming-claims-of-superposition-and-adversari--uchicago-xlab START
+== 2026-08-27T14:16:45+08:00 NODE 14-confirming-claims-of-superposition-and-adversari--uchicago-xlab EXIT 1 after 0 min | autofix rounds=1
