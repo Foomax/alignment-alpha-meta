@@ -1,0 +1,25 @@
+{
+ "post_id": "aWYQHh2pEFCLYh85C",
+ "repo": "syvb/natural_language_autoencoders",
+ "head_sha": "85399df1cb1340875e45036e6a5432a029cfe07a",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": false,
+ "runs": false,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "matryoshka NLA captures most FVE within the first few bullet lines (marginal FVE decays roughly exponentially, negligible past line 3); outperforms standard NLA on suffix prediction under short (<16 token) truncations, roughly matches it for longer truncations",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "rel:0.15",
+ "blocking_reason": "vram",
+ "env_fixes": [],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 2.1,
+ "seeds_run": 0,
+ "notes": "setup_box.sh pulls six Qwen2.5-7B NLA checkpoints (~90 GB) with the author's token and the sweep loads 7B AV+AR models (author: 48 GB card). On a 24 GB card with 86 GB free disk and ~6 MB/s downloads this is out of scope; no measurement attempted. Entrypoint string in the catalogue was a chain description; VRAM estimate (15 GB) undercounted by the base-model size.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}

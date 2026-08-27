@@ -104,3 +104,7 @@ Sparse autoencoders sometimes learn "holes": a feature for *child* concepts secr
 **What I did.** Deleted the sandboxes of projects already scored (they can be rebuilt in minutes), deleted four re‑downloadable models and 4 GB of raw activation dumps from project 01 (its results are kept), and changed the queue so it builds one sandbox, runs, then deletes it — at most one on disk at any time — and refuses to start if less than 12 GB is free. Free space now ≈ 90 GB.
 
 **Needs you?** Only if you want the 44 GB of model downloads kept off the system drive permanently: the Hugging Face cache can't live on the NTFS drive (it uses symlinks), but it could live on any ext4/xfs volume via `HF_HOME=<path>`. Not required for the queue to finish.
+
+## 15. `natural_language_autoencoders` (syvb) — out of scale for this card (19:20)
+
+The setup script wants to download six 7‑billion‑parameter model variants (~90 GB, about four hours at this machine's download speed) and run two of them at once; the author says a 48 GB card is "plenty" — ours is 24 GB. Logged as "too big for this hardware" without spending the hours. **Needs you?** Only if you want it badly enough to run it elsewhere.
