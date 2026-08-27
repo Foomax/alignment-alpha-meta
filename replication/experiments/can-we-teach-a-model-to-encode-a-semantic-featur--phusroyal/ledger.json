@@ -1,0 +1,27 @@
+{
+ "post_id": "ZwEer94AefjdW4933",
+ "repo": "phusroyal/phu-bluedot_1st_puzzle",
+ "head_sha": "27a8be7ed55fb4917065f7d84de567ccd3883914",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": true,
+ "claimed_value": "linear probe AUC falls from 0.9996-0.9998 (ClassOT) to 0.57-0.67 (GFAL); causal delta rises from 0.02-0.04 to 1.9-3.5",
+ "observed_value": "linear_probe_auc classot 0.9997/0.9998 -> gfal+ 0.589/0.5685; causal_target_delta 0.018/0.039 -> 3.473/2.565 (sphere_shell/helix_tube)",
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "none",
+ "env_fixes": [
+  "entrypoint run as the literal command in the spec (uv sync + uv run python -m src.predefined_manifold run --device cuda) instead of the descriptive string"
+ ],
+ "wallclock_minutes": 5.0,
+ "peak_vram_gb": 2.1,
+ "seeds_run": 1,
+ "notes": "Exact reproduction of the AUC collapse and causal-delta rise for both geometries; all stage checks pass. Plain GFAL on helix_tube (AUC 0.702, delta 1.865) is marginally outside the target ranges; GFAL+ (the reported variant) is inside on both. Cleanest repo in the batch (uv.lock, documented commands, output paths); 5 min on the 3090.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}

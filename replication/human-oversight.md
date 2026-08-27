@@ -108,3 +108,7 @@ Sparse autoencoders sometimes learn "holes": a feature for *child* concepts secr
 ## 15. `natural_language_autoencoders` (syvb) — out of scale for this card (19:20)
 
 The setup script wants to download six 7‑billion‑parameter model variants (~90 GB, about four hours at this machine's download speed) and run two of them at once; the author says a 48 GB card is "plenty" — ours is 24 GB. Logged as "too big for this hardware" without spending the hours. **Needs you?** Only if you want it badly enough to run it elsewhere.
+
+## 16. `phu-bluedot_1st_puzzle` (phusroyal, "teach a model to hide a feature from linear probes") — reproduced (20:05)
+
+Can you train a model so that a concept (here "country") is still *used* but no longer readable by a simple linear probe? The post says: with the ordinary objective a probe reads it perfectly (AUC ≈ 1.0) and the concept has little causal pull (0.02–0.04); with the new objective the probe drops to ≈ 0.6 while the causal pull jumps to 2–3.5. We get exactly that on both of the repo's geometries: 0.9997 → 0.57–0.59 and 0.02–0.04 → 2.6–3.5. Five minutes, no fixes beyond running the command the author actually documented. **Needs you?** No.
