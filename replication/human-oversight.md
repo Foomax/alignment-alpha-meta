@@ -76,3 +76,7 @@ A tiny character‑level model trained on Nietzsche; the post says one attention
 ## 9. Quick project `interp` (coolvision, "neurons that point at words") — reproduced (15:25)
 
 Some neurons inside Llama‑3.2‑1B point almost directly at a specific word in the output vocabulary (one points at "coming"); most don't. The post says this "pointing" is rare, lopsided, and mostly in the later layers. We see exactly that: in the early layers essentially no neuron stands out; in the last six layers 3–13 % of neurons stand far out. The plots were interactive (plotly), so I read the numbers straight out of the figure data. **Needs you?** No.
+
+## 10. Quick project `qwen-2.5-1.5b-echo_repeat-investigation` (mild-rgb) — reproduced, with a footnote (15:30)
+
+When Qwen‑1.5B is asked to just repeat a word, the post says one particular attention head (head 2) is always among the three most important, across 44 words and two phrasings, and that it mostly stares at the very first token. We get head 2 in the top three 44 out of 44 times, both phrasings. The "stares at the first token ~90 %" part is true for most words and ~77 % on average. Footnote: a different importance measure (direct logit attribution) ranks other heads — the post's claim is about the ablation measure, so this is consistent, but a reader should know the two measures disagree. **Needs you?** No.

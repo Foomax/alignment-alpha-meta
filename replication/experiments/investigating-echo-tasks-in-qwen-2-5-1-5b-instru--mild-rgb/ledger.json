@@ -1,0 +1,28 @@
+{
+ "post_id": "rs2BmwXWJEaEfNr2v",
+ "repo": "mild-rgb/qwen-2.5-1.5b-echo_repeat-investigation",
+ "head_sha": "3c0bf77bcddb3dec0f23ddca7d0dc85ffa3068ed",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": true,
+ "claimed_value": "head 2 always in top-3 heads across 44 words and both 'repeat'/'echo' prompt phrasings",
+ "observed_value": "H2 in ablation top-3 for 44/44 words, echo and repeat; BOS attention mean 0.76/0.78 (modal 0.90-0.95)",
+ "delta": null,
+ "tolerance_used": "rel:0.15",
+ "blocking_reason": "none",
+ "env_fixes": [
+  "auto-installed einops, jupyter/nbconvert/ipykernel, transformer-lens (no requirements file usable by the runner)"
+ ],
+ "wallclock_minutes": 1.0,
+ "peak_vram_gb": 6.4,
+ "seeds_run": 1,
+ "notes": "Headline exact: zero-ablation top-3 frequency H2=44/44 in both conditions (next H0=43 echo / 38 repeat). Caveats: by direct-logit-attribution H2 is never top-3 (H7/H9/H0 are), consistent with the claim being about ablation; BOS attention '~90%' is the modal value at emergence layer 22, mean 0.763 (echo) / 0.783 (repeat), min 0.027, top-1 position is BOS in 43/44 (echo) and 35/44 (repeat). 1 min wall-clock.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log",
+  "executed.ipynb"
+ ]
+}
