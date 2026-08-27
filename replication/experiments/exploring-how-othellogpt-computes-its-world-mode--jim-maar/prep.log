@@ -2,3 +2,6 @@
 == prep done 2026-08-27T15:38:14+08:00
 == prep 2026-08-27T22:19:27+08:00 repo=jim-maar/interpretability sha=73bc8f299f29823ad2ac1d288861dbb21b0e9f4f py=3.11
 torch 2.6.0+cu124
+import list did not resolve as a batch; installing per package
+  SKIPPED unresolvable import package: mech-interp-othello-utils
+== prep done 2026-08-27T22:26:46+08:00 (7.9G)
