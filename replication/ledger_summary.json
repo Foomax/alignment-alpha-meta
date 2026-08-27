@@ -1,13 +1,13 @@
 {
- "attempted": 16,
- "installs": 15,
+ "attempted": 17,
+ "installs": 16,
  "runs": 13,
- "claim_located": 14,
- "claim_reproduced": 11,
- "reproduction_rate_of_attempted": 0.688,
- "reproduction_rate_of_located": 0.786,
+ "claim_located": 15,
+ "claim_reproduced": 12,
+ "reproduction_rate_of_attempted": 0.706,
+ "reproduction_rate_of_located": 0.8,
  "failure_taxonomy": {
-  "none": 13,
+  "none": 14,
   "api-key": 1,
   "unclear-entrypoint": 1,
   "vram": 1
@@ -18,6 +18,14 @@
    "post_id": "jauWv9BEbdCYcRy2d",
    "repo": "vaiyr/probe-necessity",
    "runs": true,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
+   "delta": null
+  },
+  {
+   "post_id": "WMfSbt7AAcJdHzysB",
+   "repo": "mshinkle/activation_plateau_mechanisms",
+   "runs": false,
    "claim_reproduced": true,
    "blocking_reason": "none",
    "delta": null
