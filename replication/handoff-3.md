@@ -13,7 +13,7 @@
 | 9 | top_down_vs_bottom_up (ak47na) | 1 | unclear-entrypoint: needs pre-generated completions + W&B artifact, stale cells | ledgered as `unclear-entrypoint`, no rerun |
 | 10 | arithmetictransformer (james-sullivan) | 1 | env: `neel_plotly` | rerun R10 |
 | 11 | probe-necessity (vaiyr) | 0 | reproduced exactly (aggregate of shipped per-cell results) | ledgered |
-| 12 | llm-typos (idostik) | 1 | code-bug: `NameError: true` inside the author's notebook | ledger as `code-bug` once the cell is identified; no edit |
+| 12 | llm-typos (idostik) | 1 | runner: `.ipynb` entrypoint with trailing description → Python executed the notebook JSON (`NameError: true`) | rerun R12 via nbconvert (tree_rerun2.sh) |
 | 13 | deep-dive-l1h5 (mamiglia) | 1 | env: `sae_lens.toolkit` removed in sae-lens ≥ 6 → pin `<6` | rerun R13 |
 | 14 | superposition-replication (uchicago-xlab) | 1 | runner: relative import → `python -m synth.run` | rerun R14 |
 
