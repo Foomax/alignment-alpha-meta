@@ -1,0 +1,27 @@
+{
+ "post_id": "Qnm6gAFnCPaJsbhSS",
+ "repo": "thebuleganteng/interpretability-prototyping",
+ "head_sha": "5ef40554b9a1d7056ea3cfcd94319af0a8eedb3c",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "mean Jaccard similarity across surface forms = 0.13; within-topic cosine similarity = 0.50 vs cross-topic cosine similarity = 0.14",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "abs:0.05",
+ "blocking_reason": "env",
+ "env_fixes": [
+  "sae-lens<6 then <4 attempted; the SAE registry id '11-res-jb' exists only in sae-lens ~1.x-2.x, which conflicts with transformer-lens/torch 2.6"
+ ],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 2.4,
+ "seeds_run": 0,
+ "notes": "phase_2_semantics_vs_ideas_v2.ipynb loads SAE.from_pretrained(... '11-res-jb'); that legacy release id was removed/renamed in sae-lens >=3. Restoring it needs sae-lens 1.x-2.x + its old transformer-lens/torch, which does not resolve against the rest of the env. Two version pins tried (<6, <4). Env-drift; not reproduced.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}

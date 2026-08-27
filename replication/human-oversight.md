@@ -128,3 +128,7 @@ GPT‑2‑large has "plateaus": as you slide a word‑embedding from one word to
 ## 20. `arithmetictransformer` (james-sullivan, grokking stages) — needs multi-hour training, deferred (22:15)
 
 "Grokking" is when a small model memorises the training data fast but only *generalises* much later. The post asks whether, when a model learns two tasks at once, there are extra hidden learning stages. Checking it means training these models for ~6000 epochs each across eight task mixes — hours — because the checkpoints aren't included in the repo. That's outside the "quick project" budget, so it's logged as "too long to run here"; the author's own result graphs are in the repo and look right. **Needs you?** Only if you want to spend the training hours.
+
+## 21. `interpretability-prototyping` (thebuleganteng) — blocked by a renamed library asset (00:35)
+
+This project loads a specific pre-trained "sparse autoencoder" by a short code (`11-res-jb`) from the `sae-lens` library. That code was valid in the old version of the library the author used, but was renamed in later versions, and the version that still has it needs an old PyTorch that clashes with everything else. Untangling that is a rabbit hole, so it's logged as an environment/versioning failure. **Needs you?** No — it's a known kind of "the library moved on" breakage.
