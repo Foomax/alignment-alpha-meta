@@ -136,3 +136,7 @@ This project loads a specific pre-trained "sparse autoencoder" by a short code (
 ## 22. `seq2feature` (patrickod32, "a 5 MB text probe that mimics a 9B SAE") — reproduced (00:50)
 
 The claim: a tiny (5 MB) text-only probe can recover what a giant sparse autoencoder "sees" in text, per concept. We get the headline exactly — the probe scores 0.90 (matching the post), beats a keyword baseline on every concept, and classifies text 88% as well as the real 9-billion-parameter model's 89%. One cosmetic final cell (a Colab file-download) errored harmlessly. **Needs you?** No.
+
+## 23. codi follow-up (R6c) — the recovery mechanism reproduces, magnitude lower (04:35)
+
+The earlier codi headline (which latent vectors hold the intermediate numbers) reproduced. This follow-up checked the secondary "~20% recovery" figure: patching a different intermediate value into the latent makes the model give the correspondingly changed answer 7.0% of the time, vs 6.2% for same/random patches and 1.5% at baseline — the effect points the right way, but at ~7% not the post's ~20% (sensitive to the exact patch settings). The main result stands. **Needs you?** No.
