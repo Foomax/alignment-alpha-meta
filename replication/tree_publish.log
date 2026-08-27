@@ -136,3 +136,5 @@ publish.sh: == 2026-08-27T16:51:09+08:00 NODE R8-activation-plateaus-where-and-h
 publish.sh: == 2026-08-27T17:43:49+08:00 NODE R6-can-we-interpret-latent-reasoning-using-current---cywinski EXIT 0 after 52 min (rerun) is not in the fork allowlist; nothing pushed
 == 2026-08-27T17:45:26+08:00 publish == 2026-08-27T17:45:26+08:00 NODE R12-tracing-typos-in-llms-my-attempt-at-understandin--idostik EXIT 1 after 0 min (rerun)
 publish.sh: == 2026-08-27T17:45:26+08:00 NODE R12-tracing-typos-in-llms-my-attempt-at-understandin--idostik EXIT 1 after 0 min (rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T17:53:59+08:00 publish == 2026-08-27T17:53:59+08:00 NODE R15-matryoshka-sparse-autoencoders--noanabeshima EXIT 0 after 8 min (late rerun)
+publish.sh: == 2026-08-27T17:53:59+08:00 NODE R15-matryoshka-sparse-autoencoders--noanabeshima EXIT 0 after 8 min (late rerun) is not in the fork allowlist; nothing pushed
