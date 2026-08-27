@@ -1,0 +1,26 @@
+{
+ "post_id": "x2ZdCoqAaLedpjDk3",
+ "repo": "ameya-bit/quotesbyniche",
+ "head_sha": "135fa8933d67af546aec18f045831cb300fbdc73",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": true,
+ "claimed_value": "B5H0 copying score 0.615 vs next-highest head 0.35; OV circuit shows attending to '(' boosts ')' logit by +0.556 and attending to ')' suppresses '(' by -0.105, but the QK circuit fails to distinguish an already-closed bracket from a still-open one in nested test prompts, instead always attending to the most recent bracket",
+ "observed_value": "B5H0 copying 0.615 vs next 0.347; OV '('->')' +0.556, ')'->'(' -0.105",
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "none",
+ "env_fixes": [],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 2.4,
+ "seeds_run": 1,
+ "notes": "Every component of the compound target matches to the stated precision (copying score 0.6150 / next-highest 0.3471; OV bracket deltas +0.556 / -0.105). Notebook executed end-to-end under nbconvert in 2 min with no environment fixes.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log",
+  "executed.ipynb"
+ ]
+}

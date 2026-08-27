@@ -58,3 +58,7 @@ Scorecard so far: 2 rows (AntiPaSTO — did not reproduce; noise‑injection san
 Of the first 13 quick projects, 3 ran and 10 failed within seconds. Nearly all failures are *plumbing*: the catalogue's "entrypoint" is sometimes a description ("run `python -m replicate run-fast`…") that the generic runner tries to execute literally; some repos list no dependencies; one needs a package from the author's own GitHub rather than PyPI; one needs 90 minutes, not 45. I'm queuing a second pass with the correct invocation for each. Expect the scorecard to look bad *before* that pass and better after it — the taxonomy records both.
 
 **Needs you?** Not yet. Two projects will likely end as "can't run without external stuff": one expects pre‑generated model completions and a Weights & Biases artifact; one notebook looked like it had a typo (`true` instead of `True`) — on closer inspection it was my runner feeding the notebook file to Python as if it were a script; it's being re-run properly.
+
+## 7. Quick project `quotesbyniche` (ameya-bit, "an induction head in disguise") — reproduced exactly (14:50)
+
+A tiny character‑level model trained on Nietzsche; the post says one attention head is a "copying" head (score 0.615, everyone else ≤ 0.35) whose weights also nudge `)` after `(`. We got 0.615, 0.347 and the same bracket nudges (+0.556 / −0.105). Nothing needed fixing. **Needs you?** No.
