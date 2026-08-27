@@ -132,3 +132,7 @@ GPT‑2‑large has "plateaus": as you slide a word‑embedding from one word to
 ## 21. `interpretability-prototyping` (thebuleganteng) — blocked by a renamed library asset (00:35)
 
 This project loads a specific pre-trained "sparse autoencoder" by a short code (`11-res-jb`) from the `sae-lens` library. That code was valid in the old version of the library the author used, but was renamed in later versions, and the version that still has it needs an old PyTorch that clashes with everything else. Untangling that is a rabbit hole, so it's logged as an environment/versioning failure. **Needs you?** No — it's a known kind of "the library moved on" breakage.
+
+## 22. `seq2feature` (patrickod32, "a 5 MB text probe that mimics a 9B SAE") — reproduced (00:50)
+
+The claim: a tiny (5 MB) text-only probe can recover what a giant sparse autoencoder "sees" in text, per concept. We get the headline exactly — the probe scores 0.90 (matching the post), beats a keyword baseline on every concept, and classifies text 88% as well as the real 9-billion-parameter model's 89%. One cosmetic final cell (a Colab file-download) errored harmlessly. **Needs you?** No.
