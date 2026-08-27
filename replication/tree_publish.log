@@ -111,3 +111,5 @@ publish.sh: exploring-how-othellogpt-computes-its-world-mode--jim-maar is not in
 publish.sh: latent-space-collapse-understanding-the-effects---tenseisoham is not in the fork allowlist; nothing pushed
 == 2026-08-27T15:39:18+08:00 publish do-k-sparse-autoencoders-reveal-thinking-pattern--artmtt
 publish.sh: do-k-sparse-autoencoders-reveal-thinking-pattern--artmtt is not in the fork allowlist; nothing pushed
+== 2026-08-27T15:41:31+08:00 publish automated-circuit-interpretation-via-probe-promp--peppinob-ol
+publish.sh: automated-circuit-interpretation-via-probe-promp--peppinob-ol is not in the fork allowlist; nothing pushed
