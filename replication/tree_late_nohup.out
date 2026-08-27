@@ -42,3 +42,5 @@
 == RUN-EXIT 1 after 10 min
 == 2026-08-27T22:07:59+08:00 NODE R25-jailbreak-patching-with-soo-style-conceptual-fus--shivasrightfoot EXIT 1 after 10 min (late rerun) | disk free after: 60 GB
 == 2026-08-27T22:07:59+08:00 NODE R27-enabling-new-applications-with-today-s-mechanist--ibm START (late rerun)
+== RUN-EXIT 1 after 3 min
+== 2026-08-27T22:19:26+08:00 NODE R27-enabling-new-applications-with-today-s-mechanist--ibm EXIT 1 after 3 min (late rerun) | disk free after: 54 GB
