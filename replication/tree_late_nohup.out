@@ -142,3 +142,4 @@
 == 2026-08-28T05:51:42+08:00 NODE R28d-exploring-how-othellogpt-computes-its-world-mode--jim-maar START (late rerun)
 == RUN-EXIT 1 after 0 min
 == 2026-08-28T05:52:01+08:00 NODE R28d-exploring-how-othellogpt-computes-its-world-mode--jim-maar EXIT 1 after 0 min (late rerun) | disk free after: 63 GB
+== 2026-08-28T05:52:02+08:00 NODE R29d-latent-space-collapse-understanding-the-effects---tenseisoham START (late rerun)

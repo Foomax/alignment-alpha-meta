@@ -1,0 +1,29 @@
+{
+ "post_id": "nKRvp7LKgjJxbpykq",
+ "repo": "artmtt/sae-interpretability-small-reasoning-model",
+ "head_sha": "50c2b40be1f3e8a2bd1f5bbede75ac88bc1d197b",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "feature 32456: top feature in 28/32 inferences; feature 6252: 14/32; feature 31146: 10/32",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "data",
+ "env_fixes": [
+  "EleutherAI sparsify from GitHub (eai-sparsify); --allow-errors"
+ ],
+ "wallclock_minutes": 20.0,
+ "peak_vram_gb": 1.9,
+ "seeds_run": 0,
+ "notes": "Notebook runs clean but create_and_save_model_inferences (cell 34) is commented out and the saved per-inference SAE activations it would produce aren't committed; the analysis loads nothing. Headline feature counts not produced. data (missing generated inputs).",
+ "artifact_paths": [
+  "run.log",
+  "vram.log",
+  "executed.ipynb"
+ ],
+ "quality_tier": "n/a"
+}

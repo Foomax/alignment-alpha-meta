@@ -1,0 +1,28 @@
+{
+ "post_id": "wezSznWnsMhpRF2QH",
+ "repo": "jim-maar/interpretability",
+ "head_sha": "73bc8f299f29823ad2ac1d288861dbb21b0e9f4f",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "0.818 overall (up to 0.97 for specific layer/position/tile combinations)",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "abs:0.05",
+ "blocking_reason": "env",
+ "env_fixes": [
+  "transformers<5; setuptools<81; symlink interpretability->src (insufficient: Path resolves the symlink)"
+ ],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 1.9,
+ "seeds_run": 0,
+ "notes": "utils.py asserts dir.name=='interpretability'; symlink resolves to 'src' so the assert fails. Would need renaming the checkout. env.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ],
+ "quality_tier": "n/a"
+}

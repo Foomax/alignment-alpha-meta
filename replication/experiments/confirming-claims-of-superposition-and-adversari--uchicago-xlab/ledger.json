@@ -1,0 +1,26 @@
+{
+ "post_id": "rwu73dCE3uWjieijK",
+ "repo": "uchicago-xlab/superposition-replication",
+ "head_sha": "d4aa6b7c2c2b5242e30b429d992fa2afc98b2fc7",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "PGD\u00b7optimal cosine similarity = 1.00 across tested k/m (vs paper's 0.92-0.97); robust accuracy at k=m rises to 97.3% (m=5), falling monotonically as k/m increases (e.g. k/m=4, m=5: 30.1% ours vs 33.5% paper)",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "env",
+ "env_fixes": [],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 2.0,
+ "seeds_run": 0,
+ "notes": "Prep returns nonzero in-queue (4 attempts) though tree_prep succeeds standalone; python -m synth.run never reached. env.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ],
+ "quality_tier": "n/a"
+}
