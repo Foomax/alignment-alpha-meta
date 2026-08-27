@@ -131,3 +131,4 @@
 == 2026-08-27T17:55:54+08:00 NODE R32-creating-interpretable-latent-spaces-with-gradie--g-w1 START (late rerun)
 == 2026-08-27T17:55:55+08:00 NODE R32-creating-interpretable-latent-spaces-with-gradie--g-w1 EXIT 2 after 0 min (late rerun)
 == 2026-08-27T17:55:55+08:00 NODE R29-latent-space-collapse-understanding-the-== 2026-08-27T17:58:10+08:00 DISK FULL EVENT: / hit 100% at ~17:54; every late-queue entry from R17 to R32 failed in 0 s (not real results); queue stopped, done-list reset to R15 only, venvs of ledgered experiments deleted, 4 cross-model HF models + activation dumps deleted (re-downloadable)
+== 2026-08-27T17:59:11+08:00 NODE R17-a-black-box-made-less-opaque-part-2--thebuleganteng START (late rerun)
