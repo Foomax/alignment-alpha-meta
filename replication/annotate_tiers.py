@@ -22,7 +22,9 @@ TIER = {
   "patrickod32/seq2feature": "recompute",  # evaluates the committed 5MB probe on committed data
   "jeffreywilliamportfolio/jlens-basin-swaps": "n/a",
   "wassname/antipasto": "not",          # config drift; 270M reproduces, 1B does not
-  "jordanmccann/polymorphism-is-rotation": "partial",  # toy+Haar exact, Pythia-EV off
+  "jordanmccann/polymorphism-is-rotation": "partial",
+  "idostik/llm-typos-interpretability": "partial",
+  "shivasrightfoot/soo-jailbreak-conceptual-fusion": "partial",  # toy+Haar exact, Pythia-EV off
 }
 n=0
 for f in glob.glob("experiments/*/ledger.json"):
