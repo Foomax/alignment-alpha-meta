@@ -51,3 +51,5 @@ publish.sh: investigating-echo-tasks-in-qwen-2-5-1-5b-instru--mild-rgb is not in
 == 2026-08-27T15:24:34+08:00 publish cross-model-activation-generalizability-isn-t-st--jaehoonlee0829
 nothing to commit for cross-model-activation-generalizability-isn-t-st--jaehoonlee0829
 published cross-model-activation-generalizability-isn-t-st--jaehoonlee0829 -> https://github.com/Foomax/cross-model-alignment-geometry.git (replication-3090 @ 97feccc)
+== 2026-08-27T15:24:39+08:00 publish gpt-2-s-ioi-behavior-is-defined-where-the-paper---fractalmachinist
+publish.sh: gpt-2-s-ioi-behavior-is-defined-where-the-paper---fractalmachinist is not in the fork allowlist; nothing pushed
