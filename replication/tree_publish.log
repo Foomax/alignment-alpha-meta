@@ -253,3 +253,5 @@ publish.sh: == 2026-08-28T05:31:21+08:00 NODE R25d-jailbreak-patching-with-soo-s
 publish.sh: == 2026-08-28T05:51:38+08:00 NODE R30d-do-k-sparse-autoencoders-reveal-thinking-pattern--artmtt EXIT 0 after 20 min (late rerun) | disk free after: 63 GB is not in the fork allowlist; nothing pushed
 == 2026-08-28T05:51:42+08:00 publish == 2026-08-28T05:51:42+08:00 NODE R14d-confirming-claims-of-superposition-and-adversari--uchicago-xlab EXIT 2 after 0 min (late rerun) | disk free after: 63 GB
 publish.sh: == 2026-08-28T05:51:42+08:00 NODE R14d-confirming-claims-of-superposition-and-adversari--uchicago-xlab EXIT 2 after 0 min (late rerun) | disk free after: 63 GB is not in the fork allowlist; nothing pushed
+== 2026-08-28T05:52:01+08:00 publish == 2026-08-28T05:52:01+08:00 NODE R28d-exploring-how-othellogpt-computes-its-world-mode--jim-maar EXIT 1 after 0 min (late rerun) | disk free after: 63 GB
+publish.sh: == 2026-08-28T05:52:01+08:00 NODE R28d-exploring-how-othellogpt-computes-its-world-mode--jim-maar EXIT 1 after 0 min (late rerun) | disk free after: 63 GB is not in the fork allowlist; nothing pushed
