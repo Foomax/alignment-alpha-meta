@@ -1,0 +1,3 @@
+AUTOFIX round 1: uv pip install einops
+AUTOFIX round 2: uv pip install imageio
+AUTOFIX round 3: uv pip install matplotlib
