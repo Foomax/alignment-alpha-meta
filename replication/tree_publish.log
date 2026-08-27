@@ -231,3 +231,5 @@ publish.sh: == 2026-08-28T01:47:10+08:00 NODE R27c-enabling-new-applications-wit
 publish.sh: == 2026-08-28T01:47:25+08:00 NODE R28c-exploring-how-othellogpt-computes-its-world-mode--jim-maar EXIT 1 after 0 min (late rerun) | disk free after: 38 GB is not in the fork allowlist; nothing pushed
 == 2026-08-28T01:47:31+08:00 publish == 2026-08-28T01:47:31+08:00 NODE R30c-do-k-sparse-autoencoders-reveal-thinking-pattern--artmtt EXIT 1 after 0 min (late rerun) | disk free after: 38 GB
 publish.sh: == 2026-08-28T01:47:31+08:00 NODE R30c-do-k-sparse-autoencoders-reveal-thinking-pattern--artmtt EXIT 1 after 0 min (late rerun) | disk free after: 38 GB is not in the fork allowlist; nothing pushed
+== 2026-08-28T01:47:52+08:00 publish == 2026-08-28T01:47:52+08:00 NODE R31b-automated-circuit-interpretation-via-probe-promp--peppinob-ol EXIT 0 after 0 min (late rerun) | disk free after: 38 GB
+publish.sh: == 2026-08-28T01:47:52+08:00 NODE R31b-automated-circuit-interpretation-via-probe-promp--peppinob-ol EXIT 0 after 0 min (late rerun) | disk free after: 38 GB is not in the fork allowlist; nothing pushed
