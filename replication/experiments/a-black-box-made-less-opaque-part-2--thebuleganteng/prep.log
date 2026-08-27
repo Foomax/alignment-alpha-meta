@@ -12,3 +12,6 @@ hint: `nvidia-cusolver-cu12` (v11.6.1.9) was included because `torch` (v2.6.0+cu
 == prep 2026-08-28T00:25:35+08:00 repo=thebuleganteng/interpretability-prototyping sha=5ef40554b9a1d7056ea3cfcd94319af0a8eedb3c py=3.11
 torch 2.6.0+cu124
 requirements file requirements.txt did not resolve as a whole; installing line by line
+  SKIPPED unresolvable requirement: torch==2.9.0+cpu
+  SKIPPED unresolvable requirement: torchvision==0.24.0+cpu
+== prep done 2026-08-28T00:27:12+08:00 (6.0G)
