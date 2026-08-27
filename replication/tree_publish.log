@@ -40,3 +40,5 @@ publish.sh: superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron is not 
 publish.sh: mechanistic-interpretability-via-learning-differ--ayoakin is not in the fork allowlist; nothing pushed
 == 2026-08-27T15:05:11+08:00 publish matryoshka-nlas-training-activation-verbalizers---syvb
 publish.sh: matryoshka-nlas-training-activation-verbalizers---syvb is not in the fork allowlist; nothing pushed
+== 2026-08-27T15:05:53+08:00 publish competitive-ai-safety-is-the-loss-function-to-ma--patrickod32
+publish.sh: competitive-ai-safety-is-the-loss-function-to-ma--patrickod32 is not in the fork allowlist; nothing pushed
