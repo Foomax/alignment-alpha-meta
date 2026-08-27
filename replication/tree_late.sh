@@ -12,7 +12,7 @@ gpu_busy() { nvidia-smi --query-compute-apps=process_name --format=csv,noheader 
 free_gb() { df -BG --output=avail / | tail -1 | tr -dc '0-9'; }
 run_line() { local name="$1" slug="$2" tmo="$3" cmd="$4" d="$EXPS/$2"
   while gpu_busy; do sleep 60; done
-  while [ "$(free_gb)" -lt 12 ]; do echo "== $(date -Is) LOW DISK ($(free_gb) GB) — waiting before $name" | tee -a "$LOG"; sleep 300; done
+  while [ "$(free_gb)" -lt 25 ]; do echo "== $(date -Is) LOW DISK ($(free_gb) GB, need 25) — waiting before $name" | tee -a "$LOG"; sleep 300; done
   echo "== $(date -Is) NODE $name-$slug START (late rerun)" | tee -a "$LOG"
   bash "$REP/tree_prep.sh" "$d" || { echo "== $(date -Is) NODE $name-$slug EXIT 2 after 0 min (prep failed)" | tee -a "$LOG"; return; }
   sed -i 's/^== RUN-EXIT/== ATTEMPT-EXIT/' "$d/run.log" 2>/dev/null
