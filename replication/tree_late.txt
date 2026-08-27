@@ -1,0 +1,1 @@
+R15|matryoshka-sparse-autoencoders--noanabeshima|50|cd src && ../.venv/bin/python -m jupyter nbconvert --to notebook --execute train_saes_on_toy_repl.ipynb --output ../executed.ipynb --ExecutePreprocessor.timeout=-1
