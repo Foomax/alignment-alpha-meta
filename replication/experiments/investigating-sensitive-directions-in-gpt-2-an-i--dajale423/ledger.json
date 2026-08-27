@@ -1,0 +1,28 @@
+{
+ "post_id": "dS5dSgwaDQRoWdTuu",
+ "repo": "dajale423/error_pathology",
+ "head_sha": "a963531eaf1752c57bc6d6f9384a73136d4ab471",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "SAE(x) KL comparable to cov-random-mixture baseline at Layer 6, variable across layers",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "rel:0.15",
+ "blocking_reason": "env",
+ "env_fixes": [
+  "e2e_sae editable clone on PYTHONPATH; typeguard; torch pinned by e2e-sae to 2.2.2"
+ ],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 1.8,
+ "seeds_run": 0,
+ "notes": "error_pathology's editable install pins e2e-sae (git) -> torch~=2.2.0; needs e2e_sae.scripts.train_tlens (wheel omits scripts). 4 attempts; the e2e_sae dependency web does not co-install stably. env-drift, not reproduced.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ],
+ "quality_tier": "n/a"
+}
