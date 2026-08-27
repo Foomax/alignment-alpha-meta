@@ -25,5 +25,6 @@
  "artifact_paths": [
   "run.log",
   "vram.log"
- ]
+ ],
+ "quality_tier": "exact"
 }

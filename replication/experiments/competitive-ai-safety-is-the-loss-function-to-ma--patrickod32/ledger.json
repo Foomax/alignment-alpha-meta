@@ -24,5 +24,6 @@
   "run.log",
   "vram.log",
   "executed.ipynb"
- ]
+ ],
+ "quality_tier": "recompute"
 }
