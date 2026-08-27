@@ -131,3 +131,5 @@
 == RUN-EXIT 1 after 6 min
 == 2026-08-28T05:29:48+08:00 NODE R5d-saes-are-highly-dataset-dependent-a-case-study-o--ckkissane EXIT 1 after 6 min (late rerun) | disk free after: 68 GB
 == 2026-08-28T05:29:48+08:00 NODE R25d-jailbreak-patching-with-soo-style-conceptual-fus--shivasrightfoot START (late rerun)
+== RUN-EXIT 0 after 1 min
+== 2026-08-28T05:31:21+08:00 NODE R25d-jailbreak-patching-with-soo-style-conceptual-fus--shivasrightfoot EXIT 0 after 1 min (late rerun) | disk free after: 68 GB
