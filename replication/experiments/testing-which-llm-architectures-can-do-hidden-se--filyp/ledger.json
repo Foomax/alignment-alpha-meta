@@ -1,0 +1,28 @@
+{
+ "post_id": "ZB6guMhHH3NEyxA2k",
+ "repo": "filyp/sneaky-mamba",
+ "head_sha": "b44a1d34d055c2c97a9def073f520806582b24f7",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": false,
+ "claim_reproduced": false,
+ "claimed_value": "standard Mamba fails to solve the hidden task; a modified Mamba with cross-channel SSM communication solves it; Transformers require about +3 layers per +1 unit of solvable task length",
+ "observed_value": "build only: mamba-ssm selective_scan_cuda import fails (undefined symbol c10::cuda) across prebuilt+source builds; claim never reached",
+ "delta": null,
+ "tolerance_used": "rel:0.15",
+ "blocking_reason": "env",
+ "env_fixes": [
+  "pip build-isolation off + torch present at build",
+  "prebuilt mamba-ssm wheel ABI-mismatches torch -> forced source build (MAMBA_FORCE_BUILD, torch==2.4.0, MAX_JOBS=4)"
+ ],
+ "wallclock_minutes": 9.0,
+ "peak_vram_gb": null,
+ "seeds_run": null,
+ "notes": "3-try cap reached; CUDA custom-kernel toolchain (nvcc 12.0 vs torch-cuda 12.1, dep-induced torch bump). Hours-class engineering-rot data point; science not reached. Runner: run_h57.sh (author 3-arm sweep never ran).",
+ "artifact_paths": [
+  "run.log"
+ ],
+ "quality_tier": "n/a"
+}

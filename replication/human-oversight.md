@@ -165,3 +165,15 @@ which is the whole point: they ace it, then fail to generalise. Imposters, confi
 
 **No human action needed.** Two of the analysis steps "failed" only because the author's code politely
 refuses to overwrite its own saved results — the numbers were computed fine. Nothing to fix.
+
+## 28. `sneaky-mamba` (filyp) — H57 — NOT REPRODUCED (build failure, no human action)
+
+**ELI5.** This project asks whether a "Mamba" model (a non-transformer design) can secretly reason step-by-step.
+To test it we first have to install a special GPU component ("mamba-ssm") that has to be compiled to match the
+exact deep-learning library version on the machine. On this box those versions don't line up, and every way we
+tried to build it produced a component that won't load. We tried three different fixes and stopped there (chasing
+a fourth wouldn't teach us anything). So we never got to run the actual science.
+
+**Why this still counts.** It's a clean example of the report's main point: this work fails on *plumbing*
+(a GPU component that won't compile), not on the *idea*. The repo right next to it (tarcle) reproduced fine
+because its authors saved their intermediate results and shipped a plain-CPU re-analysis. **No human action needed.**

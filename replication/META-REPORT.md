@@ -1,6 +1,6 @@
 # Replicating alignment-forum empirical work on one RTX 3090 — meta-report
 
-**Status: FINAL** (N=34; queue drained 2026-08-28 05:55). Numbers regenerate via `python3 make_report_table.py`; rows via the generator in the same file. Every claim below is auditable in the named `experiments/<slug>/{ledger.json,run.log}`.
+**Status: FINAL** (N=36; queue drained 2026-08-28 06:56, incl. 2 hours-class scale-test rows). Numbers regenerate via `python3 make_report_table.py`; rows via the generator in the same file. Every claim below is auditable in the named `experiments/<slug>/{ledger.json,run.log}`.
 
 ## Executive summary
 
@@ -9,8 +9,8 @@ We attempted to reproduce the headline numerical claim of **34** alignment-forum
 **Headline finding.** *When the code runs at all, the work reproduces at a high rate to the stated precision. The binding constraint on reproducibility is engineering rot — not scientific fragility.*
 
 Two numbers carry it:
-- **Of the 19 experiments that ran far enough to test the claim, 17 (89%) reproduced at least partially** (14 full + 3 partial). Exactly **one** was a genuine scientific non-reproduction (AntiPaSTO — and it reproduces at smaller scale; see below), and one more was a hosted-API artefact, not a local test.
-- **15 of 34 attempts (44%) never reached a measurement at all — and every one of those 15 failed on engineering or hardware**, never on the science: a "entrypoint" that was prose, a library asset renamed across versions, a checkpoint the repo didn't commit, a Colab assumption, a `TrainingArguments` kwarg removed mid-version, a multi-hour run mis-tagged "minutes," a 48 GB-card design, a W&B-gated SAE, an OOM.
+- **Of the 20 experiments that ran far enough to test the claim, 18 (90%) reproduced at least partially** (15 full + 3 partial). Exactly **one** was a genuine scientific non-reproduction (AntiPaSTO — and it reproduces at smaller scale; see below), and one more was a hosted-API artefact, not a local test.
+- **16 of 36 attempts (44%) never reached a measurement at all — and every one of those 16 failed on engineering or hardware**, never on the science: a "entrypoint" that was prose, a library asset renamed across versions, a checkpoint the repo didn't commit, a Colab assumption, a `TrainingArguments` kwarg removed mid-version, a multi-hour run mis-tagged "minutes," a 48 GB-card design, a W&B-gated SAE, an OOM, a CUDA custom kernel that won't build against the installed torch.
 
 So the reproducibility of this literature, on this evidence, is **gated by packaging, not by science**.
 
@@ -19,21 +19,21 @@ So the reproducibility of this literature, on this evidence, is **gated by packa
 - **Protocol / audit trail:** as above; each environment fix is a `--fix` line in `ledger.json`; each `run.log` ends with a `== VERDICT` block. Automation: a sequential, disk-bounded GPU queue (`tree_late.sh`+`tree_prep.sh`+`tree_imports.py`+`tree_autofix.py`+`nb_colab_stub.py`); judgement by hand per row.
 - **Quality tiers:** **exact** = regenerated the core computation from source and matched; **recompute** = re-ran a script over the author's *committed* artefacts without regenerating them; **partial** = some components match; **not** = located and genuinely off; **n/a** = never located.
 
-## Results (N=34)
+## Results (N=36)
 
 | metric | value |
 |---|---|
-| attempted | 34 |
-| installed | 33 |
-| ran | 20 |
-| **located (reached a measurement)** | **19** |
-| **reproduced** | **14 (74% of located, 41% of attempted)** |
-| reproduced — tier mix | 11 exact, 3 recompute |
+| attempted | 36 |
+| installed | 35 |
+| ran | 21 |
+| **located (reached a measurement)** | **20** |
+| **reproduced** | **15 (75% of located, 42% of attempted)** |
+| reproduced — tier mix | 11 exact, 4 recompute |
 | located but not reproduced | 5 — 3 partial, 1 not (config-drift), 1 hosted-API |
-| never located | 15 — env 6, runtime 3, unclear-entrypoint 2, vram 2, data 1, model-access 1 |
-| **located that reproduced ≥ partially** | **17 / 19 (89%)** |
+| never located | 16 — env 7, runtime 3, unclear-entrypoint 2, vram 2, data 1, model-access 1 |
+| **located that reproduced ≥ partially** | **18 / 20 (90%)** |
 
-### All 34 rows (✅ reproduced · ❌ located-not-reproduced · — never-located; tier; failure reason in parens)
+### All 36 rows (✅ reproduced · ❌ located-not-reproduced · — never-located; tier; failure reason in parens). ⧗ = hours-class scale-test row.
 
 | | tier | repo | headline result / reason |
 |---|---|---|---|
@@ -51,6 +51,7 @@ So the reproducibility of this literature, on this evidence, is **gated by packa
 | ✅ | recompute | patrickod32/seq2feature | committed 5 MB probe AUC 0.90 (=0.90), 88% vs SAE 89% |
 | ✅ | recompute | peppinob-ol/attribution-graph-probing | fact-variant Repl 0.5425 / Comp 0.8412 (=0.5394/0.8257) |
 | ✅ | recompute | vaiyr/probe-necessity | 17 recovered + 5 alarmed (auto 22/27) |
+| ✅⧗ | recompute | star2vec/tarcle | imposter FVs: margin +0.352 (12mo, =+0.35) → −1.000 (Sep-Dec, =−1.000); collapse out-of-pool, behavioral gate GO |
 | ❌ | partial | idostik/llm-typos | L0H3 merging-head mechanism ✓; exclusivity sweep blocked (t-lens arity) |
 | ❌ | partial | jordanmccann/polymorphism-is-rotation | toy + Haar exact (verify 6/6); Pythia post-rot EV 0.2–0.5 vs 0.85–0.99 |
 | ❌ | partial | shivasrightfoot/soo-jailbreak | fusion adapter trains & bypasses refusals ✓; ASR% needs a separate eval |
@@ -61,6 +62,7 @@ So the reproducibility of this literature, on this evidence, is **gated by packa
 | — | n/a | ayoakin/mivlde | function library, no `__main__`, uncommitted activations (unclear-entrypoint) |
 | — | n/a | ckkissane/sae-dataset-dependence | SAE behind a W&B artifact login (model-access) |
 | — | n/a | dajale423/error_pathology | e2e_sae fork: torch 2.2 pin + missing scripts subpackage (env) |
+| —⧗ | n/a | filyp/sneaky-mamba | mamba-ssm `selective_scan_cuda` won't import (c10::cuda ABI, 3 tries); claim not reached (env) |
 | — | n/a | g-w1/gradient-routed-vae | 30-VAE training > 2 h (runtime) |
 | — | n/a | ibm/sae-steering | torch 2.3.1 ↔ transformer-lens arity drift (env) |
 | — | n/a | james-sullivan/arithmetictransformer | grokking checkpoints need ~6000-epoch × 8-ratio training (runtime) |
@@ -74,22 +76,22 @@ So the reproducibility of this literature, on this evidence, is **gated by packa
 
 ## Discussion
 
-1. **Engineering rot dominates, decisively.** All 15 never-located failures and 4 of the 5 non-reproductions are packaging/hardware. The recurring rot classes (full symptom→cause→fix catalog in `lessons-synth.md` Part 3): (a) `spec.json.entrypoint` is a *pointer*, not a runnable command — prose, a pipeline step, a chain, a subset (the "fact variant"), or a function library — the single largest source; (b) 2026-major-version drift silently breaks 2024–25 code (`transformers 5` and its mid-4.x `evaluation_strategy` rename, `datasets 4`, `sae-lens 6`/`4`, `setuptools 81`, `torch 2.6`); (c) uncommitted artefacts (checkpoints, prompt files, activations, W&B-gated SAEs, commented-out generation cells); (d) Colab assumptions (`/content`, `google.colab`, placeholder tokens); (e) hardware/time budgets the catalogue mis-estimated (RAM-OOM, 48 GB designs, "minutes" that are hours).
+1. **Engineering rot dominates, decisively.** All 16 never-located failures and 4 of the 5 non-reproductions are packaging/hardware. The recurring rot classes (full symptom→cause→fix catalog in `lessons-synth.md` Part 3): (a) `spec.json.entrypoint` is a *pointer*, not a runnable command — prose, a pipeline step, a chain, a subset (the "fact variant"), or a function library — the single largest source; (b) 2026-major-version drift silently breaks 2024–25 code (`transformers 5` and its mid-4.x `evaluation_strategy` rename, `datasets 4`, `sae-lens 6`/`4`, `setuptools 81`, `torch 2.6`); (c) uncommitted artefacts (checkpoints, prompt files, activations, W&B-gated SAEs, commented-out generation cells); (d) Colab assumptions (`/content`, `google.colab`, placeholder tokens); (e) hardware/time budgets the catalogue mis-estimated (RAM-OOM, 48 GB designs, "minutes" that are hours); (f) CUDA custom-kernel deps (mamba-ssm's `selective_scan_cuda`, flash-attn, apex) whose prebuilt wheels ABI-mismatch the installed torch (`undefined symbol c10::cuda…`) and whose source builds need a matching nvcc — the sneaky-mamba blocker.
 
 2. **The one genuine scientific miss is informative.** AntiPaSTO reproduces on Gemma-270M (41.7 vs 38.7) but not Gemma-1B (2.0 vs 31.2) — because the repo's shipped 1B preset is *not* the paper's configuration (`git log -S` shows the paper's values never existed as defaults), compounded by a `**Yes**`-formatting artefact that suppresses the metric. It is characterised, not merely "failed."
 
 3. **The 3 partials are honest halves, not fudges.** jordanmccann: toy + Haar-rotation exact (the repo's own `verify` passes 6/6), Pythia post-rotation EV off. idostik: the L0H3 subword-merging *mechanism* reproduces; the "only L0H3" exclusivity sweep died on transformer-lens arity drift. shivasrightfoot: the conceptual-fusion jailbreak *method* reproduces (the adapter demonstrably bypasses refusals), but the ASR percentage is computed by a separate eval notebook at a different retention setting.
 
-4. **Tier honesty.** 3 of 14 "reproduced" are **recompute** — re-running a script over the author's committed artefacts (a shipped probe, committed graphs, committed per-cell results). They show the *repo is self-consistent*, weaker than the 11 **exact** (trained/extracted from source). A reproduction rate is only as strong as its tier mix; ours is 11 exact / 3 recompute.
+4. **Tier honesty.** 4 of 15 "reproduced" are **recompute** — re-running a script over the author's committed artefacts (a shipped probe, committed graphs, committed per-cell results, tarcle's committed FV arrays). They show the *repo is self-consistent*, weaker than the 11 **exact** (trained/extracted from source). A reproduction rate is only as strong as its tier mix; ours is 11 exact / 4 recompute. The lone hours-class success (tarcle) is one of these recomputes — a reminder that "reproduced at hours-class" here means "its committed artefacts re-analyse consistently," not "re-trained from scratch."
 
 ## Threats to validity
-- **Selection:** minute-class rows only; the 38 untouched **hours-class** rows (bigger models, more training) may reproduce *less* often and are the obvious next sample.
+- **Selection:** predominantly minute-class rows. A **first hours-class probe (n=2)** was run to test whether the pattern holds at scale: **1 reproduced** (star2vec/tarcle — but via its committed-artifact *recompute* path; the from-scratch GPU extraction, the genuinely hours-class part, was not regenerated) and **1 failed on engineering** (filyp/sneaky-mamba — a CUDA custom kernel that won't build/import against the installed torch, science never reached). The 89%→90% and "engineering-rot dominates" patterns are **consistent** at hours-class, but n=2 (one of them recompute-not-from-scratch) is far too small to call it confirmed; the ~36 remaining hours-class rows are still the obvious next sample.
 - **One machine (24 GB / 31 GB RAM), one operator:** 4 of the 15 non-located failures are *this box's* limits (2 vram, and RAM-bound), not universal; a bigger box would recover them. Environment fixes are logged judgement calls.
 - **Recompute tier:** three rows evaluate committed artefacts, not upstream training.
 - **Reason attribution:** `env` vs `runtime` vs `data` are the operator's classification; each is defended in the row's VERDICT.
 
 ## Next steps (from `handoff-synth.md` §B)
-1. ✅ Tail drained; ✅ this report finalised.
-2. **Package the harness** (`tree_*`, `*_imports.py`, `nb_colab_stub.py`, `publish.sh`) with `lessons-synth.md` as its manual — a reusable replication harness is arguably the larger contribution.
-3. **Selectively run 2–3 high-value hours-class experiments** — contested *negative* claims / safety-relevant rows the ledger is light on — to test whether the 89%-of-located rate holds at larger scale (the main threat to the finding).
+1. ✅ Tail drained; ✅ this report finalised (now N=36).
+2. ✅ **Harness packaged** (`tree_*`, `*_imports.py`, `nb_colab_stub.py`, `publish.sh`) with `lessons-synth.md` as its manual (`HARNESS.md`) — a reusable replication harness is arguably the larger contribution.
+3. ✅ **First hours-class scale-test run (n=2):** star2vec/tarcle ✅ (recompute), filyp/sneaky-mamba — (env, CUDA-kernel build). Pattern held (90%), but the sample is too small to confirm — see Threats to validity. Extending to ~5–8 hours-class rows (from-scratch, not recompute) is the highest-value remaining replication work.
 4. Deferred, human-gated: author-facing notes on AntiPaSTO (config-drift) and jordanmccann (Pythia-EV gap); AntiPaSTO evals D/E (~100 min each).

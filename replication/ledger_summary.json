@@ -1,14 +1,14 @@
 {
- "attempted": 35,
- "installs": 34,
+ "attempted": 36,
+ "installs": 35,
  "runs": 21,
  "claim_located": 20,
  "claim_reproduced": 15,
- "reproduction_rate_of_attempted": 0.429,
+ "reproduction_rate_of_attempted": 0.417,
  "reproduction_rate_of_located": 0.75,
  "failure_taxonomy": {
   "none": 19,
-  "env": 6,
+  "env": 7,
   "runtime": 3,
   "unclear-entrypoint": 2,
   "vram": 2,
@@ -264,6 +264,14 @@
    "runs": false,
    "claim_reproduced": null,
    "blocking_reason": "vram",
+   "delta": null
+  },
+  {
+   "post_id": "ZB6guMhHH3NEyxA2k",
+   "repo": "filyp/sneaky-mamba",
+   "runs": false,
+   "claim_reproduced": false,
+   "blocking_reason": "env",
    "delta": null
   },
   {
