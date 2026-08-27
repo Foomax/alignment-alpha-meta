@@ -238,3 +238,5 @@
 == 2026-08-28T06:37:10+08:00 NODE H36c-the-imposters-among-us-function-vectors-that-ace--star2vec EXIT 0 after 11 min (late rerun) | disk free after: 57 GB
 == 2026-08-28T06:37:10+08:00 NODE H57b-testing-which-llm-architectures-can-do-hidden-se--filyp START (late rerun)
 == 2026-08-28T06:40:45+08:00 NODE H57b-testing-which-llm-architectures-can-do-hidden-se--filyp EXIT 3 after 3 min (late rerun) | disk free after: 50 GB
+== 2026-08-28T06:44:46+08:00 NODE H57c-testing-which-llm-architectures-can-do-hidden-se--filyp START (late rerun)
+== 2026-08-28T06:54:08+08:00 NODE H57c-testing-which-llm-architectures-can-do-hidden-se--filyp EXIT 3 after 9 min (late rerun) | disk free after: 47 GB
