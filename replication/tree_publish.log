@@ -265,3 +265,5 @@ publish.sh: == 2026-08-28T06:17:15+08:00 NODE H57-testing-which-llm-architecture
 publish.sh: == 2026-08-28T06:19:26+08:00 NODE H36b-the-imposters-among-us-function-vectors-that-ace--star2vec EXIT 2 after 0 min (late rerun) | disk free after: 57 GB is not in the fork allowlist; nothing pushed
 == 2026-08-28T06:37:10+08:00 publish == 2026-08-28T06:37:10+08:00 NODE H36c-the-imposters-among-us-function-vectors-that-ace--star2vec EXIT 0 after 11 min (late rerun) | disk free after: 57 GB
 publish.sh: == 2026-08-28T06:37:10+08:00 NODE H36c-the-imposters-among-us-function-vectors-that-ace--star2vec EXIT 0 after 11 min (late rerun) | disk free after: 57 GB is not in the fork allowlist; nothing pushed
+== 2026-08-28T06:40:45+08:00 publish == 2026-08-28T06:40:45+08:00 NODE H57b-testing-which-llm-architectures-can-do-hidden-se--filyp EXIT 3 after 3 min (late rerun) | disk free after: 50 GB
+publish.sh: == 2026-08-28T06:40:45+08:00 NODE H57b-testing-which-llm-architectures-can-do-hidden-se--filyp EXIT 3 after 3 min (late rerun) | disk free after: 50 GB is not in the fork allowlist; nothing pushed

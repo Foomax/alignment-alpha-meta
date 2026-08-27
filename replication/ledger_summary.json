@@ -1,13 +1,13 @@
 {
- "attempted": 34,
- "installs": 33,
- "runs": 20,
- "claim_located": 19,
- "claim_reproduced": 14,
- "reproduction_rate_of_attempted": 0.412,
- "reproduction_rate_of_located": 0.737,
+ "attempted": 35,
+ "installs": 34,
+ "runs": 21,
+ "claim_located": 20,
+ "claim_reproduced": 15,
+ "reproduction_rate_of_attempted": 0.429,
+ "reproduction_rate_of_located": 0.75,
  "failure_taxonomy": {
-  "none": 18,
+  "none": 19,
   "env": 6,
   "runtime": 3,
   "unclear-entrypoint": 2,
@@ -264,6 +264,14 @@
    "runs": false,
    "claim_reproduced": null,
    "blocking_reason": "vram",
+   "delta": null
+  },
+  {
+   "post_id": "aFyir2PaoCHK5prAu",
+   "repo": "star2vec/tarcle",
+   "runs": true,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
    "delta": null
   },
   {

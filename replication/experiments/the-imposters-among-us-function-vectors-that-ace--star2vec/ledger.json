@@ -1,0 +1,28 @@
+{
+ "post_id": "aFyir2PaoCHK5prAu",
+ "repo": "star2vec/tarcle",
+ "head_sha": "37831a330ec5d4339d6946c1a2e51732ce8fce00",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": true,
+ "claimed_value": "margin +0.35 (12 months) and +0.34 (9 months) down to -0.31, -0.46, -0.70, -0.94 (6- and 4-month range sets), with -1.000 for the September-December subset; behavioral gate rises from 0.38 to 0.83 as diversity drops",
+ "observed_value": "margin_split M_in: primary(12)=+0.352 [t+0.35]; partB(Sep-Dec)=-1.000 [t-1.000]; monotone collapse +->-1.0 as diversity drops; support_gate both pools GO/claim-A-survives; stage2 geometry recompute matches committed (PR 3.116, conc~0.75, additivity~1.15), differs only on unseeded perm-null z",
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "none",
+ "env_fixes": [
+  "entrypoint: run stage-2 chain as -m modules (stage2 root defaults to results/fv); recompute over committed artifacts, GPU extract not needed",
+  "stage2/floors exit nonzero only on author append-only write-guard (unseeded perm-null differs); computation succeeded"
+ ],
+ "wallclock_minutes": 11.0,
+ "peak_vram_gb": null,
+ "seeds_run": 200,
+ "notes": "recompute tier: re-ran tarcle.{stage2,floors,measure_corr,margin_split,offset_audit,support_gate} over committed results/fv. Imposter-FV thesis reproduces: low-diversity FVs collapse out-of-pool (R-collapse, Sep-Dec -1.000) while passing behavioral gate (GO). Two target anchors exact.",
+ "artifact_paths": [
+  "run.log"
+ ],
+ "quality_tier": "recompute"
+}
