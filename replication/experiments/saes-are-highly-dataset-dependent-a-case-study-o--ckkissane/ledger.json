@@ -1,0 +1,28 @@
+{
+ "post_id": "rtp6n7Z23uJpEH7od",
+ "repo": "ckkissane/sae-dataset-dependence",
+ "head_sha": "2c991ba0cfa8d76a3e50ffd6b4fbc156052a6b64",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "LmSys-trained SAE reconstruction has significantly higher cosine similarity to the true refusal direction than the Pile-trained SAE (also achieves lower relative MSE and requires far fewer latents for equivalent reconstruction quality)",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "model-access",
+ "env_fixes": [
+  "sae-lens<4 (restores sae_lens.sae removed in later versions)"
+ ],
+ "wallclock_minutes": 6.0,
+ "peak_vram_gb": 1.8,
+ "seeds_run": 0,
+ "notes": "Env fixed (sae-lens<4). The script fetches its SAE from a W&B artifact requiring a login (spec blocker); wandb UsageError after 6 min. model-access, not reproduced.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ],
+ "quality_tier": "n/a"
+}
