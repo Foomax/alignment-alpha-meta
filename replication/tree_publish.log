@@ -211,3 +211,5 @@ publish.sh: == 2026-08-28T00:27:33+08:00 NODE R17b-a-black-box-made-less-opaque-
 publish.sh: == 2026-08-28T00:35:24+08:00 NODE R18b-superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron EXIT 137 after 7 min (late rerun) | disk free after: 40 GB is not in the fork allowlist; nothing pushed
 == 2026-08-28T00:35:41+08:00 publish == 2026-08-28T00:35:41+08:00 NODE R19b-mechanistic-interpretability-via-learning-differ--ayoakin EXIT 0 after 0 min (late rerun) | disk free after: 40 GB
 publish.sh: == 2026-08-28T00:35:41+08:00 NODE R19b-mechanistic-interpretability-via-learning-differ--ayoakin EXIT 0 after 0 min (late rerun) | disk free after: 40 GB is not in the fork allowlist; nothing pushed
+== 2026-08-28T00:38:29+08:00 publish == 2026-08-28T00:38:29+08:00 NODE R20b-matryoshka-nlas-training-activation-verbalizers---syvb EXIT 2 after 0 min (prep failed)
+publish.sh: == 2026-08-28T00:38:29+08:00 NODE R20b-matryoshka-nlas-training-activation-verbalizers---syvb EXIT 2 after 0 min (prep failed) is not in the fork allowlist; nothing pushed

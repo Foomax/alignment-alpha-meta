@@ -181,3 +181,5 @@
 == 2026-08-28T00:35:24+08:00 NODE R18b-superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron EXIT 137 after 7 min (late rerun) | disk free after: 40 GB
 == 2026-08-28T00:35:25+08:00 NODE R19b-mechanistic-interpretability-via-learning-differ--ayoakin START (late rerun)
 == 2026-08-28T00:35:41+08:00 NODE R19b-mechanistic-interpretability-via-learning-differ--ayoakin EXIT 0 after 0 min (late rerun) | disk free after: 40 GB
+== 2026-08-28T00:35:41+08:00 NODE R20b-matryoshka-nlas-training-activation-verbalizers---syvb START (late rerun)
+== 2026-08-28T00:38:29+08:00 NODE R20b-matryoshka-nlas-training-activation-verbalizers---syvb EXIT 2 after 0 min (prep failed)
