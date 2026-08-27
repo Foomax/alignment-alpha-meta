@@ -1,0 +1,27 @@
+{
+ "post_id": "boB3hJiZijxM3J6Ed",
+ "repo": "ak47na/top_down_vs_bottom_up_mi",
+ "head_sha": "24b2cb90ebb7b08d68fb1106c37a3af17c12378b",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "top-down ~93% relative improvement over bottom-up (~1.93x more effective); hybrid ~35% relative improvement over top-down (~1.85x), 85% for harmful instructions only",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "unclear-entrypoint",
+ "env_fixes": [
+  "auto-installed transformers, jupyter/nbconvert/ipykernel, vllm, litellm (missing modules)"
+ ],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 1.8,
+ "seeds_run": 0,
+ "notes": "evals.ipynb: FileNotFoundError 'COMPLETIONS_PATH' \u2014 needs pre-generated completions + a W&B artifact; early cells reference stale sibling-project paths (spec blockers). Not attempted further: regenerating completions and rewriting cells would change what is run. 11 min incl. installs.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}

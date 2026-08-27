@@ -1,0 +1,25 @@
+{
+ "post_id": "jauWv9BEbdCYcRy2d",
+ "repo": "vaiyr/probe-necessity",
+ "head_sha": "31017ee29feb54bff026ad42f400c86384638635",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": true,
+ "claimed_value": "recovers all 17 causal handles that exist and correctly alarms on the remaining 5",
+ "observed_value": "auto 22/27 (17 recovered + 5 alarmed); lr_cv 18/27; dom 15/27",
+ "delta": null,
+ "tolerance_used": "rel:0.15",
+ "blocking_reason": "none",
+ "env_fixes": [],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 1.9,
+ "seeds_run": 1,
+ "notes": "Exact match of the headline aggregate from results/monitor/autopicker_battery.json (auto [22,5], lr_cv [18,9], dom [15,12]). Two-tier caveat: the script aggregates per-cell ablation results committed in the repo; those were not regenerated from weights (out of budget). No env fixes needed; ran first attempt in <1 min.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}
