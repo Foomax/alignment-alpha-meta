@@ -1,0 +1,29 @@
+{
+ "post_id": "S9xyqRAziRMCcJQmz",
+ "repo": "jaehoonlee0829/cross-model-alignment-geometry",
+ "head_sha": "bfacecff2e21872a839ab4fb1dc54ed901d684f6",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": true,
+ "claimed_value": "cross-family max debiased CKA ~0.18-0.22 (mean 0.05-0.11) vs within-family max 0.914 (mean 0.605); within-family binary classification transfer reaches >90% of target-native accuracy at high rank, cross-family transfer plateaus below target-native and is inconsistent across tasks; cross-family next-token top-1 transfer caps at 4.9% vs within-family 93% of oracle",
+ "observed_value": "C:0.914/0.605 A:0.208/0.053 B:0.222/0.112 (max/mean debiased CKA; perm p=0.002 each); D,E not run",
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "none",
+ "env_fixes": [
+  "PYTHONPATH=<repo root>: scripts/*.py import src.* relative to the repo root; attempt 1 failed at import on every eval with 0 GPU minutes",
+  "HF_HUB_DISABLE_XET=1 and models pre-downloaded over plain HTTP (22 GB, 106 min) after an earlier xet stall on this machine",
+  "requirements.txt installed in full (sae-lens/nnsight resolved); torch 2.6.0+cu124 from the CUDA index"
+ ],
+ "wallclock_minutes": 332.0,
+ "peak_vram_gb": 11.1,
+ "seeds_run": 1,
+ "notes": "TOLERANCE (prompt): cross-family eval reproduces if max CKA within +/-0.05 of README and perm p<0.01; control reproduces if max CKA > 0.85; claim reproduces if all cross-family maxima < 0.30 and control > 0.85. RESULT [MEASURED]: eval C (Llama-1B vs Llama-3B) max 0.9138 mean 0.6045 (README 0.914/0.605); eval A (Llama-1B vs Pythia-1.4B) max 0.2082 mean 0.0531 (0.208/0.053); eval B (Gemma-2-2B vs Qwen2.5-1.5B) max 0.2224 mean 0.1116 (0.222/0.112); corrected permutation tests (500 perms, n=5000) p=0.0020 for max and mean in all three (0.002 is the floor at 500 perms). Within/cross ratio 0.914/0.222 = 4.1x (post: 4-9x). Evals D and E NOT run: budget exhausted after B (UNRESOLVED). Order run C -> A -> B as prescribed (control first). TIMING: C 97 min, A 131 min, B 102 min (the CKA + permutation stages dominate, not extraction; extraction ~5 min/model). B finished 92 min past the 240-min budget because run01.sh time-boxed only the extraction step; the prompt's contingency ('if over budget after A-C, stop there') was applied. Probe-transfer scripts not run (secondary). Reference outputs in the repo match ours to 3 decimals (deterministic pipeline, seed 42). Wallclock in this entry counts run time only; downloads (106 min) and the failed attempt 1 (0 GPU min) excluded.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}

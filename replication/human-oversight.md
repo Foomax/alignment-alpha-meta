@@ -44,3 +44,17 @@ Scorecard so far: 2 rows (AntiPaSTO — did not reproduce; noise‑injection san
 **What needed fixing (nothing scientific).** The repo has no list of required packages, and notebooks run in a fresh sandbox don't have `pip`. The runner now installs those automatically; the first two attempts died on that, the third ran in 3 minutes.
 
 **Needs you?** No.
+
+## 5. Project 01 ("do model families think alike?") — reproduced (14:30)
+
+**What it claims.** Same‑family models look alike inside (0.91), different families barely (≈0.2).
+
+**What we got.** 0.914 for the same‑family pair, 0.208 and 0.222 for the two cross‑family pairs we ran — identical to the post to three decimals. Two of the five pairs weren't run: each pair took ~100 minutes (my estimate was 15 — the similarity statistics, not the model runs, are the slow part) and the protocol's 4‑hour budget ran out. The protocol says the three we ran are enough to test the claim.
+
+**Needs you?** No. If you ever want the last two pairs, it's ~3.5 hours of GPU with everything already downloaded.
+
+## 6. The quick‑project queue is noisy by design (14:30)
+
+Of the first 13 quick projects, 3 ran and 10 failed within seconds. Nearly all failures are *plumbing*: the catalogue's "entrypoint" is sometimes a description ("run `python -m replicate run-fast`…") that the generic runner tries to execute literally; some repos list no dependencies; one needs a package from the author's own GitHub rather than PyPI; one needs 90 minutes, not 45. I'm queuing a second pass with the correct invocation for each. Expect the scorecard to look bad *before* that pass and better after it — the taxonomy records both.
+
+**Needs you?** Not yet. Two projects will likely end as "can't run without external stuff": one expects pre‑generated model completions and a Weights & Biases artifact; one notebook has a typo (`true` instead of `True`) in its own code — fixing an author's code is outside the rules, so it will be logged as `code-bug`.
