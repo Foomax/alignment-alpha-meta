@@ -1,0 +1,29 @@
+{
+ "post_id": "EXj2bYK2rg8TMrncF",
+ "repo": "shivasrightfoot/soo-jailbreak-conceptual-fusion",
+ "head_sha": "c4bf965d0cf3ee51eb826ba33eefec90f00ae81f",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": false,
+ "claimed_value": "~20% (base model) to a little under 90% (conceptual fusion, layer 18, 1/8 retention weight)",
+ "observed_value": "conceptual-fusion LoRA adapter trains and demonstrably bypasses refusals (Qwen-1.5B layer 18); ASR % not isolated (separate eval notebook)",
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "none",
+ "env_fixes": [
+  "Colab google.colab sys.modules stub with __spec__/__path__; --allow-errors"
+ ],
+ "wallclock_minutes": 1.0,
+ "peak_vram_gb": 2.0,
+ "seeds_run": 1,
+ "notes": "PARTIAL (tier=partial): the jailbreak-via-conceptual-fusion method reproduces qualitatively -- the adapter trains cleanly and the adapted model complies with harmful prompts it refuses undisturbed. The quantitative ASR ~20%->~90% is computed by 01_refusal_behavior_testing (not the training entrypoint), and the target's 1/8 retention weight differs from this run's default 1/64. No more requeues per policy.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log",
+  "executed.ipynb"
+ ],
+ "quality_tier": "partial"
+}
