@@ -1,17 +1,17 @@
 {
- "attempted": 20,
- "installs": 19,
- "runs": 14,
- "claim_located": 15,
- "claim_reproduced": 12,
- "reproduction_rate_of_attempted": 0.6,
- "reproduction_rate_of_located": 0.8,
+ "attempted": 24,
+ "installs": 23,
+ "runs": 16,
+ "claim_located": 17,
+ "claim_reproduced": 14,
+ "reproduction_rate_of_attempted": 0.583,
+ "reproduction_rate_of_located": 0.824,
  "failure_taxonomy": {
-  "none": 14,
+  "none": 16,
+  "env": 2,
   "unclear-entrypoint": 2,
-  "env": 1,
+  "runtime": 2,
   "api-key": 1,
-  "runtime": 1,
   "vram": 1
  },
  "median_wallclock_min": 5.0,
@@ -65,6 +65,14 @@
    "delta": -29.2
   },
   {
+   "post_id": "zQqGhKPqaCBZZDCge",
+   "repo": "peppinob-ol/attribution-graph-probing",
+   "runs": true,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
+   "delta": null
+  },
+  {
    "post_id": "Eft6ehAcvR8MxFbsR",
    "repo": "jeffreywilliamportfolio/jlens-basin-swaps",
    "runs": true,
@@ -97,6 +105,14 @@
    "delta": null
   },
   {
+   "post_id": "PagGF8roBJmjLunsX",
+   "repo": "patrickod32/seq2feature",
+   "runs": true,
+   "claim_reproduced": true,
+   "blocking_reason": "none",
+   "delta": null
+  },
+  {
    "post_id": "S9xyqRAziRMCcJQmz",
    "repo": "jaehoonlee0829/cross-model-alignment-geometry",
    "runs": true,
@@ -110,6 +126,14 @@
    "runs": false,
    "claim_reproduced": null,
    "blocking_reason": "runtime",
+   "delta": null
+  },
+  {
+   "post_id": "iDyf7aBdvBp9jnfuY",
+   "repo": "ibm/sae-steering",
+   "runs": false,
+   "claim_reproduced": null,
+   "blocking_reason": "env",
    "delta": null
   },
   {
@@ -166,6 +190,14 @@
    "runs": true,
    "claim_reproduced": null,
    "blocking_reason": "unclear-entrypoint",
+   "delta": null
+  },
+  {
+   "post_id": "wxPvdBwWeaneAsWRB",
+   "repo": "mamiglia/deep-dive-l1h5",
+   "runs": false,
+   "claim_reproduced": null,
+   "blocking_reason": "runtime",
    "delta": null
   },
   {
