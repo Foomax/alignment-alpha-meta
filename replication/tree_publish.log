@@ -118,3 +118,5 @@ publish.sh: creating-interpretable-latent-spaces-with-gradie--g-w1 is not in the
 == 2026-08-27T15:41:44+08:00 tree done
 == 2026-08-27T16:05:46+08:00 publish == 2026-08-27T16:05:46+08:00 NODE R7-unpacking-multimodal-data-leakage-broken-benchma--ai-forever EXIT 0 after 23 min (rerun)
 publish.sh: == 2026-08-27T16:05:46+08:00 NODE R7-unpacking-multimodal-data-leakage-broken-benchma--ai-forever EXIT 0 after 23 min (rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T16:05:48+08:00 publish == 2026-08-27T16:05:47+08:00 NODE R3-features-of-saes-are-universal-but-only-up-to-an--jordanmccann EXIT 2 after 0 min (rerun)
+publish.sh: == 2026-08-27T16:05:47+08:00 NODE R3-features-of-saes-are-universal-but-only-up-to-an--jordanmccann EXIT 2 after 0 min (rerun) is not in the fork allowlist; nothing pushed

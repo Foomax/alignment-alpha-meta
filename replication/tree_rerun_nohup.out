@@ -1,3 +1,7 @@
 == 2026-08-27T15:42:42+08:00 NODE R7-unpacking-multimodal-data-leakage-broken-benchma--ai-forever START (rerun)
 == RUN-EXIT 0 after 23 min
 == 2026-08-27T16:05:46+08:00 NODE R7-unpacking-multimodal-data-leakage-broken-benchma--ai-forever EXIT 0 after 23 min (rerun)
+== 2026-08-27T16:05:46+08:00 NODE R3-features-of-saes-are-universal-but-only-up-to-an--jordanmccann START (rerun)
+== RUN-EXIT 2 after 0 min
+== 2026-08-27T16:05:47+08:00 NODE R3-features-of-saes-are-universal-but-only-up-to-an--jordanmccann EXIT 2 after 0 min (rerun)
+== 2026-08-27T16:05:47+08:00 NODE R5-saes-are-highly-dataset-dependent-a-case-study-o--ckkissane START (rerun)
