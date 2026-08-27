@@ -2,3 +2,5 @@
 == RUN-EXIT 1 after 2 min
 == 2026-08-28T06:07:13+08:00 NODE H36-the-imposters-among-us-function-vectors-that-ace--star2vec EXIT 1 after 2 min (late rerun) | disk free after: 60 GB
 == 2026-08-28T06:07:14+08:00 NODE H57-testing-which-llm-architectures-can-do-hidden-se--filyp START (late rerun)
+== RUN-EXIT 0 after 9 min
+== 2026-08-28T06:17:15+08:00 NODE H57-testing-which-llm-architectures-can-do-hidden-se--filyp EXIT 0 after 9 min (late rerun) | disk free after: 57 GB
