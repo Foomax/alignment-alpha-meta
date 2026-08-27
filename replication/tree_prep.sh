@@ -14,7 +14,7 @@ entry=$(python3 -c "import json;print(json.load(open('$spec')).get('entrypoint')
 { echo "== prep $(date -Is) repo=$repo sha=$sha py=$py"
   if [ ! -d "$src/.git" ]; then git clone -q "https://github.com/$repo" "$src" && git -C "$src" checkout -q "$sha" || { echo "CLONE-FAILED"; exit 1; }; fi
   if [ ! -x "$venv/bin/python" ]; then uv venv -q "$venv" --python "$py" || uv venv -q "$venv" --python 3.11 || { echo "VENV-FAILED"; exit 1; }; fi
-  uv pip install -q --python "$venv/bin/python" pip setuptools wheel
+  uv pip install -q --python "$venv/bin/python" pip "setuptools<81" wheel
   uv pip install -q --python "$venv/bin/python" torch --index-url https://download.pytorch.org/whl/cu124 >/dev/null 2>&1 || echo "TORCH-INSTALL-FAILED (cu124 index)"
   "$venv/bin/python" -c "import torch;print('torch', torch.__version__)" 2>&1 | tail -1
   for f in requirements.txt requirements-dev.txt; do
