@@ -124,3 +124,7 @@ Two projects failed while *installing* their libraries: building a 6 GB sandbox 
 ## 19. `activation_plateau_mechanisms` (mshinkle) — reproduced (22:10)
 
 GPT‑2‑large has "plateaus": as you slide a word‑embedding from one word to another, the model's output stays frozen for a stretch, then jumps. The post says these plateaus are made by the MLP layers, not the attention layers. Test: re‑run with the MLP frozen (the plateau vanishes — the curve becomes a straight ramp) and with attention frozen (the plateau stays). Both plots came out exactly that way; judged by eye since it's a claim about curve shape. One follow‑up analysis (a Jacobian on the full residual stream) ran out of GPU memory on the big model — a side‑claim, left unresolved. I deleted 35 GB of intermediate activation files afterward (the plots are kept). **Needs you?** No.
+
+## 20. `arithmetictransformer` (james-sullivan, grokking stages) — needs multi-hour training, deferred (22:15)
+
+"Grokking" is when a small model memorises the training data fast but only *generalises* much later. The post asks whether, when a model learns two tasks at once, there are extra hidden learning stages. Checking it means training these models for ~6000 epochs each across eight task mixes — hours — because the checkpoints aren't included in the repo. That's outside the "quick project" budget, so it's logged as "too long to run here"; the author's own result graphs are in the repo and look right. **Needs you?** Only if you want to spend the training hours.

@@ -1,0 +1,27 @@
+{
+ "post_id": "ronAKFdTDE7tiZk2c",
+ "repo": "james-sullivan/arithmetictransformer",
+ "head_sha": "4a10f5e13b56222a028bb0c2bc1e96af452203f0",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "no distinct additional developmental stages observed; a single LLC decline across all ratios tested (30-70% addition), though the decline's onset timing shifted earlier for more uneven ratios",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "rel:0.15",
+ "blocking_reason": "runtime",
+ "env_fixes": [
+  "neel-plotly from GitHub; circuitsvis==1.43.2 unresolvable, skipped"
+ ],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 1.6,
+ "seeds_run": 0,
+ "notes": "EstimateLLC.ipynb (the catalogue entrypoint) needs ../saves/check_point_50/*.pth, not committed; regenerating requires GrokkingAdditionMultiplication.ipynb \u2014 full grokking training (~6000 epochs x ~8 ratios), multi-hour, outside the minute budget. Author's committed graphs (combined_loss_llc_training.png, llc_during_training_all.png) are the results; the committed loss graph shows textbook delayed generalization for all ratios. Not regenerated.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}
