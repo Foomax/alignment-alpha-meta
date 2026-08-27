@@ -1,0 +1,29 @@
+{
+ "post_id": "523bkuMjSjKjG8jn6",
+ "repo": "idostik/llm-typos-interpretability",
+ "head_sha": "4f52a47ac2de5851051a68de1bc4a7864fe5be13",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": false,
+ "claimed_value": "only the subword merging head (L0H3) showed a significant impact on logit difference when ablated one-by-one across all attention heads",
+ "observed_value": "L0H3 subword-merging mechanism reproduces (unembeds to 'uer', ablation loss 4.44->5.37); all-heads exclusivity sweep blocked by transformer-lens 3.8 arity error",
+ "delta": null,
+ "tolerance_used": "rel:0.15",
+ "blocking_reason": "none",
+ "env_fixes": [
+  "login() placeholder stubbed; --allow-errors"
+ ],
+ "wallclock_minutes": 40.0,
+ "peak_vram_gb": 1.8,
+ "seeds_run": 1,
+ "notes": "PARTIAL (tier=partial): L0H3-is-the-merging-head mechanism reproduces; the 'only L0H3 significant across all heads' exclusivity claim is in cells 100-102 that raised transformer-lens 3.8.0 'too many values to unpack' (cache/hook arity drift vs the author's version). 101/104 cells ran. No more requeues per policy.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log",
+  "executed.ipynb"
+ ],
+ "quality_tier": "partial"
+}

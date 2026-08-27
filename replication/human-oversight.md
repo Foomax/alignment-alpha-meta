@@ -140,3 +140,7 @@ The claim: a tiny (5 MB) text-only probe can recover what a giant sparse autoenc
 ## 23. codi follow-up (R6c) — the recovery mechanism reproduces, magnitude lower (04:35)
 
 The earlier codi headline (which latent vectors hold the intermediate numbers) reproduced. This follow-up checked the secondary "~20% recovery" figure: patching a different intermediate value into the latent makes the model give the correspondingly changed answer 7.0% of the time, vs 6.2% for same/random patches and 1.5% at baseline — the effect points the right way, but at ~7% not the post's ~20% (sensitive to the exact patch settings). The main result stands. **Needs you?** No.
+
+## 24. `llm-typos` (idostik) — mechanism reproduces, exclusivity blocked (05:15)
+
+Which part of a small model fixes a typo like "comptuer"→"computer"? The post says one specific attention head (layer 0, head 3) does the subword merging, and it's the *only* head that matters. We confirmed the head does the merging (its output points straight at the right completion, and switching it off hurts the model). But the final comparison that proves *only* that head matters is in three cells that crashed on a library version mismatch, so the "only" part is unconfirmed. Counted as a partial. **Needs you?** No.

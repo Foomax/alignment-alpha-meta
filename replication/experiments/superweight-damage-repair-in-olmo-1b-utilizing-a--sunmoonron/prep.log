@@ -6,3 +6,6 @@ hint: `nvidia-cusparse-cu12` (v12.3.1.170) was included because `torch` (v2.6.0+
 == prep 2026-08-28T00:27:34+08:00 repo=sunmoonron/super-weight-circuit-patching sha=dbc14761cd4510b6996de75491e085637cce9c2c py=3.11
 torch 2.6.0+cu124
 == prep done 2026-08-28T00:27:50+08:00 (5.3G)
+== prep 2026-08-28T05:10:15+08:00 repo=sunmoonron/super-weight-circuit-patching sha=dbc14761cd4510b6996de75491e085637cce9c2c py=3.11
+torch 2.6.0+cu124
+== prep done 2026-08-28T05:10:22+08:00 (5.3G)
