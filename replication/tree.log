@@ -15,3 +15,5 @@
 == 2026-08-27T13:03:50+08:00 NODE 4-investigating-sensitive-directions-in-gpt-2-an-i--dajale423 EXIT 1 after 9 min | autofix rounds=3 installed: typeguard e2e-sae
 == 2026-08-27T13:03:51+08:00 NODE 5-saes-are-highly-dataset-dependent-a-case-study-o--ckkissane START
 == 2026-08-27T13:03:56+08:00 NODE 5-saes-are-highly-dataset-dependent-a-case-study-o--ckkissane EXIT 1 after 0 min | autofix rounds=4 installed: ipython plotly einops
+== 2026-08-27T13:03:56+08:00 NODE 6-can-we-interpret-latent-reasoning-using-current---cywinski START
+== 2026-08-27T13:58:33+08:00 NODE 6-can-we-interpret-latent-reasoning-using-current---cywinski EXIT 124 after 54 min | autofix rounds=1
