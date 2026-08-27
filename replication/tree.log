@@ -228,3 +228,4 @@
 == 2026-08-28T05:52:02+08:00 NODE R29d-latent-space-collapse-understanding-the-effects---tenseisoham START (late rerun)
 == 2026-08-28T05:53:54+08:00 NODE R29d-latent-space-collapse-understanding-the-effects---tenseisoham EXIT 0 after 1 min (late rerun) | disk free after: 62 GB
 == 2026-08-28T05:56:14+08:00 TAIL COMPLETE: queue drained (34 experiments ledgered); stopped tree_late.sh
+== 2026-08-28T06:04:13+08:00 NODE H36-the-imposters-among-us-function-vectors-that-ace--star2vec START (late rerun)
