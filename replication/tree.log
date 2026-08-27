@@ -90,3 +90,5 @@
 == 2026-08-27T17:43:49+08:00 NODE R6-can-we-interpret-latent-reasoning-using-current---cywinski EXIT 0 after 52 min (rerun)
 == 2026-08-27T17:43:49+08:00 RERUN PASS DONE
 == 2026-08-27T17:44:38+08:00 NODE R12-tracing-typos-in-llms-my-attempt-at-understandin--idostik START (rerun)
+== 2026-08-27T17:45:26+08:00 NODE R12-tracing-typos-in-llms-my-attempt-at-understandin--idostik EXIT 1 after 0 min (rerun)
+== 2026-08-27T17:45:26+08:00 RERUN PASS 2 DONE
