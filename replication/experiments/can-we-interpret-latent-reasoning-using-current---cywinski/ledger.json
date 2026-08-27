@@ -1,0 +1,27 @@
+{
+ "post_id": "YGAimivLxycZcqRFR",
+ "repo": "cywinski/codi",
+ "head_sha": "f0bf2fa0f5a54c749395a5d095bc406ad18b8efc",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": true,
+ "claim_reproduced": true,
+ "claimed_value": "model recovers ~20% accuracy (from 55% baseline) when patching in latent vectors after mean-ablating specific numbers; patching third/fifth latent vectors with different-intermediate-value vectors notably decreases accuracy while same-value patching leaves accuracy unchanged",
+ "observed_value": "baseline 0.520; diff-value patching delta pos2 -0.300, pos4 -0.225; same-value +0.003..+0.032; other positions ~0",
+ "delta": null,
+ "tolerance_used": "abs:5",
+ "blocking_reason": "none",
+ "env_fixes": [
+  "time-box raised from the catalogue's 45 min to 95 min (author's own per-prompt timing implies ~50 min); HF checkpoint download retried"
+ ],
+ "wallclock_minutes": 45.0,
+ "peak_vram_gb": 4.8,
+ "seeds_run": 1,
+ "notes": "Entrypoint script reproduces the same-vs-different latent patching claim: baseline 0.520 +/- 0.020 (target ~0.55, abs:5 ok); different-value patching collapses accuracy only at latent positions 2 and 4 (-0.300, -0.225), same-value patching leaves it unchanged everywhere. The ~20% mean-ablation recovery figure comes from 5_step2_latent_patching.py (queued separately as R6b). 52 min.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}
