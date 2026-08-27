@@ -1,0 +1,29 @@
+{
+ "post_id": "f6LoBqSKXFZzMYACN",
+ "repo": "tenseisoham/finetuning-mechinterp",
+ "head_sha": "483cc014d5cea7691675d7e4e27389bb9acc660b",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "160.87 (base model) vs 49,802.45 (fine-tuned model)",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "rel:0.15",
+ "blocking_reason": "env",
+ "env_fixes": [
+  "datasets<4, transformers<5, setuptools<81 (insufficient: evaluation_strategy kwarg removed within 4.x)"
+ ],
+ "wallclock_minutes": 1.0,
+ "peak_vram_gb": 1.9,
+ "seeds_run": 0,
+ "notes": "TrainingArguments(evaluation_strategy=...) removed in transformers ~4.46 (now eval_strategy); fine-tune fails, logit-lens cascades (no finetuned_model). Needs transformers ~4.40. env.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log",
+  "executed.ipynb"
+ ],
+ "quality_tier": "n/a"
+}
