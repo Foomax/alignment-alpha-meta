@@ -10,8 +10,6 @@ R31|automated-circuit-interpretation-via-probe-promp--peppinob-ol|30|cd src && .
 R17b|a-black-box-made-less-opaque-part-2--thebuleganteng|50|uv pip install -q --python .venv/bin/python "sae-lens<4" && cd src && ../.venv/bin/python -m jupyter nbconvert --to notebook --execute --allow-errors notebooks/phase_2_semantics_vs_ideas_v2.ipynb --output ../../executed.ipynb --ExecutePreprocessor.timeout=-1
 R19b|mechanistic-interpretability-via-learning-differ--ayoakin|45|cd src/subteams/LLMProbing && PYTHONPATH="$PWD:$PWD/../..:$PWD/../../.." ../../../.venv/bin/python experiments/run_experiment.py
 R21b|competitive-ai-safety-is-the-loss-function-to-ma--patrickod32|60|cd src && ../.venv/bin/python -m jupyter nbconvert --to notebook --execute --allow-errors notebooks/02_evaluate_probe_repl.ipynb --output ../../executed.ipynb --ExecutePreprocessor.timeout=-1
-R5c|saes-are-highly-dataset-dependent-a-case-study-o--ckkissane|45|cd src && ../.venv/bin/python refusal_dir_recons_fidelity_evals.py
-R4c|investigating-sensitive-directions-in-gpt-2-an-i--dajale423|45|uv pip install -q --python .venv/bin/python typeguard && cd src && PYTHONPATH="$PWD:$PWD/../e2e_sae_src" ../.venv/bin/python scripts/sensitive_direction.py
 R13c|the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia|60|uv pip install -q --python .venv/bin/python "sae-lens<6" && cd src && ../.venv/bin/python skew_analysis.py
 R14c|confirming-claims-of-superposition-and-adversari--uchicago-xlab|45|cd src && ../.venv/bin/python -m synth.run
 R25c|jailbreak-patching-with-soo-style-conceptual-fus--shivasrightfoot|60|cd src && ../.venv/bin/python -m jupyter nbconvert --to notebook --execute --allow-errors 02_soo_conceptual_fusion_training_repl.ipynb --output ../executed.ipynb --ExecutePreprocessor.timeout=-1
@@ -24,3 +22,5 @@ R29c|latent-space-collapse-understanding-the-effects---tenseisoham|90|uv pip ins
 R6c|can-we-interpret-latent-reasoning-using-current---cywinski|90|cd src && ../.venv/bin/python prepare_prompts_json.py && ../.venv/bin/python experiments/5_step2_latent_patching.py
 R12c|tracing-typos-in-llms-my-attempt-at-understandin--idostik|50|cd src && ../.venv/bin/python -m jupyter nbconvert --to notebook --execute --allow-errors llm-typo-experiment_repl.ipynb --output ../executed.ipynb --ExecutePreprocessor.timeout=-1
 R18c|superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron|60|cd src && ../.venv/bin/python 04_test_patch.py && ../.venv/bin/python 07_compare_patch.py
+R4d|investigating-sensitive-directions-in-gpt-2-an-i--dajale423|45|[ -d e2e_sae_src ] || git clone -q https://github.com/dajale423/e2e_sae.git e2e_sae_src; uv pip install -q --python .venv/bin/python typeguard && cd src && PYTHONPATH="$PWD:$PWD/../e2e_sae_src" ../.venv/bin/python scripts/sensitive_direction.py
+R5d|saes-are-highly-dataset-dependent-a-case-study-o--ckkissane|45|uv pip install -q --python .venv/bin/python "sae-lens<4" && cd src && ../.venv/bin/python refusal_dir_recons_fidelity_evals.py
