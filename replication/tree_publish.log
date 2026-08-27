@@ -99,3 +99,5 @@ publish.sh: exploring-vocabulary-alignment-of-neurons-in-lla--coolvision is not 
 publish.sh: can-we-teach-a-model-to-encode-a-semantic-featur--phusroyal is not in the fork allowlist; nothing pushed
 == 2026-08-27T15:25:29+08:00 publish investigating-echo-tasks-in-qwen-2-5-1-5b-instru--mild-rgb
 publish.sh: investigating-echo-tasks-in-qwen-2-5-1-5b-instru--mild-rgb is not in the fork allowlist; nothing pushed
+== 2026-08-27T15:26:41+08:00 publish jailbreak-patching-with-soo-style-conceptual-fus--shivasrightfoot
+publish.sh: jailbreak-patching-with-soo-style-conceptual-fus--shivasrightfoot is not in the fork allowlist; nothing pushed
