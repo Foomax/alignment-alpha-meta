@@ -6,3 +6,5 @@ publish.sh: gpt-2-s-ioi-behavior-is-defined-where-the-paper---fractalmachinist i
 publish.sh: features-of-saes-are-universal-but-only-up-to-an--jordanmccann is not in the fork allowlist; nothing pushed
 == 2026-08-27T12:51:11+08:00 publish == 2026-08-27T12:51:11+08:00 NODE 01-cross-model-geometry (attempt 2) EXIT 124
 publish.sh: == 2026-08-27T12:51:11+08:00 NODE 01-cross-model-geometry (attempt 2) EXIT 124 is not in the fork allowlist; nothing pushed
+== 2026-08-27T13:03:50+08:00 publish investigating-sensitive-directions-in-gpt-2-an-i--dajale423
+publish.sh: investigating-sensitive-directions-in-gpt-2-an-i--dajale423 is not in the fork allowlist; nothing pushed

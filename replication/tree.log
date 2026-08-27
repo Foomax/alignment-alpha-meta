@@ -9,3 +9,7 @@
 == 2026-08-27T07:29:04+08:00 NODE 2-gpt-2-s-ioi-behavior-is-defined-where-the-paper---fractalmachinist EXIT 0 after 3 min | autofix rounds=2 installed: transformer-lens jupyter nbconvert ipykernel scipy
 == 2026-08-27T07:29:04+08:00 NODE 3-features-of-saes-are-universal-but-only-up-to-an--jordanmccann START
 == 2026-08-27T12:51:11+08:00 NODE 01-cross-model-geometry (attempt 2) EXIT 124
+== 2026-08-27T12:51:27+08:00 NODE 3-features-of-saes-are-universal-but-only-up-to-an--jordanmccann START
+== 2026-08-27T12:54:25+08:00 NODE 3-features-of-saes-are-universal-but-only-up-to-an--jordanmccann EXIT 2 after 2 min | autofix rounds=1
+== 2026-08-27T12:54:25+08:00 NODE 4-investigating-sensitive-directions-in-gpt-2-an-i--dajale423 START
+== 2026-08-27T13:03:50+08:00 NODE 4-investigating-sensitive-directions-in-gpt-2-an-i--dajale423 EXIT 1 after 9 min | autofix rounds=3 installed: typeguard e2e-sae
