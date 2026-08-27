@@ -34,3 +34,5 @@ publish.sh: matryoshka-sparse-autoencoders--noanabeshima is not in the fork allo
 publish.sh: an-induction-head-in-disguise-chasing-grammar-in--ameya-bit is not in the fork allowlist; nothing pushed
 == 2026-08-27T14:46:45+08:00 publish a-black-box-made-less-opaque-part-2--thebuleganteng
 publish.sh: a-black-box-made-less-opaque-part-2--thebuleganteng is not in the fork allowlist; nothing pushed
+== 2026-08-27T15:03:41+08:00 publish superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron
+publish.sh: superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron is not in the fork allowlist; nothing pushed
