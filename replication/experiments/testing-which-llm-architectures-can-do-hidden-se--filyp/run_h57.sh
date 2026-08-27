@@ -8,12 +8,17 @@ set -o pipefail
 cd "$(dirname "$0")/src" || exit 9
 PY=../.venv/bin/python ; PIP="../.venv/bin/pip"
 export HF_HUB_DISABLE_XET=1 WANDB_MODE=disabled TOKENIZERS_PARALLELISM=false CUDA_HOME=/usr
+# force SOURCE build of the CUDA extensions against the installed torch. Prebuilt wheels ABI-mismatch
+# (undefined symbol _ZN3c104cuda... = wheel built for a different torch). MAX_JOBS bounds compile RAM.
+export MAMBA_FORCE_BUILD=TRUE CAUSAL_CONV1D_FORCE_BUILD=TRUE MAMBA_SKIP_CUDA_BUILD=FALSE MAX_JOBS=4
 echo "=== build deps ==="
 $PIP install -q wheel packaging ninja setuptools 2>&1 | tail -1
 $PIP install -q -r prerequirements.txt 2>&1 | tail -1
-echo "=== build causal-conv1d + mamba-ssm (--no-build-isolation, CUDA_HOME=$CUDA_HOME) ==="
-$PIP install -q --no-build-isolation causal-conv1d 2>&1 | tail -3
-$PIP install -q --no-build-isolation mamba-ssm 2>&1 | tail -4
+$PIP install -q "torch==2.4.0" 2>&1 | tail -1   # pin: mamba-ssm builds cleanly against 2.4; nvcc 12.0 compatible
+echo "torch:"; $PY -c "import torch;print(torch.__version__,'cuda',torch.version.cuda,'abi',torch._C._GLIBCXX_USE_CXX11_ABI)" 2>&1 | tail -1
+echo "=== SOURCE-build causal-conv1d + mamba-ssm (--no-build-isolation + FORCE_BUILD, CUDA_HOME=$CUDA_HOME) ==="
+$PIP install -q --no-build-isolation --no-binary causal-conv1d causal-conv1d 2>&1 | tail -4
+$PIP install -q --no-build-isolation --no-binary mamba-ssm mamba-ssm 2>&1 | tail -5
 $PIP install -q wandb accelerate ipykernel 2>&1 | tail -1
 $PY -c "import mamba_ssm; print('mamba_ssm import OK')" || { echo "BUILD-FAIL: mamba_ssm not importable"; exit 3; }
 cp sneaky_mamba/doublethink_train.py sneaky_mamba/_dt_base.py

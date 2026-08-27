@@ -152,3 +152,16 @@ This one deletes a single critical weight in a 1-billion-parameter model (which 
 ## 26. `soo-jailbreak-conceptual-fusion` (shivasrightfoot) — method reproduces, ASR% not isolated (05:35)
 
 This is published safety research documenting a jailbreak: a small fine-tune ("conceptual fusion") that makes a model answer harmful requests it would normally refuse. The training ran cleanly and the resulting model does bypass its refusals on the test prompts — so the method reproduces. The specific success-rate number (~20%→~90%) is measured by a separate evaluation notebook (not the training one), and the run used a different retention setting than the headline quotes, so the percentage itself isn't confirmed here. Counted as partial. **Needs you?** No.
+
+## 27. `tarcle` imposter function vectors (star2vec) — H36c — REPRODUCED (recompute)
+
+**ELI5.** A "function vector" is a little direction you can add inside a model to make it do a task
+(here: "shift a month forward by k"). This project's claim: vectors that look great when tested on the
+SAME narrow set of examples they were built from are *imposters* — on a wider set they fall apart.
+We re-ran the author's committed analysis. It reproduced: on the rich 12-month set the vector scores
+**+0.35** (good); on the cramped September–December set it scores **−1.00** (total collapse) — exactly
+their number. Meanwhile a separate behavioral check says the vectors DO ace the narrow task ("GO") —
+which is the whole point: they ace it, then fail to generalise. Imposters, confirmed.
+
+**No human action needed.** Two of the analysis steps "failed" only because the author's code politely
+refuses to overwrite its own saved results — the numbers were computed fine. Nothing to fix.
