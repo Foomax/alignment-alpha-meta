@@ -1,0 +1,2 @@
+AUTOFIX round 1: uv pip install einops jupyter nbconvert ipykernel
+AUTOFIX round 2: uv pip install transformer-lens

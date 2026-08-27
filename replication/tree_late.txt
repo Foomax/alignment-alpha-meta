@@ -4,3 +4,4 @@ R18|superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron|90|cd src && ..
 R19|mechanistic-interpretability-via-learning-differ--ayoakin|45|cd src/subteams/LLMProbing && PYTHONPATH="$PWD:$PWD/../..:$PWD/../../.." ../../../.venv/bin/python experiments/run_experiment.py
 R20|matryoshka-nlas-training-activation-verbalizers---syvb|70|cd src/experiments/qwen2.5-matryoshka-warmstart-sonnet46/fve_truncation_sweep && PATH="$PWD/../../../../.venv/bin:$PATH" bash setup_box.sh && python sweep_fve.py && python plot.py
 R21|competitive-ai-safety-is-the-loss-function-to-ma--patrickod32|45|cd src && ../.venv/bin/python -m jupyter nbconvert --to notebook --execute notebooks/02_evaluate_probe_repl.ipynb --output ../../executed.ipynb --ExecutePreprocessor.timeout=-1
+R23|can-we-teach-a-model-to-encode-a-semantic-featur--phusroyal|60|cd src && uv sync -q && uv run python -m src.predefined_manifold run --device cuda
