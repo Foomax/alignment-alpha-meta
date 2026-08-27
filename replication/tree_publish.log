@@ -126,3 +126,5 @@ publish.sh: == 2026-08-27T16:05:49+08:00 NODE R5-saes-are-highly-dataset-depende
 publish.sh: == 2026-08-27T16:05:51+08:00 NODE R14-confirming-claims-of-superposition-and-adversari--uchicago-xlab EXIT 1 after 0 min (rerun) is not in the fork allowlist; nothing pushed
 == 2026-08-27T16:50:51+08:00 publish == 2026-08-27T16:50:51+08:00 NODE R13-the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia EXIT 124 after 45 min (rerun)
 publish.sh: == 2026-08-27T16:50:51+08:00 NODE R13-the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia EXIT 124 after 45 min (rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T16:50:53+08:00 publish == 2026-08-27T16:50:51+08:00 NODE R10-developmental-stages-in-multi-problem-grokking--james-sullivan EXIT 1 after 0 min (rerun)
+publish.sh: == 2026-08-27T16:50:51+08:00 NODE R10-developmental-stages-in-multi-problem-grokking--james-sullivan EXIT 1 after 0 min (rerun) is not in the fork allowlist; nothing pushed
