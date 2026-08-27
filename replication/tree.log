@@ -133,3 +133,4 @@
 == 2026-08-27T17:55:55+08:00 NODE R29-latent-space-collapse-understanding-the-== 2026-08-27T17:58:10+08:00 DISK FULL EVENT: / hit 100% at ~17:54; every late-queue entry from R17 to R32 failed in 0 s (not real results); queue stopped, done-list reset to R15 only, venvs of ledgered experiments deleted, 4 cross-model HF models + activation dumps deleted (re-downloadable)
 == 2026-08-27T17:59:11+08:00 NODE R17-a-black-box-made-less-opaque-part-2--thebuleganteng START (late rerun)
 == 2026-08-27T18:11:37+08:00 NODE R17-a-black-box-made-less-opaque-part-2--thebuleganteng EXIT 1 after 0 min (late rerun) | disk free after: 59 GB
+== 2026-08-27T18:11:37+08:00 NODE R18-superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron START (late rerun)
