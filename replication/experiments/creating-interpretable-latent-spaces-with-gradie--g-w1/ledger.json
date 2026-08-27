@@ -1,0 +1,25 @@
+{
+ "post_id": "8zDjhJNoFhMuHB5Kc",
+ "repo": "g-w1/gradient-routed-vae",
+ "head_sha": "a644302f8abf5c15541380bff7068bf615f1d319",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "92.58%",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "abs:5",
+ "blocking_reason": "runtime",
+ "env_fixes": [],
+ "wallclock_minutes": 120.0,
+ "peak_vram_gb": 1.9,
+ "seeds_run": 0,
+ "notes": "vae.py trains 30 VAEs x 100 epochs + a classifier; ~2 VAEs done in 120 min, never reached the accuracy print. Timed out at 60 and 120 min. Catalogue 'minutes' wrong; target 92.58% needs the full pipeline. Env fine.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}
