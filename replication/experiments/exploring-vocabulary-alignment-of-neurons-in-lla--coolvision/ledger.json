@@ -1,0 +1,28 @@
+{
+ "post_id": "nnHnNdHLhbrnmEXDr",
+ "repo": "coolvision/interp",
+ "head_sha": "cfe19a1b18d1055c6e9a838eecab3c59ec288c50",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": true,
+ "claimed_value": "non-symmetric, long-tailed distribution with a significant number of neurons strongly aligned to vocabulary; alignment more prevalent in later layers",
+ "observed_value": "late blocks 10-15: 3-13.5% of neurons > 3x median max-dot, p99 0.32-0.47, max 0.60; early blocks 0-8: ~0%, p99 <= 0.15; skew > 0 all blocks",
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "none",
+ "env_fixes": [
+  "no dependency list usable by the runner: auto-installed plotly, jupyter/nbconvert/ipykernel, transformers, transformer-lens (3 rounds)"
+ ],
+ "wallclock_minutes": 10.0,
+ "peak_vram_gb": 8.3,
+ "seeds_run": 1,
+ "notes": "Qualitative target (long-tailed, non-symmetric max-dot distribution; alignment more prevalent in later layers). Quantified from the executed notebook's plotly traces (binary bdata decoded): per-block stats listed in the VERDICT; the late/early contrast is large (3-13.5% vs ~0% of neurons beyond 3x the block median). TransformerLens deprecation warnings only. 11 min.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log",
+  "executed.ipynb"
+ ]
+}

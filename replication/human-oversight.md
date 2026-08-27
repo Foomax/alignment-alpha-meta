@@ -72,3 +72,7 @@ A tiny character‑level model trained on Nietzsche; the post says one attention
 - **19 `mivlde`**: the script imports its own folder by name and needs that folder on the Python path — the same one‑line fix as project 01.
 
 **Needs you?** No. Pattern for the record: the catalogue's "entrypoint" field is a *pointer to where the headline number is computed*, not a runnable command; about half the quick projects need a human‑written invocation. That's now the second pass's job.
+
+## 9. Quick project `interp` (coolvision, "neurons that point at words") — reproduced (15:25)
+
+Some neurons inside Llama‑3.2‑1B point almost directly at a specific word in the output vocabulary (one points at "coming"); most don't. The post says this "pointing" is rare, lopsided, and mostly in the later layers. We see exactly that: in the early layers essentially no neuron stands out; in the last six layers 3–13 % of neurons stand far out. The plots were interactive (plotly), so I read the numbers straight out of the figure data. **Needs you?** No.
