@@ -142,3 +142,23 @@ publish.sh: == 2026-08-27T17:53:59+08:00 NODE R15-matryoshka-sparse-autoencoders
 publish.sh: == 2026-08-27T17:55:03+08:00 NODE R17-a-black-box-made-less-opaque-part-2--thebuleganteng EXIT 1 after 1 min (late rerun) is not in the fork allowlist; nothing pushed
 == 2026-08-27T17:55:44+08:00 publish == 2026-08-27T17:55:44+08:00 NODE R18-superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron EXIT 1 after 0 min (late rerun)
 publish.sh: == 2026-08-27T17:55:44+08:00 NODE R18-superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron EXIT 1 after 0 min (late rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T17:55:47+08:00 publish == 2026-08-27T17:55:46+08:00 NODE R19-mechanistic-interpretability-via-learning-differ--ayoakin EXIT 1 after 0 min (late rerun)
+publish.sh: == 2026-08-27T17:55:46+08:00 NODE R19-mechanistic-interpretability-via-learning-differ--ayoakin EXIT 1 after 0 min (late rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T17:55:47+08:00 publish == 2026-08-27T17:55:47+08:00 NODE R20-matryoshka-nlas-training-activation-verbalizers---syvb EXIT 2 after 0 min (late rerun)
+publish.sh: == 2026-08-27T17:55:47+08:00 NODE R20-matryoshka-nlas-training-activation-verbalizers---syvb EXIT 2 after 0 min (late rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T17:55:49+08:00 publish == 2026-08-27T17:55:49+08:00 NODE R21-competitive-ai-safety-is-the-loss-function-to-ma--patrickod32 EXIT 1 after 0 min (late rerun)
+publish.sh: == 2026-08-27T17:55:49+08:00 NODE R21-competitive-ai-safety-is-the-loss-function-to-ma--patrickod32 EXIT 1 after 0 min (late rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T17:55:49+08:00 publish == 2026-08-27T17:55:49+08:00 NODE R23-can-we-teach-a-model-to-encode-a-semantic-featur--phusroyal EXIT 2 after 0 min (late rerun)
+publish.sh: == 2026-08-27T17:55:49+08:00 NODE R23-can-we-teach-a-model-to-encode-a-semantic-featur--phusroyal EXIT 2 after 0 min (late rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T17:55:52+08:00 publish == 2026-08-27T17:55:52+08:00 NODE R3b-features-of-saes-are-universal-but-only-up-to-an--jordanmccann EXIT 1 after 0 min (late rerun)
+publish.sh: == 2026-08-27T17:55:52+08:00 NODE R3b-features-of-saes-are-universal-but-only-up-to-an--jordanmccann EXIT 1 after 0 min (late rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T17:55:53+08:00 publish == 2026-08-27T17:55:53+08:00 NODE R4b-investigating-sensitive-directions-in-gpt-2-an-i--dajale423 EXIT 1 after 0 min (late rerun)
+publish.sh: == 2026-08-27T17:55:53+08:00 NODE R4b-investigating-sensitive-directions-in-gpt-2-an-i--dajale423 EXIT 1 after 0 min (late rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T17:55:53+08:00 publish == 2026-08-27T17:55:53+08:00 NODE R5b-saes-are-highly-dataset-dependent-a-case-study-o--ckkissane EXIT 2 after 0 min (late rerun)
+publish.sh: == 2026-08-27T17:55:53+08:00 NODE R5b-saes-are-highly-dataset-dependent-a-case-study-o--ckkissane EXIT 2 after 0 min (late rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T17:55:53+08:00 publish == 2026-08-27T17:55:53+08:00 NODE R8b-activation-plateaus-where-and-how-they-emerge--mshinkle EXIT 2 after 0 min (late rerun)
+publish.sh: == 2026-08-27T17:55:53+08:00 NODE R8b-activation-plateaus-where-and-how-they-emerge--mshinkle EXIT 2 after 0 min (late rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T17:55:53+08:00 publish == 2026-08-27T17:55:53+08:00 NODE R10b-developmental-stages-in-multi-problem-grokking--james-sullivan EXIT 2 after 0 min (late rerun)
+publish.sh: == 2026-08-27T17:55:53+08:00 NODE R10b-developmental-stages-in-multi-problem-grokking--james-sullivan EXIT 2 after 0 min (late rerun) is not in the fork allowlist; nothing pushed
+== 2026-08-27T17:55:54+08:00 publish == 2026-08-27T17:55:54+08:00 NODE R13b-the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia EXIT 1 after 0 min (late rerun)
+publish.sh: == 2026-08-27T17:55:54+08:00 NODE R13b-the-self

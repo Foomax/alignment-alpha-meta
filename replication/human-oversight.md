@@ -96,3 +96,11 @@ A model that "thinks" in six hidden vectors instead of words. The post says the 
 ## 13. `matryoshka-saes` (noanabeshima) — reproduced on the toy model (17:58)
 
 Sparse autoencoders sometimes learn "holes": a feature for *child* concepts secretly also carries the *parent* concept. The post's trick (train on random prefixes of the dictionary) is claimed to remove the holes in a toy setting. Vanilla: all 9 child features show the hole (only 0.66–0.75 match to their true direction, 0.7 leaking to the parent). Matryoshka: every feature ≥ 0.92 to its own direction, nothing leaking. The second half of the post (real language‑model results) has no code in the repo, so it can't be checked. First attempt crashed on the author's own missing `import` — fixed in a copy. **Needs you?** No.
+
+## 14. Incident: the disk filled up (17:54) — no results lost, one hour of queue time wasted (18:10)
+
+**What happened.** Each quick project gets its own Python sandbox (~4 GB each, mostly the GPU libraries). Twenty‑odd of them, plus 44 GB of downloaded models, filled the system drive to 100 %. Every queued rerun then "failed" in under a second — those lines in the log from 17:55 are not real results and have been reset.
+
+**What I did.** Deleted the sandboxes of projects already scored (they can be rebuilt in minutes), deleted four re‑downloadable models and 4 GB of raw activation dumps from project 01 (its results are kept), and changed the queue so it builds one sandbox, runs, then deletes it — at most one on disk at any time — and refuses to start if less than 12 GB is free. Free space now ≈ 90 GB.
+
+**Needs you?** Only if you want the 44 GB of model downloads kept off the system drive permanently: the Hugging Face cache can't live on the NTFS drive (it uses symlinks), but it could live on any ext4/xfs volume via `HF_HOME=<path>`. Not required for the queue to finish.
