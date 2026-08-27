@@ -62,3 +62,13 @@ Of the first 13 quick projects, 3 ran and 10 failed within seconds. Nearly all f
 ## 7. Quick project `quotesbyniche` (ameya-bit, "an induction head in disguise") — reproduced exactly (14:50)
 
 A tiny character‑level model trained on Nietzsche; the post says one attention head is a "copying" head (score 0.615, everyone else ≤ 0.35) whose weights also nudge `)` after `(`. We got 0.615, 0.347 and the same bracket nudges (+0.556 / −0.105). Nothing needed fixing. **Needs you?** No.
+
+## 8. Nodes 15–19: mostly plumbing again, one new pattern (15:10)
+
+- **15 `matryoshka-saes`**: trained its toy models for 11 min, then crashed on a line that uses a library the notebook never imported (`F.normalize`). Same class as the fix in project 03 — a missing `import` line, nothing measured changes. Re‑running with that one line added.
+- **16 `quotesbyniche`**: reproduced exactly (see §7).
+- **17 `interpretability-prototyping`**: needed five packages; my auto‑fixer allows three rounds. Re‑running with the last one installed.
+- **18 `super-weight-circuit-patching`**: the catalogue's entrypoint is step 7 of a 7‑step pipeline; steps 1 and 3 produce the files it reads. Re‑running the chain (author ran it on CPU; ~30 min).
+- **19 `mivlde`**: the script imports its own folder by name and needs that folder on the Python path — the same one‑line fix as project 01.
+
+**Needs you?** No. Pattern for the record: the catalogue's "entrypoint" field is a *pointer to where the headline number is computed*, not a runnable command; about half the quick projects need a human‑written invocation. That's now the second pass's job.
