@@ -1,0 +1,25 @@
+{
+ "post_id": "oSAiKTpQjjKmeeTvT",
+ "repo": "ai-forever/data_leakage_detect",
+ "head_sha": "dedaa5e53976fcaec6795fd23a72f3265983f700",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": true,
+ "claimed_value": "AUC \u2248 98.6%",
+ "observed_value": "0.9887",
+ "delta": -97.6113,
+ "tolerance_used": "abs:5",
+ "blocking_reason": "none",
+ "env_fixes": [],
+ "wallclock_minutes": 23.0,
+ "peak_vram_gb": 1.9,
+ "seeds_run": 1,
+ "notes": "Headline config: --dataset vl_mia_img_Flickr_2k --attack bag_of_visual_words -> AUC 0.9887 +/- 0.0027 (target 98.6, abs:5); random-split control 0.4922. The pass-1 default invocation (bookmia / bag_of_words, AUC 0.9119) measured a different benchmark. HF dataset downloads were flaky (several HTTPSConnectionPool errors, then success); 23 min.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}

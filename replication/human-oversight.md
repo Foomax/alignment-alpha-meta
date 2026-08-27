@@ -80,3 +80,11 @@ Some neurons inside Llama‑3.2‑1B point almost directly at a specific word in
 ## 10. Quick project `qwen-2.5-1.5b-echo_repeat-investigation` (mild-rgb) — reproduced, with a footnote (15:30)
 
 When Qwen‑1.5B is asked to just repeat a word, the post says one particular attention head (head 2) is always among the three most important, across 44 words and two phrasings, and that it mostly stares at the very first token. We get head 2 in the top three 44 out of 44 times, both phrasings. The "stares at the first token ~90 %" part is true for most words and ~77 % on average. Footnote: a different importance measure (direct logit attribution) ranks other heads — the post's claim is about the ablation measure, so this is consistent, but a reader should know the two measures disagree. **Needs you?** No.
+
+## 11. Resumed 16:56 — mirror to the external drive, and the big second pass (17:05)
+
+**Mirror.** Everything now also lives at `/media/user/466CD2B96CD2A34B/home/alignment-replication-3090-2026-08/` (the whole meta‑analysis repo minus rebuildable Python sandboxes — the drive is NTFS and can't hold their symlinks — plus the `~/prompts` folder and my memory notes). It re‑syncs every 10 minutes (`last-mirror.txt` shows when). Stop it with `touch mirror.stop` in that folder.
+
+**While paused, the oven kept baking.** Pass 1 finished all 31 quick projects; the first rerun pass ran 8 of its 9. Score of the reruns: 1 clean success (`data_leakage_detect` with the headline dataset: AUC 0.989 vs claimed 0.986 ✓), 7 more one‑package‑short failures. The fix for that class is now automatic: a scanner reads every `import` in a repo and installs the whole list before running (`tree_imports.py`). Nineteen reruns are queued behind the one job on the GPU now (`codi`, ~95 min).
+
+**Needs you?** No. One thing to know: two projects will likely end as "can't run here" for reasons no fix addresses — `soo-jailbreak` imports `google.colab` (Colab Drive), and `attribution-graph-probing` regenerates its graphs through a paid Neuronpedia API (though its committed graphs may suffice — trying).
