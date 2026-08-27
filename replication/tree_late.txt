@@ -1,1 +1,2 @@
 R15|matryoshka-sparse-autoencoders--noanabeshima|50|cd src && ../.venv/bin/python -m jupyter nbconvert --to notebook --execute train_saes_on_toy_repl.ipynb --output ../executed.ipynb --ExecutePreprocessor.timeout=-1
+R17|a-black-box-made-less-opaque-part-2--thebuleganteng|50|uv pip install -q --python .venv/bin/python sae-lens && cd src && ../.venv/bin/python -m jupyter nbconvert --to notebook --execute notebooks/phase_2_semantics_vs_ideas_v2.ipynb --output ../../executed.ipynb --ExecutePreprocessor.timeout=-1
