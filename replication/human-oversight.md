@@ -120,3 +120,7 @@ Train the same small model twice with different random seeds: do they learn the 
 ## 18. Disk pressure again (21:25) — two nodes lost to it, recovered
 
 Two projects failed while *installing* their libraries: building a 6 GB sandbox while unpacking big packages briefly needs ~15 GB of scratch, and the drive was too tight. I freed 16 GB by deleting downloaded models belonging to projects already scored (they re-download in minutes if ever needed), and raised the queue's safety margin. Both projects are requeued. One of them (`error_pathology`) was also dragging in a second copy of PyTorch because a helper library pins an old version — I switched it to load that library in place instead. **Needs you?** No.
+
+## 19. `activation_plateau_mechanisms` (mshinkle) — reproduced (22:10)
+
+GPT‑2‑large has "plateaus": as you slide a word‑embedding from one word to another, the model's output stays frozen for a stretch, then jumps. The post says these plateaus are made by the MLP layers, not the attention layers. Test: re‑run with the MLP frozen (the plateau vanishes — the curve becomes a straight ramp) and with attention frozen (the plateau stays). Both plots came out exactly that way; judged by eye since it's a claim about curve shape. One follow‑up analysis (a Jacobian on the full residual stream) ran out of GPU memory on the big model — a side‑claim, left unresolved. I deleted 35 GB of intermediate activation files afterward (the plots are kept). **Needs you?** No.

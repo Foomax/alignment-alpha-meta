@@ -1,0 +1,27 @@
+{
+ "post_id": "WMfSbt7AAcJdHzysB",
+ "repo": "mshinkle/activation_plateau_mechanisms",
+ "head_sha": "4222c3efb77fe7983676cf96b3254dc000e8a0bc",
+ "attempted_at": "2026-08-27",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": true,
+ "claim_reproduced": true,
+ "claimed_value": "freezing MLP block outputs completely eliminates plateaus; freezing attention block outputs has relatively small effect",
+ "observed_value": "MLP-frozen eliminates the logits plateau (curve -> diagonal); attention-frozen preserves it (== normal); GPT-2-large",
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "none",
+ "env_fixes": [
+  "bash -e full_experiment.sh with the venv on PATH (spec entrypoint was the .sh with a trailing description)"
+ ],
+ "wallclock_minutes": 23.0,
+ "peak_vram_gb": null,
+ "seeds_run": 1,
+ "notes": "Headline reproduced from the relative_distances_logits plots: normal has the plateau, MLP-frozen collapses to a straight diagonal (plateau gone), attention-frozen keeps it. Judged visually (qualitative claim, tolerance manual). Only the final jacobians_full_residual.py OOM'd on 24 GB (GPT-2-large full-residual vmap Jacobian) -> the Jacobian-boundary sub-claim is UNRESOLVED. 23 min.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}
