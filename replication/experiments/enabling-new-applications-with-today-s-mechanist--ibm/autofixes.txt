@@ -1,0 +1,2 @@
+AUTOFIX round 1: uv pip install sparse-autoencoder
+AUTOFIX round 2: uv pip install jaxtyping
