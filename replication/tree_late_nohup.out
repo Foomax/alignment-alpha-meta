@@ -121,3 +121,6 @@
 == RUN-EXIT 0 after 40 min
 == 2026-08-28T05:10:14+08:00 NODE R12c-tracing-typos-in-llms-my-attempt-at-understandin--idostik EXIT 0 after 40 min (late rerun) | disk free after: 69 GB
 == 2026-08-28T05:10:15+08:00 NODE R18c-superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron START (late rerun)
+./tree_late.sh: line 13: 767512 Killed                  ( cd "$d" && timeout "${tmo}m" bash -c "$cmd" ) >> "$d/run.log" 2>&1
+== RUN-EXIT 137 after 10 min
+== 2026-08-28T05:20:52+08:00 NODE R18c-superweight-damage-repair-in-olmo-1b-utilizing-a--sunmoonron EXIT 137 after 10 min (late rerun) | disk free after: 70 GB
