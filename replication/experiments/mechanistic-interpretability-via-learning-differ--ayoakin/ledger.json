@@ -1,0 +1,27 @@
+{
+ "post_id": "qdxNsbY5kYNqcgzFb",
+ "repo": "ayoakin/mivlde",
+ "head_sha": "36046d46cbf23995f72b7cd3e55db22d5dca1696",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "probes successfully predicted the time-point of maximum derivative but not its value; R^2-score probes performed poorly overall (best layer index 7, Spearman coefficient 0.75); eigenvalue-prediction probes performed worse than coefficient-prediction probes, evidence against the eigenvalue hypothesis",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "rel:0.15",
+ "blocking_reason": "unclear-entrypoint",
+ "env_fixes": [
+  "per-package requirements/import install (atomic batch failed on unresolvable 'mishax'); PYTHONPATH set to LLMProbing/parent/root"
+ ],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 2.1,
+ "seeds_run": 0,
+ "notes": "run_experiment.py is a function library (no __main__), needs a pre-computed activations dataset not in the repo; no orchestrating entrypoint. Matches spec blocker (fragmented ~10 notebooks). Exits 0 with no output when run directly.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}
