@@ -111,3 +111,6 @@
 == 2026-08-28T01:47:52+08:00 NODE R32c-creating-interpretable-latent-spaces-with-gradie--g-w1 START (late rerun)
 == RUN-EXIT 124 after 120 min
 == 2026-08-28T03:47:55+08:00 NODE R32c-creating-interpretable-latent-spaces-with-gradie--g-w1 EXIT 124 after 120 min (late rerun) | disk free after: 38 GB
+== 2026-08-28T03:47:55+08:00 NODE R29c-latent-space-collapse-understanding-the-effects---tenseisoham START (late rerun)
+== RUN-EXIT 255 after 0 min
+== 2026-08-28T03:48:07+08:00 NODE R29c-latent-space-collapse-understanding-the-effects---tenseisoham EXIT 255 after 0 min (late rerun) | disk free after: 38 GB
