@@ -32,3 +32,6 @@
 == 2026-08-27T21:45:25+08:00 NODE R10b-developmental-stages-in-multi-problem-grokking--james-sullivan START (late rerun)
 == RUN-EXIT 1 after 0 min
 == 2026-08-27T21:56:44+08:00 NODE R10b-developmental-stages-in-multi-problem-grokking--james-sullivan EXIT 1 after 0 min (late rerun) | disk free after: 63 GB
+== 2026-08-27T21:56:44+08:00 NODE R13b-the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia START (late rerun)
+== RUN-EXIT 1 after 0 min
+== 2026-08-27T21:57:04+08:00 NODE R13b-the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia EXIT 1 after 0 min (late rerun) | disk free after: 63 GB
