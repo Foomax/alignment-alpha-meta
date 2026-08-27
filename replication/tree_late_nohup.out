@@ -7,3 +7,4 @@
 == 2026-08-27T18:55:28+08:00 NODE R19-mechanistic-interpretability-via-learning-differ--ayoakin START (late rerun)
 == RUN-EXIT 1 after 0 min
 == 2026-08-27T18:57:40+08:00 NODE R19-mechanistic-interpretability-via-learning-differ--ayoakin EXIT 1 after 0 min (late rerun) | disk free after: 86 GB
+== 2026-08-27T18:57:40+08:00 NODE R20-matryoshka-nlas-training-activation-verbalizers---syvb START (late rerun)
