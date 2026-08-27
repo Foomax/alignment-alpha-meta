@@ -1,0 +1,28 @@
+{
+ "post_id": "ifbNtv8QbNBrYFSSv",
+ "repo": "sunmoonron/super-weight-circuit-patching",
+ "head_sha": "dbc14761cd4510b6996de75491e085637cce9c2c",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "17.4 (original) -> 2884.3 (ablated) -> 25.2 (patched); ~93% recovery",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "vram",
+ "env_fixes": [
+  "DEVICE cpu->cuda (did not help: state_dict load is on CPU)"
+ ],
+ "wallclock_minutes": 10.0,
+ "peak_vram_gb": 2.5,
+ "seeds_run": 0,
+ "notes": "07_compare_patch.py loads 3x fp32 OLMo-1B state dicts (~13 GB) + overhead into 31 GB RAM for the merge/compare -> SIGKILL(137) on both device settings. bf16 would fit but change the measured perplexity (author chose fp32). Steps 01/03 (checkpoint + LoRA patch) trained fine at R18's first attempt. System-RAM constrained.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ],
+ "quality_tier": "n/a"
+}

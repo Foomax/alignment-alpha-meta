@@ -144,3 +144,7 @@ The earlier codi headline (which latent vectors hold the intermediate numbers) r
 ## 24. `llm-typos` (idostik) — mechanism reproduces, exclusivity blocked (05:15)
 
 Which part of a small model fixes a typo like "comptuer"→"computer"? The post says one specific attention head (layer 0, head 3) does the subword merging, and it's the *only* head that matters. We confirmed the head does the merging (its output points straight at the right completion, and switching it off hurts the model). But the final comparison that proves *only* that head matters is in three cells that crashed on a library version mismatch, so the "only" part is unconfirmed. Counted as a partial. **Needs you?** No.
+
+## 25. `super-weight-circuit-patching` (sunmoonron) — out of RAM (05:25)
+
+This one deletes a single critical weight in a 1-billion-parameter model (which wrecks it), then patches it back. The final comparison step loads three full copies of the model at once into main memory (not the graphics card), which needs more than the 31 GB this machine has — it gets killed. Using half-precision would fit but would slightly change the numbers, so I left it. The training steps worked; only the three-way comparison is blocked. **Needs you?** Only if you want it run on a bigger-RAM box.
