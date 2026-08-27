@@ -1,0 +1,7 @@
+AUTOFIX round 1: uv pip install transformer-lens jupyter nbconvert ipykernel
+AUTOFIX round 2: uv pip install neel-plotly
+  × No solution found when resolving dependencies:
+  ╰─▶ Because neel-plotly was not found in the package registry and you
+      require neel-plotly, we can conclude that your requirements are
+      unsatisfiable.
+  (install failed)
