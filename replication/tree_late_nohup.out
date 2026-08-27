@@ -99,3 +99,6 @@
 == 2026-08-28T01:46:49+08:00 NODE R27c-enabling-new-applications-with-today-s-mechanist--ibm START (late rerun)
 == RUN-EXIT 1 after 0 min
 == 2026-08-28T01:47:10+08:00 NODE R27c-enabling-new-applications-with-today-s-mechanist--ibm EXIT 1 after 0 min (late rerun) | disk free after: 38 GB
+== 2026-08-28T01:47:10+08:00 NODE R28c-exploring-how-othellogpt-computes-its-world-mode--jim-maar START (late rerun)
+== RUN-EXIT 1 after 0 min
+== 2026-08-28T01:47:25+08:00 NODE R28c-exploring-how-othellogpt-computes-its-world-mode--jim-maar EXIT 1 after 0 min (late rerun) | disk free after: 38 GB
