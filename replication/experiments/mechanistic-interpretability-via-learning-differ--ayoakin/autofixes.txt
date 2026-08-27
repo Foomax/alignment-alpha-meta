@@ -1,0 +1,2 @@
+AUTOFIX round 1: uv pip install pandas
+AUTOFIX round 2: uv pip install tqdm
