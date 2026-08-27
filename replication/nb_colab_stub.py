@@ -12,12 +12,9 @@ n = 0
 for c in nb["cells"]:
     if c["cell_type"] != "code": continue
     src = c["source"]; lines = src.splitlines(keepends=True) if isinstance(src, str) else src
-    new = []
     for l in lines:
-        if re.search(r"^\s*(from\s+google\.colab\b.*import|import\s+google\.colab)", l):
-            new.append("# " + l.rstrip("\n") + "  # replication: stubbed\n"); n += 1
-        else: new.append(l)
-    c["source"] = new
+        if re.search(r"google\.colab", l): n += 1   # count; leave intact — the prepended sys.modules stub makes the import resolve
+    c["source"] = lines
 out = p[:-6] + "_repl.ipynb" if not p.endswith("_repl.ipynb") else p
 if n:
     nb["cells"].insert(0, {"cell_type": "code", "metadata": {}, "execution_count": None, "outputs": [], "source": [STUB]})
