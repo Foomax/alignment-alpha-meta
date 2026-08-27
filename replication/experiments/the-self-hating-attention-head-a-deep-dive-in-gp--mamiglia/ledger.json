@@ -1,0 +1,27 @@
+{
+ "post_id": "wxPvdBwWeaneAsWRB",
+ "repo": "mamiglia/deep-dive-l1h5",
+ "head_sha": "6c45e47dbb0dc63b5a62ba7eb5bec3d152a6bdb8",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "33 of 64 eigenvalues negative",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "rel:0.15",
+ "blocking_reason": "runtime",
+ "env_fixes": [
+  "sae-lens<6 (restores sae_lens.toolkit removed in sae-lens 6)"
+ ],
+ "wallclock_minutes": 60.0,
+ "peak_vram_gb": 2.0,
+ "seeds_run": 0,
+ "notes": "skew_analysis.py runs a layer-by-layer vocab-through-hooks sweep: 2 of 12 layers in 60 min (~6 h full). Catalogue 'minutes' tag wrong. Eigenvalue claim '33/64 negative' is inside the full sweep; scoping to one head would edit what's run. Env resolved, runtime over budget.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}

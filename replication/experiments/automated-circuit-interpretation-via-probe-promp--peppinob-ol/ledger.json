@@ -1,0 +1,25 @@
+{
+ "post_id": "zQqGhKPqaCBZZDCge",
+ "repo": "peppinob-ol/attribution-graph-probing",
+ "head_sha": "bbff7525d59a8fea7b10052739494cf7d3363cc1",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": true,
+ "claim_located": true,
+ "claim_reproduced": true,
+ "claimed_value": "concept-aligned subgraphs average 0.5394 Replacement and 0.8257 Completeness across 5 prompts, outperforming cosine-only and layer-adjacency clustering on behavioral metrics like Peak Token Consistency (0.425 vs. 0.183/0.301) and Activation Pattern Similarity (0.762 vs. 0.130/0.415)",
+ "observed_value": "fact variant S_Repl=0.5425 S_Comp=0.8412 (target 0.5394/0.8257); standard-5 byte-identical to committed (0.689/0.890)",
+ "delta": null,
+ "tolerance_used": "manual",
+ "blocking_reason": "none",
+ "env_fixes": [],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 1.9,
+ "seeds_run": 1,
+ "notes": "Deterministic recompute of Replacement/Completeness over committed attribution graphs matches the author's committed CSVs byte-for-byte; the post's 0.5394/0.8257 is the fact-checking variant (usa_states_fact_batch), recomputed here at 0.5425/0.8412 (within ~1.5 pts). Graph generation from scratch needs the Neuronpedia API (not run); the committed graphs are what the post scores.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}

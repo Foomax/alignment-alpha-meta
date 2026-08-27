@@ -1,0 +1,27 @@
+{
+ "post_id": "iDyf7aBdvBp9jnfuY",
+ "repo": "ibm/sae-steering",
+ "head_sha": "f06eeef5aba00a0f3b6d2e02fabff4a4a6607b23",
+ "attempted_at": "2026-08-28",
+ "machine": "NVIDIA GeForce RTX 3090, 580.126.18 / 24GB",
+ "installs": true,
+ "runs": false,
+ "claim_located": false,
+ "claim_reproduced": null,
+ "claimed_value": "< +0.001s/token on unoptimized code",
+ "observed_value": null,
+ "delta": null,
+ "tolerance_used": "rel:0.15",
+ "blocking_reason": "env",
+ "env_fixes": [
+  "torch==2.3.1 cu121 (params_t); typeguard"
+ ],
+ "wallclock_minutes": 0.0,
+ "peak_vram_gb": 2.0,
+ "seeds_run": 0,
+ "notes": "params_t fixed by torch 2.3.1 but transformer-lens then unpack-errors (expected 5 got 4) \u2014 version drift between the author's transformer-lens and what co-installs with torch 2.3.1. Not reproduced.",
+ "artifact_paths": [
+  "run.log",
+  "vram.log"
+ ]
+}

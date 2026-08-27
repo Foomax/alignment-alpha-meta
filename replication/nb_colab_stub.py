@@ -7,7 +7,7 @@ p = sys.argv[1]; nb = json.load(open(p))
 STUB = ("import types as _t, sys as _s\n_g=_t.ModuleType('google'); _c=_t.ModuleType('google.colab')\n"
         "class _F:\n    def download(self,*a,**k): print('[replication] skipped Colab files.download', a)\n    def upload(self,*a,**k): return {}\n"
         "_c.files=_F(); _c.drive=_t.SimpleNamespace(mount=lambda *a,**k: print('[replication] skipped drive.mount'))\n"
-        "_c.userdata=_t.SimpleNamespace(get=lambda *a,**k: None)\n_g.colab=_c; _s.modules['google']=_g; _s.modules['google.colab']=_c  # replication env fix\n")
+        "_c.userdata=_t.SimpleNamespace(get=lambda *a,**k: None)\nimport importlib.util as _iu\n_g.__spec__=_iu.spec_from_loader('google',None); _c.__spec__=_iu.spec_from_loader('google.colab',None); _g.__path__=[]; _c.__path__=[]\n_g.colab=_c; _s.modules['google']=_g; _s.modules['google.colab']=_c  # replication env fix\n")
 n = 0
 for c in nb["cells"]:
     if c["cell_type"] != "code": continue
