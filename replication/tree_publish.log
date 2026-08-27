@@ -75,3 +75,5 @@ publish.sh: developmental-stages-in-multi-problem-grokking--james-sullivan is no
 publish.sh: a-necessity-check-for-linear-safety-probes--vaiyr is not in the fork allowlist; nothing pushed
 == 2026-08-27T15:25:03+08:00 publish tracing-typos-in-llms-my-attempt-at-understandin--idostik
 publish.sh: tracing-typos-in-llms-my-attempt-at-understandin--idostik is not in the fork allowlist; nothing pushed
+== 2026-08-27T15:25:05+08:00 publish the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia
+publish.sh: the-self-hating-attention-head-a-deep-dive-in-gp--mamiglia is not in the fork allowlist; nothing pushed
